@@ -1,0 +1,5 @@
+%syntax-version=1.0.0
+%project=nwsinventory_sqitch
+
+1.Create_DB 2023-11-01T14:17:22Z baptiste,,, <baptiste@baptiste-VirtualBox> # Create DB
+2.Ajout_des_tables 2023-11-01T14:20:03Z baptiste,,, <baptiste@baptiste-VirtualBox> # Ajout des tables
