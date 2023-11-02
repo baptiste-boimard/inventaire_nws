@@ -19,15 +19,17 @@ const dataMapperInventory = {
     }
     return data;
   },
-  async patchInventory(inventory: Inventory) {
+  async patchInventory(id: number, inventory: Inventory) {
     const query = {
       text: `UPDATE inventory
-            SET name =$1, quantity=$2, details=$3;`,
-      values: [inventory.name, inventory.quantity, inventory.details],
+            SET name =$1, quantity=$2, details=$3
+            WHERE inventory_id = $4`,
+      values: [inventory.name, inventory.quantity, inventory.details, id],
     };
-    const data = await client.query(query)!
+    const data = await client.query(query)
+    
     if (!data) {
-      throw new CustomError('L\'ajout de l\'article dans l\'inventaire a rencontré un problème');
+      throw new CustomError('La modification de l\'article dans l\'inventaire a rencontré un problème');
     }
     return data;
   },
@@ -36,12 +38,37 @@ const dataMapperInventory = {
       text: `SELECT *
             FROM inventory;`,
     };
-    const data = await client.query(query)!
+    const data = await client.query(query)
     if (!data) {
       throw new CustomError('Impossible de récupérer les données de  l\'inventaire');
     }   
     return data.rows[0];
   },
+  async getOneInventory(id: number) {
+    const query = {
+      text: `SELECT * FROM inventory
+            WHERE inventory_id = $1`,
+      values: [id],
+    };
+    const data = await client.query(query)
+    if(!data) {
+      throw new CustomError('Impossible de récupérer les données de cet article');
+    }
+    return data.rows[0];
+  },
+  async deleteOneInventory(id: number) {
+    
+    const query = {
+      text: `DELETE FROM inventory
+            WHERE inventory_id = $1`,
+      values: [id],
+    };
+    const data = await client.query(query)
+    if(!data) {
+      throw new CustomError('Vous ne pouvez pas supprimer cet article');
+    }
+    return data;
+  }
 };
 
 export default dataMapperInventory;
