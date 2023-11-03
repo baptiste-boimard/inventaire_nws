@@ -1,3 +1,5 @@
+import { appTest } from './appTest';
+import request from 'supertest'
 
 const mockInventory = {
     name: 'Cables HDMI',
@@ -6,9 +8,9 @@ const mockInventory = {
 };
 
 const badMockInventory = {
-    name: 'Cables HDMI',
+    name: 123,
     quantity: 'coucou',
-    details: 'Cable de 3m',
+    details: 123,
 }
 
 const newMockInventory = {
@@ -17,10 +19,6 @@ const newMockInventory = {
     details: 'Cable de 3m de couleur jaune',
 }
 let idMockInventoryPatched: number;
-
-import { appTest } from './appTest';
-import request from 'supertest'
-
 
 describe('Test d\'une route qui n\'existe pas', () => {
     test('Réponse 404 sur une mauvaise URL', async () => {
@@ -37,19 +35,20 @@ describe('Tests de la route POST inventoryController', () => {
             .post('/inventory')
             .send(badMockInventory)
             .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json');
+            .set('Accept', 'application/json');            
         expect(res).toBeTruthy();   
         expect(res.status).toBe(500);
-        expect(res.text).toEqual('{"error":{"message":"syntaxe en entrée invalide pour le type integer : « coucou »"}}');
+        expect(res.body.error.message).toEqual('Le format de données envoyé ne correpond pas');
     }),
     test('POST : Envoi d\'un mockInventory conforme', async () => {
         const res = await request(appTest)
         .post('/inventory')
         .send(mockInventory)
         .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json');
+        .set('Accept', 'application/json');        
             expect(res).toBeTruthy();
             expect(res.status).toBe(200);
+            expect(res.body.rowCount).toBe(1);
     }),
     test('GET : Récupération en BDD du mock posté', async () => {
         const res = await request(appTest)
@@ -71,15 +70,16 @@ describe('Tests de la route PATCH inventoryController', () => {
             .get('/inventory')
             .query({
                 name: 'Cables HDMI'
-            });        
+            });                
         const res = await request(appTest)
             .patch(`/inventory/${inventory.body.inventory_id}`)
             .send(newMockInventory)
             .set('Content-Type', 'application/json') 
             .set('Accept', 'application/json');
-        idMockInventoryPatched = parseInt(inventory.body.inventory_id, 10);
+        idMockInventoryPatched = parseInt(inventory.body.inventory_id, 10);        
         expect(res).toBeTruthy();
         expect(res.status).toBe(200);
+        expect(res.body.rowCount).toBe(1);
     }),
     test('PATCH : Envoi d\'un mockInventory non conforme', async () => {
         const res = await request(appTest)
@@ -89,7 +89,7 @@ describe('Tests de la route PATCH inventoryController', () => {
         .set('Accept', 'application/json');  
             expect(res.body.error).toBeTruthy();
             expect(res.status).toBe(500);
-            expect(res.body.error.message).toEqual('syntaxe en entrée invalide pour le type integer : « coucou »');
+            expect(res.body.error.message).toEqual('Le format de données envoyé ne correpond pas');
     }),
     test('PATCH : Envoi d\'un mockInventory mais avec un mauvais id', async () => {
         const res = await request(appTest)
@@ -155,10 +155,3 @@ describe('Tests de la route DELETE inventoryController', () => {
         expect(res.body.rowCount).toBe(1);
     })
 });
-
-
-
-
-
-
-  
