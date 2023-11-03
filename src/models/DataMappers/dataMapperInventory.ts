@@ -10,7 +10,8 @@ const dataMapperInventory = {
     const query = {
       text: `INSERT INTO inventory
             (name, quantity, details)
-            VALUES ($1, $2, $3);`,
+            VALUES ($1, $2, $3)
+            RETURNING inventory_id;`,
       values: [inventory.name, inventory.quantity, inventory.details],
     };
     const data = await client.query(query)!

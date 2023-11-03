@@ -1,3 +1,4 @@
+import loanController from "../controllers/loanController";
 import inventoryController from "../controllers/inventoryController";
 import studyController from "../controllers/studyControler";
 import routerWrapper from "../handlers/routerWrapper";
@@ -20,7 +21,11 @@ router.post('/study',  routerWrapper(studyController.postStudy));
 router.patch('/study/:study_id',  routerWrapper(studyController.patchStudy));
 router.delete('/study/:study_id',  routerWrapper(studyController.deleteOneStudy));
 
-
-// router.get('/user/:id', UserController.getUser)
+//Route pour la table Loan
+router.post('/loan/:inventory_id/:study_id', routerWrapper(loanController.postLoan));
+router.get('/loan', routerWrapper(loanController.getLoan));
+router.get('/loan/:loan_id', routerWrapper(loanController.getOneLoan));
+router.patch('/loan/:loan_id', routerWrapper(loanController.patchLoan));
+router.delete('/loan/:loan_id', routerWrapper(loanController.deleteOneLoan));
 
 module.exports = router;

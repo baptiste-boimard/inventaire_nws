@@ -34,7 +34,9 @@ CREATE TABLE IF NOT EXISTS public.loan (
   "loan_id" INT GENERATED ALWAYS AS IDENTITY,
   "inventory_id" INT NOT NULL, 
   "study_id" INT NOT NULL, 
-  "created_at" TIMESTAMPTZ,
+  "loaning_date" DATE NOT NULL,
+  "due_date" DATE NOT NULL,
+  "created_at" TIMESTAMPTZ DEFAULT NOW(),
   "updated_at" TIMESTAMPTZ,
   CONSTRAINT loan_id_pk PRIMARY KEY (loan_id),
   CONSTRAINT inventory_id_fk FOREIGN KEY (inventory_id)

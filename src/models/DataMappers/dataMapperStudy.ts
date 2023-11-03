@@ -9,10 +9,12 @@ const dataMapperStudy = {
     const query = {
       text: `INSERT INTO study
             (firstname, lastname, email)
-            VALUES ($1, $2, $3);`,
+            VALUES ($1, $2, $3)
+            RETURNING study_id;`,
       values: [study.firstname, study.lastname, study.email],
     };
-    const data = await client.query(query)!
+    const data = await client.query(query)
+    
     if (!data) {
       throw new CustomError('L\'ajout de l\'étudiant a rencontré un problème');
     }
