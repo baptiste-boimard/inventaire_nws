@@ -1,7 +1,7 @@
 // import { Inventory } from '~/types/inventory';
 import CustomError from '../../handlers/CustomError';
 import client from '../dbClient';
-import { Inventory } from '~/types/inventory';
+import { Inventory } from '../../types/inventory';
 
 const dataMapperInventory = {
 
@@ -43,7 +43,7 @@ const dataMapperInventory = {
     if (!data) {
       throw new CustomError('Impossible de récupérer les données de  l\'inventaire');
     }   
-    return data.rows[0];
+    return data.rows;
   },
   async getOneInventory(id: number) {
     const query = {

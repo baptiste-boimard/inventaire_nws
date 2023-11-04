@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import dataMapperInventory from '../models/DataMappers/dataMapperInventory';
 import CustomError from '../handlers/CustomError';
-import { Inventory } from '~/types/inventory';
+import { Inventory } from '../types/inventory';
 
 //Controller gérant les requetes concernat l'inventaire
 const inventoryController = {

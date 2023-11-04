@@ -1,6 +1,6 @@
 import CustomError from '../../handlers/CustomError';
 import client from '../dbClient';
-import { Study } from '~/types/study';
+import { Study } from '../../types/study';
 
 const dataMapperStudy = {
 

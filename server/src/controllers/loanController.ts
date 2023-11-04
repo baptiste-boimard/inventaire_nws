@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import dataMapperLoan from '../models/DataMappers/dataMapperLoan';
 import CustomError from '../handlers/CustomError';
-import { Loan } from '~/types/loan';
+import { Loan } from '../types/loan';
 
 //Fonction permettant de déterminer un date avec un mois de plus
 function dateAddMonths(monthNbr: number, date: Date) {

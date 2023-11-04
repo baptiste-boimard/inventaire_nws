@@ -1,6 +1,6 @@
 import CustomError from '../../handlers/CustomError';
 import client from '../dbClient';
-import { Loan } from '~/types/loan';
+import { Loan } from '../../types/loan';
 
 const dataMapperLoan = {
 

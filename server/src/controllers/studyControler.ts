@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import dataMapperStudy from '../models/DataMappers/dataMapperStudy';
 import CustomError from '../handlers/CustomError';
-import { Study } from '~/types/study';
+import { Study } from '../types/study';
 
 //Controller gérant les requetes concernat les étudiants
 const studyController = {
