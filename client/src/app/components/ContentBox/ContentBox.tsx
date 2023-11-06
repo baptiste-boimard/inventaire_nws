@@ -7,7 +7,7 @@ import Inventory from '../Inventory/inventory';
 
 function ContentBox () {
   return (
-    <Box bg='tomato' w='100%' p={4} pt={0} color='white' overflow={'hidden'}>
+    <Box bg='tomato' w='100%' p={4} pt={0} color='white' overflow={'visible'}>
       <Box bg='pink' w='100%' p={0} color='white' display='flex' justifyContent='center'>
         <Image src={nws_logo} alt='NWS' boxSize='100px'/>
       </Box>
