@@ -16,15 +16,11 @@ export interface DataInventory {
 interface InventoryState {
   dataInventory: Array<DataInventory>,
   dataInventoryDefault: Array<DataInventory>,
-  isOpenEdit: boolean,
-  isOpenDelete: boolean,
 }
 
 const initialState: InventoryState = {
   dataInventory: [],
   dataInventoryDefault: [],
-  isOpenEdit: false,
-  isOpenDelete: false,
 };
 
 /** Demande au back tous les inventory */
@@ -53,18 +49,8 @@ const inventorySlice = createSlice({
       
         state.dataInventory = action.payload;
     },
-    openModalEdit: (state) => {
-      state.isOpenEdit = true;
-    },
-    closeModalEdit: (state) => {
-      state.isOpenEdit = false;
-    },
-    openModalDelete: (state) => {
-      state.isOpenDelete = true;
-    },
-    closeModalDelete: (state) => {
-      state.isOpenDelete = false;
-    },
+    
+    
   },
     // getInventoryToState = (state, action) {
     //     return {
@@ -76,6 +62,6 @@ const inventorySlice = createSlice({
   }
 });
 
-export const { getInventoryToState, openModalDelete, openModalEdit, closeModalDelete, closeModalEdit } = inventorySlice.actions;
+export const { getInventoryToState } = inventorySlice.actions;
 
 export default inventorySlice.reducer;
