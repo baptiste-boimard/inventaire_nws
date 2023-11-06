@@ -29,14 +29,43 @@ export const getInventory = createAsyncThunk(
   async(_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     return await instance.get('/inventory')
       .then((response) => {
-        console.log(response.data);
         return dispatch(getInventoryToState(response.data));
       })
       .catch((error) => {
         console.log(error);
         
       })
-});
+  }
+);
+
+/** Demande au back de supprimer un inventory */
+export const deleteInventory = createAsyncThunk(
+  'inventory/deleteInventory',
+  async(idInventory: number, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
+    return await instance.delete(`/inventory/${idInventory}`)
+      .then(() => {
+        dispatch(getInventory());
+      })
+      .catch((error) => {
+        console.log(error);
+        
+      })
+  }
+);
+
+/** Demande au back de mettre à jour l'inventory */
+export const updateInventory = createAsyncThunk(
+  'inventory/updateInventory',
+  async(inventory: Omit<DataInventory, 'created_at'>, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
+    await instance.patch(`/inventory/${inventory.inventory_id}`, inventory)
+      .then(() => {
+        dispatch(getInventory());
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+);
 
 
 const inventorySlice = createSlice({
@@ -44,9 +73,7 @@ const inventorySlice = createSlice({
   initialState,
   reducers: {
     /** Charge les données de la BDD dans le state dataInventory */
-    getInventoryToState: (state, action) => {
-      console.log(action.payload);
-      
+    getInventoryToState: (state, action) => {      
         state.dataInventory = action.payload;
     },
     

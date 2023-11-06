@@ -37,7 +37,8 @@ const dataMapperInventory = {
   async getInventory() {
     const query = {
       text: `SELECT *
-            FROM inventory;`,
+            FROM inventory
+            ORDER BY inventory_id ASC`,
     };
     const data = await client.query(query)
     if (!data) {

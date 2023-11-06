@@ -27,8 +27,9 @@ const inventoryController = {
     },
     //Modifie en BDD un article
     async patchInventory(req: Request, res: Response, next: NextFunction): Promise<void> {        
-        const id: number = parseInt(req.params.inventory_id);
-
+        const id: number = parseInt(req.params.inventory_id, 10);
+        const quantity = parseInt(req.body.quantity, 10);
+        
         if(typeof req.body.name !== 'string' || typeof req.body.quantity !== 'number' || typeof req.body.details !== 'string') {
             const err = new CustomError('Le format de données envoyé ne correpond pas');
             next(err);
@@ -36,9 +37,10 @@ const inventoryController = {
 
         const data: Inventory = {
             name: req.body.name,
-            quantity: req.body.quantity,
+            quantity: quantity,
             details: req.body.details,
-        };        
+        };   
+
         const inventory = await dataMapperInventory.patchInventory(id, data);
         
         if(inventory) {

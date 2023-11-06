@@ -20,7 +20,6 @@ const utilitiesSlice = createSlice({
   initialState,
   reducers: {
     handleFieldChange: (state, action) => {
-      console.log(action);
       state.editingInventory = {
         ...state.editingInventory,
         [action.payload.name]: action.payload.value,
@@ -30,34 +29,39 @@ const utilitiesSlice = createSlice({
       return {
         ...state,
         [action.payload.name]: action.payload.value,
-      }
+      };
     },
     addInventoryForModalEditing: (state, action) => {
-      console.log(action.payload);
       
         state.editingInventory = {
           ...state.editingInventory,
           ...action.payload,
-      }
+      };
     },
-    openModalEdit: (state, action) => {
-      console.log(typeof action, action);
+    openModalEdit: (state, action) => {    
       
-
       state.editingInventory = {
         ...state.editingInventory,
         [action.payload]:  true,
-      }
+      };
     },
     closeModalEdit: (state, action) => {
       state.editingInventory= {
         ...state.editingInventory,
         [action.payload]: false,
-      }
+      };
     },
-    openModalDelete: (state) => {
+    openModalDelete: (state, action) => {
+      state.editingInventory= {
+        ...state.editingInventory,
+        [action.payload]: true,
+      };
     },
-    closeModalDelete: (state) => {
+    closeModalDelete: (state, action) => {
+      state.editingInventory= {
+        ...state.editingInventory,
+        [action.payload]: false,
+      };
     },
   },
   extraReducers: (builder) => {
