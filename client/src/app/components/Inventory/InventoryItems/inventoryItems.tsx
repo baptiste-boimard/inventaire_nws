@@ -1,51 +1,24 @@
-// == IMPORT CHAKRA UI ==
-import { Box, Button, Container, IconButton, Input } from "@chakra-ui/react";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from '@chakra-ui/react';
-import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from '@chakra-ui/react';
-import {
-  Editable,
-  EditableInput,
-  EditableTextarea,
-  EditablePreview,
-} from '@chakra-ui/react';
-
-
-
 import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { BaseSyntheticEvent, useEffect } from "react";
+
+// == IMPORT CHAKRA UI ==
+import { Button, IconButton } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/react';
+import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
+import { FormControl, Input } from '@chakra-ui/react'
 
 // == IMPORT TYPE ==
 import { DataInventory, deleteInventory, updateInventory,  } from "../../../slices/inventorySlice";
-import { UtilitiesState } from "../../../slices/utilitiesSlice";
 
 // == IMPORT ACTION ==
-import { handleFieldChange,
-  resetInventoryState,
-  addInventoryForModalEditing,
+import { handleFieldChange, 
+  addInventoryForModalEditing, 
   openModalEdit,
   closeModalEdit,
   openModalDelete,
   closeModalDelete,
 } from "../../../slices/utilitiesSlice";
-import { BaseSyntheticEvent, useEffect } from "react";
 
 
 
@@ -62,20 +35,24 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
   const isOpenEdit: any = editingInventory[`isOpenModalInventoryEdit-${inventory_id}` as any];
   const isOpenDelete: any = editingInventory[`isOpenModalInventoryDelete-${inventory_id}` as any];
 
-  // const nameValue = useAppSelector(state => state.inventoryReducer.editingInventory[`name-${inventory_id}` as any])
   // == ACTION ==
+  /** Ouverture de la modal Edit */
   const handleOpenModalEdit = () => {
     dispatch(openModalEdit(`isOpenModalInventoryEdit-${inventory_id}`));    
   };
+  /** Fermeture de la modal Edit */
   const handleCloseModalEdit = () => {
     dispatch(closeModalEdit(`isOpenModalInventoryEdit-${inventory_id}`));
   };
+  /** Ouverture de la modal delete */
   const handleOpenModalDelete = () => {    
     dispatch(openModalDelete(`isOpenModalInventoryDelete-${inventory_id}`));    
   };
+  /** Fermeture de la modal delete */
   const handleCloseModalDelete = () => {
     dispatch(closeModalDelete(`isOpenModalInventoryDelete-${inventory_id}`));    
   };
+  /** Gestion des chanmps controlés */
   const handleChange = (e: BaseSyntheticEvent) => {
     e.preventDefault(); 
     const changePayload = {
@@ -84,6 +61,7 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
     };    
     dispatch(handleFieldChange(changePayload));    
   };
+  /** Soumission du formulaire au back pour la modification d'un inventory */
   const handleSubmit = (e:React.FormEvent) => {
     e.preventDefault();
     const inventory: Omit<DataInventory, 'created_at'> = {
@@ -95,11 +73,12 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
     dispatch(updateInventory(inventory));
     handleCloseModalEdit();
   };
+  /** Demande au back la suppression d'un inventory */
   const handleDeleteInventory = () => {
     dispatch(deleteInventory(inventory_id));
     handleCloseModalDelete();
   }
-
+  /** Création dans le slice utilities des variable permettant l'eidtion dynamique */
   useEffect(() => {
     const createEditingInventory:any = {
       [`isOpenModalInventoryEdit-${inventory_id}`]: false,
@@ -113,6 +92,7 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
 
   return (
     <>
+      {/* ===== MODAL EDIT ===== */}
       <Modal isOpen={isOpenEdit} onClose={handleCloseModalEdit} size={'lg'}>
           <ModalOverlay />
           <ModalContent>
@@ -131,27 +111,31 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
                   <Tbody>
                     <Tr color={'black'}>
                       <Td width={'40%'} ml={'2px'}>
-                        <Editable
-                          value={nameValue}
-                          ml={'2px'}>
-                          <EditablePreview />
-                          <EditableInput
+                        <FormControl>
+                          <Input type='text'
+                            value={nameValue}
                             onChange={handleChange}
                             name={`name-${inventory_id}`}
-                            value={nameValue}/>
-                        </Editable>
+                          />
+                        </FormControl>
                       </Td>
                       <Td width={'10%'} textAlign={'center'}>
-                      <Editable value={quantityValue}>
-                          <EditablePreview />
-                          <EditableInput onChange={handleChange} name={`quantity-${inventory_id}`} value={quantityValue}/>
-                        </Editable>
+                        <FormControl>
+                          <Input type='number'
+                            value={quantityValue}
+                            onChange={handleChange}
+                            name={`quantity-${inventory_id}`}
+                          />
+                        </FormControl>
                       </Td>
                       <Td width={'50%'} textAlign="center">
-                        <Editable value={detailsValue} mr={'2px'}>
-                          <EditablePreview />
-                          <EditableInput onChange={handleChange} name={`details-${inventory_id}`} value={detailsValue}/>
-                        </Editable>
+                        <FormControl>
+                          <Input type='text'
+                            value={detailsValue}
+                            onChange={handleChange}
+                            name={`details-${inventory_id}`}
+                          />
+                        </FormControl>
                       </Td>
                     </Tr>
                   </Tbody>
@@ -166,27 +150,10 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
             </ModalFooter>
           </ModalContent>
         </Modal>
-        <Tr color={'black'}>
-          <Td width={'30%'}>{name}</Td>
-          <Td width={'10%'} textAlign={'center'}>{quantity}</Td>
-          <Td width={'40%'} align='left'>{details}</Td>
-          <Td width={'10%'} textAlign={'center'}>
-            <IconButton
-              onClick={handleOpenModalEdit}
-              colorScheme='green'
-              aria-label='Editer'
-              icon={<EditIcon />}
-              />
-          </Td>
-          <Td width={'10%'} textAlign='center'>
-            <IconButton
-              onClick={handleOpenModalDelete}
-              colorScheme='pink'
-              aria-label='Supprimer'
-              icon={<DeleteIcon />}
-              />
-          </Td>
-        </Tr>
+        {/* ===== MODAL EDIT ===== */}
+
+
+        {/* ===== MODAL DELETE ===== */}
         <Modal isOpen={isOpenDelete} onClose={handleCloseModalDelete}>
           <ModalOverlay />
           <ModalContent>
@@ -220,6 +187,32 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
             </ModalFooter>
           </ModalContent>
         </Modal>
+        {/* ===== MODAL DELETE ===== */}
+
+        {/* ===== TABLE ITEM ===== */}
+        <Tr color={'black'}>
+          <Td width={'30%'}>{name}</Td>
+          <Td width={'10%'} textAlign={'center'}>{quantity}</Td>
+          <Td width={'40%'} align='left'>{details}</Td>
+          <Td width={'10%'} textAlign={'center'}>
+            <IconButton
+              onClick={handleOpenModalEdit}
+              colorScheme='green'
+              aria-label='Editer'
+              icon={<EditIcon />}
+              />
+          </Td>
+          <Td width={'10%'} textAlign='center'>
+            <IconButton
+              onClick={handleOpenModalDelete}
+              colorScheme='pink'
+              aria-label='Supprimer'
+              icon={<DeleteIcon />}
+              />
+          </Td>
+        </Tr>
+        {/* ===== TABLE ITEM ===== */}
+
     </>
   );
 }
