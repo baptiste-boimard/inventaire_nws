@@ -24,7 +24,7 @@ function PostStudy () {
   const dispatch = useAppDispatch();
 
   // == CALL STORE ==
-  const { postInventoryName, postInventoryQuantity, postInventoryDetails} = useAppSelector(state => state.utilitiesReducer);
+  const { postStudyFirstname, postStudyLastname, postStudyEmail} = useAppSelector(state => state.utilitiesReducer);
 
   // == ACTION ==
   /** Gestion des chanmps controlés */
@@ -38,14 +38,13 @@ function PostStudy () {
   };
   /** Envoi le nouveau matériel au back */
   const handleSubmit = (e: React.FormEvent) => {
-    const postInventoryData: Omit<DataInventory, 'created_at' | 'inventory_id'> = {
-      name: postInventoryName,
-      quantity: postInventoryQuantity!,
-      details: postInventoryDetails,
+    const postStudyData: DataStudy = {
+      firstname: postStudyFirstname,
+      lastname: postStudyLastname!,
+      email: postStudyEmail,
     };
-    console.log(typeof postInventoryName, typeof postInventoryDetails, typeof postInventoryQuantity);
     
-    dispatch(postInventory(postInventoryData));    
+    dispatch(postStudy(postStudyData));    
   };
 
   return (
@@ -55,7 +54,7 @@ function PostStudy () {
       borderRadius={'30px'}
     >
       <Box bg='white' w='100%' p={4} color='black'fontWeight={'bold'} textAlign={'center'}>
-        Ajouter un nouveau matériel
+        Ajouter un nouvel étudiant
       </Box>
       <Box bg='white' w='100%' p={0} color='white'>
         <TableContainer>
@@ -67,45 +66,43 @@ function PostStudy () {
           >
             <Thead>
               <Tr color={'black'}>
-                <Th p={2} width={'30%'} align={'left'}>Nom</Th>
-                <Th p={2} width={'10%'} textAlign={'center'}>Quantité</Th>
-                <Th p={2} pl={8} width={'40%'} align={'left'}>Détails</Th>
+                <Th p={2} width={'20%'} align={'left'}>Prénom</Th>
+                <Th p={2} width={'20%'} textAlign={'left'}>Nom</Th>
+                <Th p={2} width={'40%'} align={'left'}>email</Th>
                 <Th p={1} width={'20%'} textAlign={'center'}></Th>
               </Tr>
             </Thead>
             <Tbody>
               <Tr color={'black'} fontSize={13} borderRadius={'30px'}>
-                <Td p={2} pr={8}
-                >
+                <Td p={2}>
                   <FormControl>
                     <Input 
                       fontSize={13}
                       pl={2}
-                      
                       type='text'
                       border={'1px'}
                       borderColor={'gray'}
-                      name='postInventoryName'
-                      value={postInventoryName}
+                      name='postStudyFirstname'
+                      value={postStudyFirstname}
                       onChange={handleChange}
                     />
                   </FormControl>
                 </Td>
-                <Td p={0}>
+                <Td p={2}>
                   <FormControl>
                     <Input
-                    pl={9}
+                      pl={2}
                       fontSize={13}
-                      type='number'
+                      type='text'
                       border={'1px'}
                       borderColor={'gray'}
-                      name='postInventoryQuantity'
-                      value={postInventoryQuantity}
+                      name='postStudyLastname'
+                      value={postStudyLastname}
                       onChange={handleChange}
                     />
                   </FormControl>
                 </Td>
-                <Td p={2} pl={8}>
+                <Td p={2}>
                   <FormControl>
                     <Input
                       alignItems={'center'}
@@ -113,8 +110,8 @@ function PostStudy () {
                       type='text'
                       border={'1px'}
                       borderColor={'gray'}
-                      name='postInventoryDetails'
-                      value={postInventoryDetails}
+                      name='postStudyEmail'
+                      value={postStudyEmail}
                       onChange={handleChange}
                     />
                   </FormControl>
@@ -126,7 +123,7 @@ function PostStudy () {
                       onClick={handleSubmit}
                       size={'sm'}
                     >
-                      Ajouter à l'inventaire
+                      Ajouter l'étudiant
                     </Button>
                   </FormControl>
                 </Td>

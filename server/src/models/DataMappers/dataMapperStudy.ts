@@ -39,13 +39,14 @@ const dataMapperStudy = {
   async getStudy() {
     const query = {
       text: `SELECT *
-            FROM study;`,
+            FROM study
+            ORDER BY study_id`,
     };
     const data = await client.query(query)
     if (!data) {
       throw new CustomError('Impossible de récupérer les données de  l\'étudiant');
     }   
-    return data.rows[0];
+    return data.rows;
   },
   //Récupére un étudiant dans la base study
   async getOneStudy(id: number) {

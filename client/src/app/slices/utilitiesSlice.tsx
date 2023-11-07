@@ -4,6 +4,9 @@ export interface UtilitiesState {
   postInventoryName: string,
   postInventoryQuantity: number | undefined,
   postInventoryDetails: string,
+  postStudyFirstname: string,
+  postStudyLastname: string,
+  postStudyEmail: string,
   editingInventory: any,
   editingStudy: any,
 };
@@ -12,6 +15,9 @@ const initialState: UtilitiesState = {
   postInventoryName: '',
   postInventoryQuantity: undefined,
   postInventoryDetails: '',
+  postStudyFirstname: '',
+  postStudyLastname: '',
+  postStudyEmail: '',
   editingInventory: {},
   editingStudy: {},
   

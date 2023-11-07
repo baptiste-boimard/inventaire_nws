@@ -15,7 +15,7 @@ import Study from '../Study/study';
 function ContentBox () {
   return (
     <Box bg='white' w='100%' p={4} pt={0} color='white' overflow={'visible'}>
-      <Box bg='white' w='100%' p={0} color='white' display='flex' justifyContent='center' mb={16}>
+      <Box bg='white' w='100%' p={0} color='white' display='flex' justifyContent='center' mb={'45px'}>
         <Image src={nws_logo} alt='NWS' boxSize='100px'/>
       </Box>
       <Routes>

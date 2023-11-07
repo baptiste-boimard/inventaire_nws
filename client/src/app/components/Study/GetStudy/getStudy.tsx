@@ -15,7 +15,9 @@ import { getStudy } from '../../../slices/studySlice';
 function GetStudy () {
   const dispatch = useAppDispatch();
   
+  
   useEffect(() => {
+    console.log(dataStudy);
     dispatch(getStudy());
   }, [dispatch]);
   
@@ -43,15 +45,15 @@ function GetStudy () {
           >
             <Thead>
               <Tr color={'black'}>
-                <Th p={2} width={'30%'}>Prénom</Th>
-                <Th p={2} width={'10%'}>Nom</Th>
+                <Th p={2} width={'20%'}>Prénom</Th>
+                <Th p={2} width={'20%'}>Nom</Th>
                 <Th p={2} pl={8} width={'40%'}>Email</Th>
                 <Th p={2} width={'10%'}>Editer</Th>
                 <Th p={2} width={'10%'}>Supprimer</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {/* {dataStudy.map((studyItem) => <GetStudyItems key={studyItem.study_id} {...studyItem} />)} */}
+              {dataStudy.map((studyItems) => <GetStudyItems key={studyItems.study_id} {...studyItems} />)}
             </Tbody>
           </Table>
         </TableContainer>

@@ -91,14 +91,7 @@ const inventorySlice = createSlice({
     getInventoryToState: (state, action) => {      
         state.dataInventory = action.payload;
     },
-    
-    
   },
-    // getInventoryToState = (state, action) {
-    //     return {
-    //       state.dataInventory: action.payload.data,
-    //     }
-    // },
   extraReducers(builder) {
 
   }

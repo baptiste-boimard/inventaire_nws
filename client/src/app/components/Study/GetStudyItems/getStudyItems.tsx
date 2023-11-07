@@ -28,7 +28,7 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
 
   // == CALL STORE ==
   const { dataStudy } = useAppSelector(state => state.studyReducer);
-  const {  editingStudy } = useAppSelector(state => state.utilitiesReducer);
+  const { editingStudy } = useAppSelector(state => state.utilitiesReducer);
   
   const firstnameValue: any = editingStudy[`firstname-${study_id}` as any];
   const lastnameValue: any = editingStudy[`lastname-${study_id}` as any];
@@ -39,19 +39,19 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
   // == ACTION ==
   /** Ouverture de la modal Edit */
   const handleOpenModalEdit = () => {
-    dispatch(openModalEditStudy(`isOpenModalInventoryEdit-${study_id}`));    
+    dispatch(openModalEditStudy(`isOpenEditStudy-${study_id}`));    
   };
   /** Fermeture de la modal Edit */
   const handleCloseModalEdit = () => {
-    dispatch(closeModalEditStudy(`isOpenModalInventoryEdit-${study_id}`));
+    dispatch(closeModalEditStudy(`isOpenEditStudy-${study_id}`));
   };
   /** Ouverture de la modal delete */
   const handleOpenModalDelete = () => {    
-    dispatch(openModalDeleteStudy(`isOpenModalInventoryDelete-${study_id}`));    
+    dispatch(openModalDeleteStudy(`isOpenDeleteStudy-${study_id}`));    
   };
   /** Fermeture de la modal delete */
   const handleCloseModalDelete = () => {
-    dispatch(closeModalDeleteStudy(`isOpenModalInventoryDelete-${study_id}`));    
+    dispatch(closeModalDeleteStudy(`isOpenDeleteStudy-${study_id}`));    
   };
   /** Gestion des chanmps controlés */
   const handleChange = (e: BaseSyntheticEvent) => {
@@ -80,7 +80,7 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
     handleCloseModalDelete();
   }
   /** Création dans le slice utilities des variable permettant l'eidtion dynamique */
-  useEffect(() => {
+  useEffect(() => {    
     const createEditingStudy:any = {
       [`isOpenEditStudy-${study_id}`]: false,
       [`isOpenDeleteStudy-${study_id}`]: false,
@@ -109,40 +109,40 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                 <Table variant='striped' colorScheme='gray' size={'2xl'}>
                   <Thead>
                     <Tr color={'black'}>
-                      <Th width={'40%'} textAlign={'center'}>Prénom</Th>
-                      <Th width={'10%'} textAlign={'center'}>Nom</Th>
-                      <Th width={'50%'} textAlign={'center'}>Email</Th>
+                      <Th width={'25%'} textAlign={'left'}>Prénom</Th>
+                      <Th width={'25%'} textAlign={'left'}>Nom</Th>
+                      <Th width={'50%'} textAlign={'left'}>Email</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     <Tr color={'black'}>
-                      <Td width={'40%'} ml={'2px'}>
+                      <Td width={'25%'} ml={'2px'} textAlign={'left'}>
                         <FormControl>
                           <Input type='text'
                             value={firstnameValue}
                             onChange={handleChange}
-                            name={`name-${study_id}`}
+                            name={`firstname-${study_id}`}
                             fontSize={14}
                           />
                         </FormControl>
                       </Td>
-                      <Td width={'10%'} textAlign={'center'}>
+                      <Td width={'25%'} textAlign={'left'}>
                         <FormControl>
-                          <Input type='number'
+                          <Input type='text'
                             value={lastnameValue}
                             onChange={handleChange}
-                            name={`quantity-${study_id}`}
+                            name={`lastname-${study_id}`}
                             fontSize={14}
 
                           />
                         </FormControl>
                       </Td>
-                      <Td width={'50%'} textAlign="center">
+                      <Td width={'50%'} textAlign="left">
                         <FormControl>
                           <Input type='text'
                             value={emailValue}
                             onChange={handleChange}
-                            name={`details-${study_id}`}
+                            name={`email-${study_id}`}
                             fontSize={14}
 
                           />
@@ -167,7 +167,7 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                 onClick={handleSubmit}
                 size={'sm'}
               >
-                Confirmer
+                ConfirmertextAlign={'left'}
               </Button>
             </ModalFooter>
           </ModalContent>
@@ -191,16 +191,16 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                 <Table variant='striped' colorScheme='gray' size={'2xl'}>
                   <Thead>
                     <Tr color={'black'}>
-                      <Th width={'40%'} textAlign={'center'}>Nom</Th>
-                      <Th width={'10%'} textAlign={'center'}>Quantité</Th>
-                      <Th width={'50%'} textAlign={'center'}>Détails</Th>
+                      <Th width={'25%'} textAlign={'left'}>Prénom</Th>
+                      <Th width={'25%'} textAlign={'left'}>Nom</Th>
+                      <Th width={'50%'} textAlign={'left'}>Email</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     <Tr color={'black'}>
-                      <Td width={'30%'} pl={4}>{firstnameValue}</Td>
-                      <Td width={'10%'} textAlign={'center'}>{lastnameValue}</Td>
-                      <Td width={'40%'} align='left' pl={4}>{emailValue}</Td>
+                      <Td width={'25%'} textAlign={'left'}>{firstnameValue}</Td>
+                      <Td width={'25%'} textAlign={'left'}>{lastnameValue}</Td>
+                      <Td width={'50%'} textAlign='left'>{emailValue}</Td>
                     </Tr>
                   </Tbody>
                 </Table>
@@ -229,8 +229,8 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
 
         {/* ===== TABLE ITEM ===== */}
         <Tr color={'black'}>
-          <Td p={2} pl={4} width={'30%'}>{firstname}</Td>
-          <Td p={2} width={'10%'} textAlign={'center'}>{lastname}</Td>
+          <Td p={2} pl={4} width={'20%'}>{firstname}</Td>
+          <Td p={2} width={'20%'} textAlign={'left'}>{lastname}</Td>
           <Td p={2} pl={8} width={'40%'} align='left'>{email}</Td>
           <Td p={2} width={'10%'} textAlign={'center'}>
             <IconButton
@@ -239,7 +239,7 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
               aria-label='Editer'
               icon={<EditIcon />}
               size={'xs'}
-              />
+          />
           </Td>
           <Td p={2} width={'10%'} textAlign='center'>
             <IconButton
@@ -248,7 +248,7 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
               aria-label='Supprimer'
               icon={<DeleteIcon />}
               size={'xs'}
-              />
+          />
           </Td>
         </Tr>
         {/* ===== TABLE ITEM ===== */}
