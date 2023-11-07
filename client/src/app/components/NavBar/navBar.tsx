@@ -1,34 +1,44 @@
-import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box } from '@chakra-ui/react'
-import {
+import { NavLink } from 'react-router-dom';
+
+// == IMPORT CHAKRA UI ==
+import { 
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  Box,
   List,
   ListItem,
   ListIcon,
-  OrderedList,
-  UnorderedList,
 } from '@chakra-ui/react'
-import { PhoneIcon, AddIcon, WarningIcon, SmallAddIcon } from '@chakra-ui/icons'
+
+import { SmallAddIcon } from '@chakra-ui/icons'
 
 function NavBar () {
   return (
     <Accordion>
       <AccordionItem>
-        <h2>
-          <AccordionButton>
-            <Box as="span" flex='1' textAlign='left' fontSize='0.8em'>
-              Liste du matériel
-            </Box>
-          </AccordionButton>
-        </h2>
+          <NavLink to={'/inventory'}>
+            <h2>
+              <AccordionButton>
+                <Box as="span" flex='1' textAlign='left' fontSize='0.8em'>
+                  Liste du matériel
+                </Box>
+              </AccordionButton>
+            </h2>
+          </NavLink>
       </AccordionItem>
 
       <AccordionItem>
-        <h2>
-          <AccordionButton>
-            <Box as="span" flex='1' textAlign='left' fontSize='0.8em'>
-              Liste des étudiants
-            </Box>
-          </AccordionButton>
-        </h2>
+        <NavLink to={'/study'}>
+          <h2>
+            <AccordionButton>
+              <Box as="span" flex='1' textAlign='left' fontSize='0.8em'>
+                Liste des étudiants
+              </Box>
+            </AccordionButton>
+          </h2>
+        </NavLink>
       </AccordionItem>
 
       <AccordionItem>

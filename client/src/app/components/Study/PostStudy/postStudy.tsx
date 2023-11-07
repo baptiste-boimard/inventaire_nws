@@ -1,9 +1,10 @@
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { BaseSyntheticEvent } from 'react';
 
 // == IMPORT CHAKRA UI ==
-import { Box, Input } from '@chakra-ui/react';
 import {
+  Box,
+  Input, 
   Table,
   Thead,
   Tbody,
@@ -11,17 +12,15 @@ import {
   Th,
   Td,
   TableContainer,
-} from '@chakra-ui/react';
-import {
   FormControl,
+  Button,
 } from '@chakra-ui/react';
-import { Button, ButtonGroup } from '@chakra-ui/react';
 
 // == IMPORT ACTION ==
-import { handleFieldChange } from '../../slices/utilitiesSlice';
-import { DataInventory, postInventory } from '../../slices/inventorySlice';
+import { handleFieldChange } from '../../../slices/utilitiesSlice';
+import { DataStudy, postStudy } from '../../../slices/studySlice';
 
-function PostInventory () {
+function PostStudy () {
   const dispatch = useAppDispatch();
 
   // == CALL STORE ==
@@ -140,4 +139,4 @@ function PostInventory () {
   );
 }
 
-export default PostInventory;
+export default PostStudy;

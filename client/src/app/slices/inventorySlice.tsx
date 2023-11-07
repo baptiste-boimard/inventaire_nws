@@ -6,7 +6,7 @@ const instance = axios.create({
 })
 
 export interface DataInventory {
-  inventory_id: number,
+  inventory_id?: number,
   name: string,
   details: string,
   quantity: number,

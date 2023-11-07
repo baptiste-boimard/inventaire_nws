@@ -8,50 +8,50 @@ import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
 import { FormControl,  Input } from '@chakra-ui/react'
 
-// == IMPORT TYPE ==
-import { DataInventory, deleteInventory, updateInventory,  } from "../../../slices/inventorySlice";
+// == IMPORT TYPE AND ACTION ==
+import { DataStudy, deleteStudy, updateStudy } from "../../../slices/studySlice";
 
 // == IMPORT ACTION ==
 import { 
-  handleFieldChangeInEditingInventory, 
-  addInventoryForModalEditing, 
-  openModalEdit,
-  closeModalEdit,
-  openModalDelete,
-  closeModalDelete,
+  handleFieldChangeInEditingStudy, 
+  addStudyForModalEditing, 
+  openModalEditStudy,
+  closeModalEditStudy,
+  openModalDeleteStudy,
+  closeModalDeleteStudy,
 } from "../../../slices/utilitiesSlice";
 
 
 
-function InventoryItems ({inventory_id, name, quantity, details, created_at}: DataInventory ) {
+function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
   const dispatch = useAppDispatch();
 
   // == CALL STORE ==
-  const { dataInventory } = useAppSelector(state => state.inventoryReducer);
-  const {  editingInventory } = useAppSelector(state => state.utilitiesReducer);
+  const { dataStudy } = useAppSelector(state => state.studyReducer);
+  const {  editingStudy } = useAppSelector(state => state.utilitiesReducer);
   
-  const nameValue: any = editingInventory[`name-${inventory_id}` as any];
-  const quantityValue: any = editingInventory[`quantity-${inventory_id}` as any];
-  const detailsValue: any = editingInventory[`details-${inventory_id}` as any];
-  const isOpenEdit: any = editingInventory[`isOpenModalInventoryEdit-${inventory_id}` as any];
-  const isOpenDelete: any = editingInventory[`isOpenModalInventoryDelete-${inventory_id}` as any];
+  const firstnameValue: any = editingStudy[`firstname-${study_id}` as any];
+  const lastnameValue: any = editingStudy[`lastname-${study_id}` as any];
+  const emailValue: any = editingStudy[`email-${study_id}` as any];
+  const isOpenEditStudy: any = editingStudy[`isOpenEditStudy-${study_id}` as any];
+  const isOpenDeleteStudy: any = editingStudy[`isOpenDeleteStudy-${study_id}` as any];
 
   // == ACTION ==
   /** Ouverture de la modal Edit */
   const handleOpenModalEdit = () => {
-    dispatch(openModalEdit(`isOpenModalInventoryEdit-${inventory_id}`));    
+    dispatch(openModalEditStudy(`isOpenModalInventoryEdit-${study_id}`));    
   };
   /** Fermeture de la modal Edit */
   const handleCloseModalEdit = () => {
-    dispatch(closeModalEdit(`isOpenModalInventoryEdit-${inventory_id}`));
+    dispatch(closeModalEditStudy(`isOpenModalInventoryEdit-${study_id}`));
   };
   /** Ouverture de la modal delete */
   const handleOpenModalDelete = () => {    
-    dispatch(openModalDelete(`isOpenModalInventoryDelete-${inventory_id}`));    
+    dispatch(openModalDeleteStudy(`isOpenModalInventoryDelete-${study_id}`));    
   };
   /** Fermeture de la modal delete */
   const handleCloseModalDelete = () => {
-    dispatch(closeModalDelete(`isOpenModalInventoryDelete-${inventory_id}`));    
+    dispatch(closeModalDeleteStudy(`isOpenModalInventoryDelete-${study_id}`));    
   };
   /** Gestion des chanmps controlés */
   const handleChange = (e: BaseSyntheticEvent) => {
@@ -60,53 +60,58 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
       name: e.target.name,
       value: e.target.value,
     };    
-    dispatch(handleFieldChangeInEditingInventory(changePayload));    
+    dispatch(handleFieldChangeInEditingStudy(changePayload));    
   };
   /** Soumission du formulaire au back pour la modification d'un inventory */
   const handleSubmit = (e:React.FormEvent) => {
     e.preventDefault();
-    const inventory: Omit<DataInventory, 'created_at'> = {
-      inventory_id: inventory_id ,
-      name: nameValue,
-      quantity: parseInt(quantityValue, 10),
-      details: detailsValue,
+    const study: DataStudy = {
+      study_id: study_id ,
+      firstname: firstnameValue,
+      lastname: lastnameValue,
+      email: emailValue,
     };
-    dispatch(updateInventory(inventory));
+    dispatch(updateStudy(study));
     handleCloseModalEdit();
   };
   /** Demande au back la suppression d'un inventory */
   const handleDeleteInventory = () => {
-    dispatch(deleteInventory(inventory_id));
+    dispatch(deleteStudy(study_id!));
     handleCloseModalDelete();
   }
   /** Création dans le slice utilities des variable permettant l'eidtion dynamique */
   useEffect(() => {
-    const createEditingInventory:any = {
-      [`isOpenModalInventoryEdit-${inventory_id}`]: false,
-      [`isOpenModalInventoryDelete-${inventory_id}`]: false,
-      [`name-${inventory_id}`]: name,
-      [`quantity-${inventory_id}`]: quantity,
-      [`details-${inventory_id}`]: details,
+    const createEditingStudy:any = {
+      [`isOpenEditStudy-${study_id}`]: false,
+      [`isOpenDeleteStudy-${study_id}`]: false,
+      [`firstname-${study_id}`]: firstname,
+      [`lastname-${study_id}`]: lastname,
+      [`email-${study_id}`]: email,
     };
-    dispatch(addInventoryForModalEditing(createEditingInventory));
-  }, [dataInventory, details, dispatch, inventory_id, name, quantity])
+    dispatch(addStudyForModalEditing(createEditingStudy));
+  }, [dataStudy, dispatch, email, firstname, lastname, study_id])
 
   return (
     <>
       {/* ===== MODAL EDIT ===== */}
-      <Modal isOpen={isOpenEdit} onClose={handleCloseModalEdit} size={'lg'}>
+      <Modal
+        isOpen={isOpenEditStudy}
+        onClose={handleCloseModalEdit}
+        size={'2xl'}
+        isCentered
+      >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Edition de l'article</ModalHeader>
+            <ModalHeader fontSize={16} py={2.5}>Edition de l'étudiant</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <TableContainer>
-                <Table variant='striped' colorScheme='gray' size={'3xl'}>
+                <Table variant='striped' colorScheme='gray' size={'2xl'}>
                   <Thead>
                     <Tr color={'black'}>
-                      <Th width={'40%'} textAlign={'center'}>Nom</Th>
-                      <Th width={'10%'} textAlign={'center'}>Quantité</Th>
-                      <Th width={'50%'} textAlign={'center'}>Détails</Th>
+                      <Th width={'40%'} textAlign={'center'}>Prénom</Th>
+                      <Th width={'10%'} textAlign={'center'}>Nom</Th>
+                      <Th width={'50%'} textAlign={'center'}>Email</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
@@ -114,27 +119,32 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
                       <Td width={'40%'} ml={'2px'}>
                         <FormControl>
                           <Input type='text'
-                            value={nameValue}
+                            value={firstnameValue}
                             onChange={handleChange}
-                            name={`name-${inventory_id}`}
+                            name={`name-${study_id}`}
+                            fontSize={14}
                           />
                         </FormControl>
                       </Td>
                       <Td width={'10%'} textAlign={'center'}>
                         <FormControl>
                           <Input type='number'
-                            value={quantityValue}
+                            value={lastnameValue}
                             onChange={handleChange}
-                            name={`quantity-${inventory_id}`}
+                            name={`quantity-${study_id}`}
+                            fontSize={14}
+
                           />
                         </FormControl>
                       </Td>
                       <Td width={'50%'} textAlign="center">
                         <FormControl>
                           <Input type='text'
-                            value={detailsValue}
+                            value={emailValue}
                             onChange={handleChange}
-                            name={`details-${inventory_id}`}
+                            name={`details-${study_id}`}
+                            fontSize={14}
+
                           />
                         </FormControl>
                       </Td>
@@ -143,11 +153,22 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
                 </Table>
               </TableContainer>
             </ModalBody>
-            <ModalFooter>
-              <Button colorScheme='pink' mr={3} onClick={handleCloseModalEdit}>
+            <ModalFooter py={2} pt={0}>
+              <Button 
+                colorScheme='pink'
+                mr={3}
+                onClick={handleCloseModalEdit}
+                size={'sm'}
+              >
                 Annuler
               </Button>
-              <Button colorScheme="green" onClick={handleSubmit}>Confirmer</Button>
+              <Button
+                colorScheme="green"
+                onClick={handleSubmit}
+                size={'sm'}
+              >
+                Confirmer
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -155,14 +176,19 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
 
 
         {/* ===== MODAL DELETE ===== */}
-        <Modal isOpen={isOpenDelete} onClose={handleCloseModalDelete}>
+        <Modal 
+          isOpen={isOpenDeleteStudy}
+          onClose={handleCloseModalDelete}
+          size={'2xl'}
+          isCentered
+        >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Confirmer la suppression</ModalHeader>
+            <ModalHeader fontSize={16} py={2.5}>Confirmer la suppression</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <TableContainer>
-                <Table variant='striped' colorScheme='gray' size={'3xl'}>
+                <Table variant='striped' colorScheme='gray' size={'2xl'}>
                   <Thead>
                     <Tr color={'black'}>
                       <Th width={'40%'} textAlign={'center'}>Nom</Th>
@@ -172,19 +198,30 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
                   </Thead>
                   <Tbody>
                     <Tr color={'black'}>
-                      <Td width={'30%'}>{nameValue}</Td>
-                      <Td width={'10%'} textAlign={'center'}>{quantityValue}</Td>
-                      <Td width={'40%'} align='left'>{detailsValue}</Td>
+                      <Td width={'30%'} pl={4}>{firstnameValue}</Td>
+                      <Td width={'10%'} textAlign={'center'}>{lastnameValue}</Td>
+                      <Td width={'40%'} align='left' pl={4}>{emailValue}</Td>
                     </Tr>
                   </Tbody>
                 </Table>
               </TableContainer>
             </ModalBody>
-            <ModalFooter>
-              <Button colorScheme='pink' mr={3} onClick={handleCloseModalDelete}>
+            <ModalFooter py={2} pt={0}>
+              <Button
+                colorScheme='pink'
+                mr={3}
+                onClick={handleCloseModalDelete}
+                size={'sm'}
+              >
                 Annuler
               </Button>
-              <Button colorScheme="green" onClick={handleDeleteInventory}>Confirmer</Button>
+              <Button
+              colorScheme="green"
+              onClick={handleDeleteInventory}
+              size={'sm'}
+            >
+              Confirmer
+            </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -192,9 +229,9 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
 
         {/* ===== TABLE ITEM ===== */}
         <Tr color={'black'}>
-          <Td p={2} pl={4} width={'30%'}>{name}</Td>
-          <Td p={2} width={'10%'} textAlign={'center'}>{quantity}</Td>
-          <Td p={2} pl={8} width={'40%'} align='left'>{details}</Td>
+          <Td p={2} pl={4} width={'30%'}>{firstname}</Td>
+          <Td p={2} width={'10%'} textAlign={'center'}>{lastname}</Td>
+          <Td p={2} pl={8} width={'40%'} align='left'>{email}</Td>
           <Td p={2} width={'10%'} textAlign={'center'}>
             <IconButton
               onClick={handleOpenModalEdit}
@@ -220,4 +257,4 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
   );
 }
 
-export default InventoryItems;
+export default GetStudyItems;
