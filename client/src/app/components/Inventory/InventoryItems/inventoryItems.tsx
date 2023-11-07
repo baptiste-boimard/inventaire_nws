@@ -6,13 +6,14 @@ import { Button, IconButton } from "@chakra-ui/react";
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
-import { FormControl, Input } from '@chakra-ui/react'
+import { FormControl,  Input } from '@chakra-ui/react'
 
 // == IMPORT TYPE ==
 import { DataInventory, deleteInventory, updateInventory,  } from "../../../slices/inventorySlice";
 
 // == IMPORT ACTION ==
-import { handleFieldChange, 
+import { 
+  handleFieldChangeInEditingInventory, 
   addInventoryForModalEditing, 
   openModalEdit,
   closeModalEdit,
@@ -59,7 +60,7 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
       name: e.target.name,
       value: e.target.value,
     };    
-    dispatch(handleFieldChange(changePayload));    
+    dispatch(handleFieldChangeInEditingInventory(changePayload));    
   };
   /** Soumission du formulaire au back pour la modification d'un inventory */
   const handleSubmit = (e:React.FormEvent) => {
@@ -191,23 +192,25 @@ function InventoryItems ({inventory_id, name, quantity, details, created_at}: Da
 
         {/* ===== TABLE ITEM ===== */}
         <Tr color={'black'}>
-          <Td width={'30%'}>{name}</Td>
-          <Td width={'10%'} textAlign={'center'}>{quantity}</Td>
-          <Td width={'40%'} align='left'>{details}</Td>
-          <Td width={'10%'} textAlign={'center'}>
+          <Td p={2} pl={4} width={'30%'}>{name}</Td>
+          <Td p={2} width={'10%'} textAlign={'center'}>{quantity}</Td>
+          <Td p={2} pl={8} width={'40%'} align='left'>{details}</Td>
+          <Td p={2} width={'10%'} textAlign={'center'}>
             <IconButton
               onClick={handleOpenModalEdit}
               colorScheme='green'
               aria-label='Editer'
               icon={<EditIcon />}
+              size={'xs'}
               />
           </Td>
-          <Td width={'10%'} textAlign='center'>
+          <Td p={2} width={'10%'} textAlign='center'>
             <IconButton
               onClick={handleOpenModalDelete}
               colorScheme='pink'
               aria-label='Supprimer'
               icon={<DeleteIcon />}
+              size={'xs'}
               />
           </Td>
         </Tr>

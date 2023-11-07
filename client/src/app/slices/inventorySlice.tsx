@@ -32,7 +32,7 @@ export const getInventory = createAsyncThunk(
         return dispatch(getInventoryToState(response.data));
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         
       })
   }
@@ -66,6 +66,21 @@ export const updateInventory = createAsyncThunk(
       })
   }
 );
+
+/**Envoi au back un nouveau inventory */
+export const postInventory = createAsyncThunk(
+  'inventory/postInventory',
+  async(inventory: Omit<DataInventory, 'created_at' | 'inventory_id'>,
+  { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
+    await instance.post('/inventory', inventory)
+      .then((response) => {
+        dispatch(getInventory());
+      })
+      .catch((error) => {
+        // console.log(error);
+      })
+  }
+)
 
 
 const inventorySlice = createSlice({

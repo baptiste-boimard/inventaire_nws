@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface UtilitiesState {
-  inventoryName: string,
-  inventoryQuantity: string,
-  inventoryDetails: string,
+  postInventoryName: string,
+  postInventoryQuantity: number | undefined,
+  postInventoryDetails: string,
   editingInventory: any,
 };
 
 const initialState: UtilitiesState = {
-  inventoryName: '',
-  inventoryQuantity: '',
-  inventoryDetails: '',
+  postInventoryName: '',
+  postInventoryQuantity: undefined,
+  postInventoryDetails: '',
   editingInventory: {},
 
 };
@@ -20,6 +20,14 @@ const utilitiesSlice = createSlice({
   initialState,
   reducers: {
     handleFieldChange: (state, action) => {
+      return {
+        ...state,
+        [action.payload.name]: action.payload.value,
+      }
+        
+
+    },
+    handleFieldChangeInEditingInventory: (state, action) => {
       state.editingInventory = {
         ...state.editingInventory,
         [action.payload.name]: action.payload.value,
@@ -69,7 +77,9 @@ const utilitiesSlice = createSlice({
   },
 });
 
-export const { handleFieldChange,
+export const {
+    handleFieldChange,
+    handleFieldChangeInEditingInventory,
     resetInventoryState,
     addInventoryForModalEditing,
     openModalEdit,

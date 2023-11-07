@@ -6,7 +6,8 @@ import { Inventory } from '../../types/inventory';
 const dataMapperInventory = {
 
   // POST un inventaire dans la table inventory
-  async postInventory(inventory: Inventory) {    
+  async postInventory(inventory: Inventory) {  
+
     const query = {
       text: `INSERT INTO inventory
             (name, quantity, details)
@@ -14,6 +15,7 @@ const dataMapperInventory = {
             RETURNING inventory_id;`,
       values: [inventory.name, inventory.quantity, inventory.details],
     };
+    
     const data = await client.query(query)!
     if (!data) {
       throw new CustomError('L\'ajout de l\'article dans l\'inventaire a rencontré un problème');

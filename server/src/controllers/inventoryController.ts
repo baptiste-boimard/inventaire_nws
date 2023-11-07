@@ -8,16 +8,24 @@ const inventoryController = {
     //Enrengistre en BDD un nouvel article
     async postInventory(req: Request, res: Response, next: NextFunction): Promise<void> {        
         
-        if(typeof req.body.name !== 'string' || typeof req.body.quantity !== 'number' || typeof req.body.details !== 'string') {
-            throw new CustomError('Le format de données envoyé ne correpond pas');
+        const quantity = parseInt(req.body.quantity, 10);
+        
+        if (
+            typeof req.body.name !== 'string' ||
+            typeof quantity !== 'number' ||
+            typeof req.body.details !== 'string' ||
+            Number.isInteger(quantity) !== true
+        ) {
+            throw  new CustomError('Le format de données envoyé ne correpond pas');
+        } else {
         }
-
         const data: Inventory = {
             name: req.body.name,
             quantity: req.body.quantity,
             details: req.body.details,
         };        
         const inventory = await dataMapperInventory.postInventory(data);
+        
         if(inventory) {
             res.status(200).send(inventory);
         } else {
