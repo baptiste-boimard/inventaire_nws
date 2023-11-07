@@ -116,13 +116,14 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                   </Thead>
                   <Tbody>
                     <Tr color={'black'}>
-                      <Td width={'25%'} ml={'2px'} textAlign={'left'}>
+                      <Td width={'25%'} textAlign={'left'}>
                         <FormControl>
                           <Input type='text'
                             value={firstnameValue}
                             onChange={handleChange}
                             name={`firstname-${study_id}`}
-                            fontSize={14}
+                            fontSize={13}
+                            p={0}
                           />
                         </FormControl>
                       </Td>
@@ -132,8 +133,8 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                             value={lastnameValue}
                             onChange={handleChange}
                             name={`lastname-${study_id}`}
-                            fontSize={14}
-
+                            fontSize={13}
+                            p={0}
                           />
                         </FormControl>
                       </Td>
@@ -143,8 +144,8 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                             value={emailValue}
                             onChange={handleChange}
                             name={`email-${study_id}`}
-                            fontSize={14}
-
+                            fontSize={13}
+                            p={0}
                           />
                         </FormControl>
                       </Td>
@@ -167,7 +168,7 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                 onClick={handleSubmit}
                 size={'sm'}
               >
-                ConfirmertextAlign={'left'}
+                Confirmer
               </Button>
             </ModalFooter>
           </ModalContent>
@@ -197,7 +198,7 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    <Tr color={'black'}>
+                    <Tr color={'black'} fontSize={13}>
                       <Td width={'25%'} textAlign={'left'}>{firstnameValue}</Td>
                       <Td width={'25%'} textAlign={'left'}>{lastnameValue}</Td>
                       <Td width={'50%'} textAlign='left'>{emailValue}</Td>
