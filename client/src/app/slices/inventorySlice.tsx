@@ -29,6 +29,8 @@ export const getInventory = createAsyncThunk(
   async(_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     return await instance.get('/inventory')
       .then((response) => {
+        console.log(response.data);
+        
         return dispatch(getInventoryToState(response.data));
       })
       .catch((error) => {
@@ -88,7 +90,9 @@ const inventorySlice = createSlice({
   initialState,
   reducers: {
     /** Charge les données de la BDD dans le state dataInventory */
-    getInventoryToState: (state, action) => {      
+    getInventoryToState: (state, action) => {   
+      console.log(action.payload);
+         
         state.dataInventory = action.payload;
     },
   },
