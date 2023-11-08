@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL:'http://localhost:3040',
+  baseURL: process.env.URL_SERVER,
 })
 
 export interface DataStudy {

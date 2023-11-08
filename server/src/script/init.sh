@@ -1,5 +1,5 @@
 # 0. je prends l'identité de postgres
-export PGUSER=postgres
+export PGUSER=mamairieV2
 
 # 1. Création d'un utilisateur en BDD (with login)
 createuser nwsinventory --login --password
