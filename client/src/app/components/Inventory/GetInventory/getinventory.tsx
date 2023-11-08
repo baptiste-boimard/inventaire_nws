@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { useEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 
 // == IMPORT CHAKRA UI ==
 import { Box, Center, Flex, Text} from '@chakra-ui/react'
@@ -54,7 +54,7 @@ function GetInventory () {
               </Tr>
             </Thead>
             <Tbody>
-              {dataInventory.map((inventoryItem) => <GetInventoryItems key={inventoryItem.inventory_id} {...inventoryItem} />)}
+              {dataInventory.map((inventoryItem) => <GetInventoryItems key={inventoryItem.inventory_id} {...inventoryItem} />) as any}
             </Tbody>
           </Table>
         </TableContainer>

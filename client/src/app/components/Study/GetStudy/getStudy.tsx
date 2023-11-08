@@ -53,7 +53,7 @@ function GetStudy () {
               </Tr>
             </Thead>
             <Tbody>
-              {dataStudy.map((studyItems) => <GetStudyItems key={studyItems.study_id} {...studyItems} />)}
+              {dataStudy.map((studyItems) => <GetStudyItems key={studyItems.study_id} {...studyItems} />) as any}
             </Tbody>
           </Table>
         </TableContainer>
