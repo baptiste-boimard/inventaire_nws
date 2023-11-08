@@ -17,7 +17,6 @@ function GetStudy () {
   
   
   useEffect(() => {
-    console.log(dataStudy);
     dispatch(getStudy());
   }, [dispatch]);
   
