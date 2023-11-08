@@ -1,0 +1,10 @@
+{
+  "apps" : [
+    {
+      "name"      : "server_inventory_nws",
+      "script"    : "./dist/index.js",
+      "interpreter": "none",
+      "args": "serve -s build -p 3040"
+    }
+  ]
+}
