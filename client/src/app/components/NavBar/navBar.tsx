@@ -51,18 +51,24 @@ function NavBar () {
         </h2>
         <AccordionPanel pb={4} >
         <List spacing={3} display='flex' flexDirection='column' alignContent='flex-start' p='0px'>
-          <ListItem textAlign='left' fontSize='0.7em'>
-            <ListIcon as={SmallAddIcon} color='white' />
-            En cours
-          </ListItem>
-          <ListItem textAlign='left' fontSize='0.7em'>
-            <ListIcon as={SmallAddIcon} color='white' />
-            Délai cours
-          </ListItem>
-          <ListItem textAlign='left' fontSize='0.7em'>
-            <ListIcon as={SmallAddIcon} color='white' />
-            Cloturés
-          </ListItem>
+          <NavLink to={'/loaninprogress'}>
+            <ListItem textAlign='left' fontSize='0.7em'>
+              <ListIcon as={SmallAddIcon} color='white' />
+              En cours
+            </ListItem>
+          </NavLink>
+          <NavLink to={'/loanshorttime'}>
+            <ListItem textAlign='left' fontSize='0.7em'>
+              <ListIcon as={SmallAddIcon} color='white' />
+              Délai cours
+            </ListItem>
+          </NavLink>
+          <NavLink to={'/loanenclosed'}>
+            <ListItem textAlign='left' fontSize='0.7em'>
+              <ListIcon as={SmallAddIcon} color='white' />
+              Cloturés
+            </ListItem>
+          </NavLink>
         </List>
         </AccordionPanel>
       </AccordionItem>

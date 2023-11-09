@@ -7,6 +7,7 @@ export interface UtilitiesState {
   postStudyFirstname: string,
   postStudyLastname: string,
   postStudyEmail: string,
+  postLoanQuantity: number | undefined,
   editingInventory: any,
   editingStudy: any,
 };
@@ -18,6 +19,7 @@ const initialState: UtilitiesState = {
   postStudyFirstname: '',
   postStudyLastname: '',
   postStudyEmail: '',
+  postLoanQuantity: undefined,
   editingInventory: {},
   editingStudy: {},
   

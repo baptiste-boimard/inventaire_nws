@@ -4,7 +4,7 @@ BEGIN;
 
 SELECT "inventory_id", "name", "quantity", "details", "created_at","updated_at" FROM inventory;
 SELECT "study_id", "firstname", "lastname", "email", "created_at", "updated_at" FROM loan;
-SELECT "loan_id", "inventory_id", "study_id", "created_at", "updated_at" FROM study;
+SELECT "loan_id", "inventory_id", "study_id", "quantity", "enclose", "created_at", "updated_at" FROM study;
 
 
 ROLLBACK;

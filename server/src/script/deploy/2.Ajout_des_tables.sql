@@ -36,18 +36,20 @@ CREATE TABLE IF NOT EXISTS public.loan (
   "study_id" INT NOT NULL, 
   "loaning_date" DATE NOT NULL,
   "due_date" DATE NOT NULL,
+  "quantity" INT NOT NULL,
+  "enclose" BOOLEAN NOT NULL DEFAULT false,
   "created_at" TIMESTAMPTZ DEFAULT NOW(),
   "updated_at" TIMESTAMPTZ,
   CONSTRAINT loan_id_pk PRIMARY KEY (loan_id),
   CONSTRAINT inventory_id_fk FOREIGN KEY (inventory_id)
     REFERENCES public.inventory (inventory_id) MATCH SIMPLE
     ON UPDATE NO ACTION
-    ON DELETE CASCADE
+    ON DELETE
     NOT VALID,
   CONSTRAINT study_id_fk FOREIGN KEY (study_id)
   REFERENCES public.study (study_id) MATCH SIMPLE
   ON UPDATE NO ACTION
-  ON DELETE CASCADE
+  ON DELETE
   NOT VALID
 );
 

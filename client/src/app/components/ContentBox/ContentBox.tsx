@@ -1,4 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks';
+import { useEffect } from 'react';
 
 // == IMPORT CHAKRA UI ==
 import { Box } from '@chakra-ui/react';
@@ -10,8 +12,11 @@ import nws_logo from '../../docs/nws_logo.png';
 // == IMPORT COMPONENTS ==
 import Inventory from '../Inventory/inventory';
 import Study from '../Study/study';
-import { useAppDispatch } from '../../hooks';
-import { useEffect } from 'react';
+import LoanInProgress from '../Loan/LoanInProgress/loanInProgress';
+import LoanShortTime from '../Loan/LoanShortTime/loanShortTIme';
+import LoanEnclosed from '../Loan/LoanEnclosed/loanEnclosed';
+
+// == IMPORT ACTION ==
 import { getStudy } from '../../slices/studySlice';
 import { getInventory } from '../../slices/inventorySlice';
 
@@ -31,6 +36,9 @@ function ContentBox () {
       <Routes>
         <Route path='/inventory' element={<Inventory />} />
         <Route path='/study' element={<Study />} />
+        <Route path='/loaninprogress' element={<LoanInProgress />} />
+        <Route path='/loanshorttime' element={<LoanShortTime />} />
+        <Route path='/loanenclosed' element={<LoanEnclosed />} />
       </Routes>
     </Box>
   );

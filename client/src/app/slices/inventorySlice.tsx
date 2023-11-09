@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: 'http://51.75.133.155:3040',
-})
+  baseURL: process.env.REACT_APP_URL_SERVER
+});
 
 export interface DataInventory {
   inventory_id?: number,
@@ -92,7 +92,6 @@ const inventorySlice = createSlice({
     /** Charge les données de la BDD dans le state dataInventory */
     getInventoryToState: (state, action) => {   
       console.log(action.payload);
-         
         state.dataInventory = action.payload;
     },
   },
