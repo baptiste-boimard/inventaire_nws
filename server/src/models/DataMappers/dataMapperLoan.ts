@@ -52,7 +52,7 @@ const dataMapperLoan = {
     if (!data) {
       throw new CustomError('Impossible de récupérer les données de  l\'emprunt');
     }   
-    return data.rows[0];
+    return data.rows;
   },
   //Récupére un étudiant dans la base study
   async getOneLoan(id: number) {

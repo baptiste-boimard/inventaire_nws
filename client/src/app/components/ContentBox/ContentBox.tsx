@@ -19,6 +19,7 @@ import LoanEnclosed from '../Loan/LoanEnclosed/loanEnclosed';
 // == IMPORT ACTION ==
 import { getStudy } from '../../slices/studySlice';
 import { getInventory } from '../../slices/inventorySlice';
+import { getLoan } from '../../slices/loanSlice';
 
 
 function ContentBox () {
@@ -27,6 +28,7 @@ function ContentBox () {
   useEffect(() => {
     dispatch(getStudy());
     dispatch(getInventory());
+    dispatch(getLoan());
   }, [dispatch])
   return (
     <Box bg='white' w='100%' p={4} pt={0} color='white' overflow={'visible'}>

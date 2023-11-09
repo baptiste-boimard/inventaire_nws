@@ -82,10 +82,10 @@ function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_
   /** Soumission du formulaire au back pour la modification d'un loan */
   const handleSubmit = (e:React.FormEvent) => {
     e.preventDefault();
-    const loan: Partial<DataLoan> = {
-      loan_id: loan_id as number,
+    const loan: DataLoan = {
+      loan_id: loan_id,
       inventory_id: inventoryIdValue!,
-      study_id: studyIdValue!,
+      study_id: studyIdValue,
       quantity: quantityValue,
       loaning_date: loaningDateValue,
       due_date: dueDateValue,

@@ -7,11 +7,11 @@ const instance = axios.create({
 
 export interface DataLoan {
   loan_id?: number,
-  inventory_id: number,
+  inventory_id: number | undefined,
   study_id: number,
   quantity: number,
-  loaning_date: Date,
-  due_date: Date,
+  loaning_date?: Date,
+  due_date?: Date,
   enclose?: boolean,
 };
 
@@ -31,7 +31,7 @@ export const getLoan = createAsyncThunk(
   async(_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     return await instance.get('/loan')
       .then((response) => {
-        console.log(response.data);         
+        console.log('getLoan',response.data);         
         
         return dispatch(getLoanToState(response.data));
       })
