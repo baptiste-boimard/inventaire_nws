@@ -15,8 +15,11 @@ import {
   Button,
   Select,
 } from '@chakra-ui/react';
-import { handleFieldChange } from '../../../slices/utilitiesSlice';
+
+// == IMPORT TYPE AND ACTION ==
+import { editPostLoanIdInventory, editPostLoanIdStudy, handleFieldChange } from '../../../slices/utilitiesSlice';
 import { DataLoan, postLoan } from '../../../slices/loanSlice';
+import { DataInventory, updateInventory } from '../../../slices/inventorySlice';
 
 function PostLoan () {
   const dispatch = useAppDispatch();
@@ -24,7 +27,7 @@ function PostLoan () {
   // CALL STORE //
   const { dataInventory } = useAppSelector(state => state.inventoryReducer);
   const { dataStudy } = useAppSelector(state => state.studyReducer);
-  const { postLoanQuantity } = useAppSelector(state => state.utilitiesReducer);
+  const { postLoanQuantity, postLoanIdInventory, postLoanidStudy } = useAppSelector(state => state.utilitiesReducer);
 
   // == ACTION ==
   const handleChange = (e: BaseSyntheticEvent) => {
@@ -36,18 +39,32 @@ function PostLoan () {
     dispatch(handleFieldChange(changePayload));
   };
   const handleChangeInventorySelect = (e: BaseSyntheticEvent) => { 
-    console.log(e.target.closest('.'));
-    
+    const id = e.target.options[e.target.selectedIndex].id;    
+    dispatch(editPostLoanIdInventory(id));
+  };
+  const handleChangeStudySelect = (e: BaseSyntheticEvent) => { 
+    const id = e.target.options[e.target.selectedIndex].id;
+    dispatch(editPostLoanIdStudy(id));
   };
   const handleSubmit = (e : BaseSyntheticEvent) => {
-    e.preventDefault();
-    
+    e.preventDefault();    
     const postLoanData: DataLoan = {
-      inventory_id: 1,
-      study_id: 1,
-      quantity: postLoanQuantity!,
-    }
+      inventory_id: postLoanIdInventory!,
+      study_id: postLoanidStudy!,
+      quantity: parseInt(`${postLoanQuantity}`, 10),
+    };
+    const object = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
+    console.log('object',object);  
+    const updateInventoryData: Partial<DataInventory>= {
+      inventory_id: postLoanIdInventory!,
+      name: object!.name,
+      quantity: (object!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
+      details: object!.details,
+    };
+    console.log(updateInventoryData);
+    
     dispatch(postLoan(postLoanData));
+    dispatch(updateInventory(updateInventoryData));
   };
 
   return (
@@ -69,9 +86,9 @@ function PostLoan () {
           >
             <Thead>
               <Tr color={'black'}>
-                <Th p={2} width={'20%'} align={'left'}>Etudiant</Th>
-                <Th p={2} width={'20%'} textAlign={'left'}>Matériel</Th>
-                <Th p={2} width={'40%'} align={'left'}>Quantity</Th>
+                <Th p={2} width={'20%'} align={'left'}>Matériel</Th>
+                <Th p={2} width={'20%'} textAlign={'left'}>Etudiant</Th>
+                <Th p={2} width={'40%'} align={'left'}>Quantité</Th>
                 <Th p={1} width={'20%'} textAlign={'center'}></Th>
               </Tr>
             </Thead>
@@ -79,9 +96,12 @@ function PostLoan () {
               <Tr color={'black'} fontSize={13} borderRadius={'30px'}>
                 <Td p={2}>
                 <FormControl>
-                    <Select onChange={handleChangeInventorySelect}>
+                    <Select 
+                      onChange={handleChangeInventorySelect}
+                      placeholder='Séléctionnez'
+                    >
                       {dataInventory.map((inventoryItem)=> 
-                        <option key={inventoryItem.inventory_id}>
+                        <option key={inventoryItem.inventory_id} id={`${inventoryItem.inventory_id}`} >
                           {`${inventoryItem.name}  (${inventoryItem.quantity})`}
                         </option>)}
                     </Select>
@@ -89,9 +109,12 @@ function PostLoan () {
                 </Td>
                 <Td p={2}>
                   <FormControl>
-                    <Select>
+                    <Select
+                      onChange={handleChangeStudySelect}
+                      placeholder='Séléctionnez'
+                    >
                       {dataStudy.map((studyItem =>
-                      <option key={studyItem.study_id}>
+                      <option key={studyItem.study_id} id={`${studyItem.study_id}`}>
                         {`${studyItem.firstname}  ${studyItem.lastname}`}
                       </option>))}
                     </Select>

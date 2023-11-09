@@ -19,27 +19,30 @@ const loanController = {
     //Enrengistre en BDD un nouvel emprunt
     async postLoan(req: Request, res: Response, next: NextFunction): Promise<void> {        
                 
-        const inventory_id: number = parseInt(req.params.inventory_id);
-        const study_id: number = parseInt(req.params.study_id);
+        const inventory_id: number = parseInt(req.params.inventory_id, 10);
+        const study_id: number = parseInt(req.params.study_id, 10);
+        const quantity: number = parseInt(req.body.quantity, 10)
         
         //Test si la date est conforme, si elle ne l'ai pas new Date donne l'année 1970
-        const testedDate = (new Date(req.body.loaning_date)).getFullYear();
-        if(testedDate === 1970) {
-          
-          throw new CustomError('La date n\'est pas conforme')
-        }
+        // const testedDate = (new Date(req.body.loaning_date)).getFullYear();
+        // if(testedDate === 1970) {
+        //     throw new CustomError('La date n\'est pas conforme')
+        // }
         
 
-        const loaning_date: Date = new Date(req.body.loaning_date) || new Date;
-        const due_date: Date = dateAddMonths(1, new Date(req.body.loaning_date) || new Date);
+        const loaning_date: Date = new Date;
+        
+        // const loaning_date: Date = new Date(req.body.loaning_date) || new Date;
+        const due_date: Date = dateAddMonths(1, new Date);
 
 
         const data: Loan = {
             inventory_id: inventory_id,
             study_id: study_id,
+            quantity: quantity,
             loaning_date: loaning_date,
             due_date: due_date,
-        };        
+        };                
         
         const loan = await dataMapperLoan.postLoan(data);
         
@@ -66,7 +69,8 @@ const loanController = {
 
         const data: Loan = {
           inventory_id: parseInt(req.body.inventory_id, 10),
-          study_id: parseInt(req.body.study_id),
+          study_id: parseInt(req.body.study_id, 10),
+          quantity: parseInt(req.body.quantity, 10),
           loaning_date: loaning_date,
           due_date: due_date,
       };        

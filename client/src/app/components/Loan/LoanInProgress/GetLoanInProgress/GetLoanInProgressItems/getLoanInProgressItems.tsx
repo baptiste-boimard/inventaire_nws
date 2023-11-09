@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../../hooks";
 import { BaseSyntheticEvent, useEffect } from "react";
 
 // == IMPORT CHAKRA UI ==
@@ -26,49 +26,49 @@ import {
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 
 // == IMPORT TYPE ==
-import { DataInventory, deleteInventory, updateInventory,  } from "../../../slices/inventorySlice";
+import { DataLoan, deleteLoan, updateLoan,  } from "../../../../../slices/loanSlice";
 
 // == IMPORT ACTION ==
 import { 
-  handleFieldChangeInEditingInventory, 
-  addInventoryForModalEditing, 
-  openModalEdit,
-  closeModalEdit,
-  openModalDelete,
-  closeModalDelete,
-} from "../../../slices/utilitiesSlice";
+  handleFieldChangeInEditingLoan, 
+  addLoanForModalEditing, 
+  openModalEditLoan,
+  closeModalEditLoan,
+  openModalDeleteLoan,
+  closeModalDeleteLoan,
+} from "../../../../../slices/utilitiesSlice";
 
-
-
-function GetInventoryItems ({inventory_id, name, quantity, details }: DataInventory ) {
+function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_date, due_date, enclose}: DataLoan) {
   const dispatch = useAppDispatch();
 
   // == CALL STORE ==
-  const { dataInventory } = useAppSelector(state => state.inventoryReducer);
-  const {  editingInventory } = useAppSelector(state => state.utilitiesReducer);
+  const { dataLoan } = useAppSelector(state => state.loanReducer);
+  const {  editingLoan } = useAppSelector(state => state.utilitiesReducer);
   
-  const nameValue: any = editingInventory[`name-${inventory_id}` as any];
-  const quantityValue: any = editingInventory[`quantity-${inventory_id}` as any];
-  const detailsValue: any = editingInventory[`details-${inventory_id}` as any];
-  const isOpenEdit: any = editingInventory[`isOpenModalInventoryEdit-${inventory_id}` as any];
-  const isOpenDelete: any = editingInventory[`isOpenModalInventoryDelete-${inventory_id}` as any];
+  const inventoryIdValue: any = editingLoan[`inventory_id-${loan_id}` as any];
+  const studyIdValue: any = editingLoan[`study_id-${loan_id}` as any];
+  const quantityValue: any = editingLoan[`quantityLoan-${loan_id}` as any];
+  const loaningDateValue: any = editingLoan[`loaningDate-${loan_id}` as any];
+  const dueDateValue: any = editingLoan[`dueDate-${loan_id}` as any];
+  const isOpenEdit: any = editingLoan[`isOpenModalLoanEdit-${loan_id}` as any];
+  const isOpenDelete: any = editingLoan[`isOpenModalLoanDelete-${loan_id}` as any];
 
   // == ACTION ==
   /** Ouverture de la modal Edit */
   const handleOpenModalEdit = () => {
-    dispatch(openModalEdit(`isOpenModalInventoryEdit-${inventory_id}`));    
+    dispatch(openModalEditLoan(`isOpenModalLoanEdit-${loan_id}`));    
   };
   /** Fermeture de la modal Edit */
   const handleCloseModalEdit = () => {
-    dispatch(closeModalEdit(`isOpenModalInventoryEdit-${inventory_id}`));
+    dispatch(closeModalEditLoan(`isOpenModalLoanEdit-${loan_id}`));
   };
   /** Ouverture de la modal delete */
   const handleOpenModalDelete = () => {    
-    dispatch(openModalDelete(`isOpenModalInventoryDelete-${inventory_id}`));    
+    dispatch(openModalDeleteLoan(`isOpenModalLoanDelete-${loan_id}`));    
   };
   /** Fermeture de la modal delete */
   const handleCloseModalDelete = () => {
-    dispatch(closeModalDelete(`isOpenModalInventoryDelete-${inventory_id}`));    
+    dispatch(closeModalDeleteLoan(`isOpenModalLoanDelete-${loan_id}`));    
   };
   /** Gestion des chanmps controlés */
   const handleChange = (e: BaseSyntheticEvent) => {
@@ -77,37 +77,40 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
       name: e.target.name,
       value: e.target.value,
     };    
-    dispatch(handleFieldChangeInEditingInventory(changePayload));    
+    dispatch(handleFieldChangeInEditingLoan(changePayload));    
   };
-  /** Soumission du formulaire au back pour la modification d'un inventory */
+  /** Soumission du formulaire au back pour la modification d'un loan */
   const handleSubmit = (e:React.FormEvent) => {
     e.preventDefault();
-    const inventory: Omit<DataInventory, 'created_at'> = {
-      inventory_id: inventory_id ,
-      name: nameValue,
-      quantity: parseInt(quantityValue, 10),
-      details: detailsValue,
+    const loan: Partial<DataLoan> = {
+      loan_id: loan_id as number,
+      inventory_id: inventoryIdValue!,
+      study_id: studyIdValue!,
+      quantity: quantityValue,
+      loaning_date: loaningDateValue,
+      due_date: dueDateValue,
     };
-    dispatch(updateInventory(inventory));
+    dispatch(updateLoan(loan));
     handleCloseModalEdit();
   };
   /** Demande au back la suppression d'un inventory */
   const handleDeleteInventory = () => {
-    dispatch(deleteInventory(inventory_id!));
+    dispatch(deleteLoan(loan_id!));
     handleCloseModalDelete();
   }
   /** Création dans le slice utilities des variable permettant l'eidtion dynamique */
   useEffect(() => {
-    const createEditingInventory:any = {
-      [`isOpenModalInventoryEdit-${inventory_id}`]: false,
-      [`isOpenModalInventoryDelete-${inventory_id}`]: false,
-      [`name-${inventory_id}`]: name,
-      [`quantity-${inventory_id}`]: quantity,
-      [`details-${inventory_id}`]: details,
+    const createEditingLoan:any = {
+      [`isOpenModalLoanEdit-${loan_id}`]: false,
+      [`isOpenModalLoanDelete-${loan_id}`]: false,
+      [`inventory_id-${loan_id}`]: inventory_id,
+      [`study_id-${loan_id}`]: study_id,
+      [`quantityLoan-${loan_id}`]: quantity,
+      [`loaning_date-${loan_id}`]: loaning_date,
+      [`due_date-${loan_id}`]: due_date,
     };
-    dispatch(addInventoryForModalEditing(createEditingInventory));
-  }, [dataInventory, details, dispatch, inventory_id, name, quantity])
-
+    dispatch(addLoanForModalEditing(createEditingLoan));
+  }, [dispatch, due_date, inventory_id, loan_id, loaning_date, quantity, study_id])
   return (
     <>
       {/* ===== MODAL EDIT ===== */}
@@ -119,16 +122,18 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
       >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader fontSize={16} py={2.5}>Edition de l'article</ModalHeader>
+            <ModalHeader fontSize={16} py={2.5}>Edition du prêt</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <TableContainer>
                 <Table variant='striped' colorScheme='gray' size={'2xl'}>
                   <Thead>
                     <Tr color={'black'}>
-                      <Th width={'40%'} textAlign={'center'}>Nom</Th>
-                      <Th width={'10%'} textAlign={'center'}>Quantité</Th>
-                      <Th width={'50%'} textAlign={'center'}>Détails</Th>
+                      <Th width={'40%'} textAlign={'center'}>Matériel</Th>
+                      <Th width={'10%'} textAlign={'center'}>Etudiant</Th>
+                      <Th width={'50%'} textAlign={'center'}>Quantité</Th>
+                      <Th width={'50%'} textAlign={'center'}>Date d'emprunt</Th>
+                      <Th width={'50%'} textAlign={'center'}>Date de rendu</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
@@ -136,9 +141,19 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
                       <Td width={'40%'} ml={'2px'}>
                         <FormControl>
                           <Input type='text'
-                            value={nameValue}
+                            value={inventoryIdValue}
                             onChange={handleChange}
-                            name={`name-${inventory_id}`}
+                            name={`inventory_id-${loan_id}`}
+                            fontSize={14}
+                          />
+                        </FormControl>
+                      </Td>
+                      <Td width={'40%'} ml={'2px'}>
+                        <FormControl>
+                          <Input type='text'
+                            value={studyIdValue}
+                            onChange={handleChange}
+                            name={`study_id-${loan_id}`}
                             fontSize={14}
                           />
                         </FormControl>
@@ -148,7 +163,7 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
                           <Input type='number'
                             value={quantityValue}
                             onChange={handleChange}
-                            name={`quantity-${inventory_id}`}
+                            name={`quantityLoan-${loan_id}`}
                             fontSize={14}
 
                           />
@@ -156,10 +171,21 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
                       </Td>
                       <Td width={'50%'} textAlign="center">
                         <FormControl>
-                          <Input type='text'
-                            value={detailsValue}
+                          <Input type='date'
+                            value={loaningDateValue}
                             onChange={handleChange}
-                            name={`details-${inventory_id}`}
+                            name={`loaning_date-${loan_id}`}
+                            fontSize={14}
+
+                          />
+                        </FormControl>
+                      </Td>
+                      <Td width={'50%'} textAlign="center">
+                        <FormControl>
+                          <Input type='date'
+                            value={dueDateValue}
+                            onChange={handleChange}
+                            name={`due_date-${loan_id}`}
                             fontSize={14}
 
                           />
@@ -208,16 +234,20 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
                 <Table variant='striped' colorScheme='gray' size={'2xl'}>
                   <Thead>
                     <Tr color={'black'}>
-                      <Th width={'40%'} textAlign={'center'}>Nom</Th>
-                      <Th width={'10%'} textAlign={'center'}>Quantité</Th>
-                      <Th width={'50%'} textAlign={'center'}>Détails</Th>
+                    <Th width={'40%'} textAlign={'center'}>Matériel</Th>
+                      <Th width={'10%'} textAlign={'center'}>Etudiant</Th>
+                      <Th width={'50%'} textAlign={'center'}>Quantité</Th>
+                      <Th width={'50%'} textAlign={'center'}>Date d'emprunt</Th>
+                      <Th width={'50%'} textAlign={'center'}>Date de rendu</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     <Tr color={'black'}>
-                      <Td width={'30%'} pl={4}>{nameValue}</Td>
+                      <Td width={'30%'} pl={4}>{inventoryIdValue}</Td>
+                      <Td width={'30%'} pl={4}>{studyIdValue}</Td>
                       <Td width={'10%'} textAlign={'center'}>{quantityValue}</Td>
-                      <Td width={'40%'} align='left' pl={4}>{detailsValue}</Td>
+                      <Td width={'40%'} align='left' pl={4}>{loaningDateValue}</Td>
+                      <Td width={'40%'} align='left' pl={4}>{dueDateValue}</Td>
                     </Tr>
                   </Tbody>
                 </Table>
@@ -246,9 +276,11 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
 
         {/* ===== TABLE ITEM ===== */}
         <Tr color={'black'}>
-          <Td p={2} pl={4} width={'30%'}>{name}</Td>
-          <Td p={2} width={'10%'} textAlign={'center'}>{quantity}</Td>
-          <Td p={2} pl={8} width={'40%'} align='left'>{details}</Td>
+          <Td p={2} pl={4} width={'30%'}>{inventoryIdValue}</Td>
+          <Td p={2} pl={4} width={'30%'}>{studyIdValue}</Td>
+          <Td p={2} width={'10%'} textAlign={'center'}>{quantityValue}</Td>
+          <Td p={2} pl={8} width={'40%'} align='left'>{loaningDateValue}</Td>
+          <Td p={2} pl={8} width={'40%'} align='left'>{dueDateValue}</Td>
           <Td p={2} width={'10%'} textAlign={'center'}>
             <IconButton
               onClick={handleOpenModalEdit}
@@ -271,7 +303,7 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
         {/* ===== TABLE ITEM ===== */}
 
     </>
-  );
+    );
 }
 
-export default GetInventoryItems;
+export default GetLoanInProgress;

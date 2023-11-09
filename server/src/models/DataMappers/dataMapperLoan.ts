@@ -5,15 +5,16 @@ import { Loan } from '../../types/loan';
 const dataMapperLoan = {
 
   //Enrengistre un emprunt dans la table loan
-  async postLoan(loan: Loan) {        
+  async postLoan(loan: Loan) {   
     const query = {
       text: `INSERT INTO loan
-            (inventory_id, study_id, loaning_date, due_date)
-            VALUES ($1, $2, $3, $4)
+            (inventory_id, study_id, quantity, loaning_date, due_date)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING loan_id;`,
-      values: [loan.inventory_id, loan.study_id, loan.loaning_date, loan.due_date],
+      values: [loan.inventory_id, loan.study_id, loan.quantity, loan.loaning_date, loan.due_date],
     };
-    const data = await client.query(query)!
+    const data = await client.query(query);
+    
     if (!data) {
       throw new CustomError('L\'ajout de l\'emprunt a rencontré un problème');
     }

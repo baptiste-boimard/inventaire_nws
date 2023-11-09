@@ -10,13 +10,12 @@ export interface DataInventory {
   name: string,
   details: string,
   quantity: number,
-  created_at: string,
-}
+};
 
 interface InventoryState {
   dataInventory: Array<DataInventory>,
   dataInventoryDefault: Array<DataInventory>,
-}
+};
 
 const initialState: InventoryState = {
   dataInventory: [],
@@ -58,7 +57,7 @@ export const deleteInventory = createAsyncThunk(
 /** Demande au back de mettre à jour l'inventory */
 export const updateInventory = createAsyncThunk(
   'inventory/updateInventory',
-  async(inventory: Omit<DataInventory, 'created_at'>, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
+  async(inventory: Partial<DataInventory>, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     await instance.patch(`/inventory/${inventory.inventory_id}`, inventory)
       .then(() => {
         dispatch(getInventory());
