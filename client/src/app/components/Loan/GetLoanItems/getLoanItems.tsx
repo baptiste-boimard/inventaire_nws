@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { BaseSyntheticEvent, useEffect } from "react";
+import { useEffect } from "react";
 
 // == IMPORT CHAKRA UI ==
 import { 
@@ -19,11 +19,9 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  FormControl,
-  Input,
 } from '@chakra-ui/react'
 
-import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import { EmailIcon, CheckCircleIcon } from '@chakra-ui/icons';
 
 // == IMPORT ACTION AND TYPE ==
 import { 
@@ -31,17 +29,14 @@ import {
   Relaunch,
   deleteLoan,
   studyRelaunch,
-  updateLoan,
 } from "../../../slices/loanSlice";
 
 import { 
-  handleFieldChangeInEditingLoan, 
   addLoanForModalEditing, 
-  openModalEditLoan,
-  closeModalEditLoan,
   openModalDeleteLoan,
   closeModalDeleteLoan,
 } from "../../../slices/utilitiesSlice";
+import { DataInventory, updateInventory } from "../../../slices/inventorySlice";
 
 function GetLoanInProgress (
   {
@@ -53,6 +48,7 @@ function GetLoanInProgress (
     due_date,
     firstname,
     name,
+    details,
     lastname,
     loan_quantity,
     email,
@@ -61,6 +57,7 @@ function GetLoanInProgress (
   const dispatch = useAppDispatch();
 
   // == CALL STORE ==
+  const { dataLoan } = useAppSelector(state =>  state.loanReducer);
   const {  editingLoan } = useAppSelector(state => state.utilitiesReducer);
   
   const inventoryValue: any = editingLoan[`inventory_name-${loan_id}` as any];
@@ -79,17 +76,24 @@ function GetLoanInProgress (
   const handleCloseModalDelete = () => {
     dispatch(closeModalDeleteLoan(`isOpenModalLoanDelete-${loan_id}`));    
   };
-  /** Gestion des chanmps controlés */
-  const handleChange = (e: BaseSyntheticEvent) => {
-    e.preventDefault(); 
-    const changePayload = {
-      name: e.target.name,
-      value: e.target.value,
-    };    
-    dispatch(handleFieldChangeInEditingLoan(changePayload));    
-  };
+  // /** Gestion des chanmps controlés */
+  // const handleChange = (e: BaseSyntheticEvent) => {
+  //   e.preventDefault(); 
+  //   const changePayload = {
+  //     name: e.target.name,
+  //     value: e.target.value,
+  //   };    
+  //   dispatch(handleFieldChangeInEditingLoan(changePayload));    
+  // };
   /** Demande au back la suppression d'un loan */
-  const handleDeleteInventory = () => {
+  const handleReturnInventory = () => {
+    const returnInventory: Partial<DataInventory> = {
+      inventory_id: inventory_id,
+      name: name,
+      quantity: (quantity! + loan_quantity!),
+      details: details,
+    };
+    dispatch(updateInventory(returnInventory))
     dispatch(deleteLoan(loan_id!));
     handleCloseModalDelete();
   };
@@ -106,9 +110,7 @@ function GetLoanInProgress (
     dispatch(studyRelaunch(relaunch));
   };
   /** Création dans le slice utilities des variable permettant l'edition dynamique */
-  useEffect(() => {
-    console.log(quantity);
-    
+  useEffect(() => {    
     const createEditingLoan:any = {
       [`isOpenModalLoanDelete-${loan_id}`]: false,
       [`inventory_name-${loan_id}`]: name,
@@ -118,7 +120,7 @@ function GetLoanInProgress (
       [`due_date-${loan_id}`]: due_date,
     }; 
     dispatch(addLoanForModalEditing(createEditingLoan));
-  }, [dispatch, due_date, firstname, inventory_id, lastname, loan_id, loan_quantity, loaning_date, name, quantity])
+  }, [dataLoan, dispatch, quantity, loan_id, name, firstname, lastname, loan_quantity, loaning_date, due_date])
   return (
     <>
         {/* ===== MODAL DELETE ===== */}
@@ -130,27 +132,27 @@ function GetLoanInProgress (
         >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader fontSize={16} py={2.5}>Confirmer la suppression</ModalHeader>
+            <ModalHeader fontSize={16} py={2.5}>Confirmer la clôture du prêt</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <TableContainer>
                 <Table variant='striped' colorScheme='gray' size={'2xl'}>
                   <Thead>
                     <Tr color={'black'}>
-                    <Th width={'40%'} textAlign={'center'}>Matériel</Th>
-                      <Th width={'10%'} textAlign={'center'}>Etudiant</Th>
-                      <Th width={'50%'} textAlign={'center'}>Quantité</Th>
-                      <Th width={'50%'} textAlign={'center'}>Date d'emprunt</Th>
-                      <Th width={'50%'} textAlign={'center'}>Date de rendu</Th>
+                    <Th width={'20%'} textAlign={'left'}>Matériel</Th>
+                      <Th width={'20%'} textAlign={'left'}>Etudiant</Th>
+                      <Th width={'10%'} textAlign={'center'}>Quantité</Th>
+                      <Th width={'15%'} textAlign={'center'}>Date d'emprunt</Th>
+                      <Th width={'15%'} textAlign={'center'}>Date de rendu</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     <Tr color={'black'}>
-                      <Td width={'30%'} pl={4}>{inventoryValue}</Td>
-                      <Td width={'30%'} pl={4}>{studyValue}</Td>
+                      <Td width={'20%'}>{inventoryValue}</Td>
+                      <Td width={'20%'}>{studyValue}</Td>
                       <Td width={'10%'} textAlign={'center'}>{quantityValue}</Td>
-                      <Td width={'40%'} align='left' pl={4}>{loaningDateValue}</Td>
-                      <Td width={'40%'} align='left' pl={4}>{dueDateValue}</Td>
+                      <Td width={'15%'} textAlign='center'>{loaningDateValue}</Td>
+                      <Td width={'15%'} textAlign='center'>{dueDateValue}</Td>
                     </Tr>
                   </Tbody>
                 </Table>
@@ -167,7 +169,7 @@ function GetLoanInProgress (
               </Button>
               <Button
               colorScheme="green"
-              onClick={handleDeleteInventory}
+              onClick={handleReturnInventory}
               size={'sm'}
             >
               Confirmer
@@ -187,18 +189,18 @@ function GetLoanInProgress (
           <Td p={2} width={'10%'} textAlign={'center'}>
             <IconButton
               onClick={handleRelaunch}
-              colorScheme='green'
-              aria-label='Editer'
-              icon={<EditIcon />}
+              colorScheme='pink'
+              aria-label='Relancer'
+              icon={<EmailIcon />}
               size={'xs'}
               />
           </Td>
           <Td p={2} width={'10%'} textAlign='center'>
             <IconButton
               onClick={handleOpenModalDelete}
-              colorScheme='pink'
-              aria-label='Supprimer'
-              icon={<DeleteIcon />}
+              colorScheme='green'
+              aria-label='Clôturer'
+              icon={<CheckCircleIcon />}
               size={'xs'}
               />
           </Td>

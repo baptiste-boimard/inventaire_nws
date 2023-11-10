@@ -15,7 +15,6 @@ import {
   Button,
   Select,
   Alert,
-  AlertIcon,
   AlertTitle,
   AlertDescription,
   IconButton,
@@ -27,15 +26,17 @@ import { CloseIcon } from '@chakra-ui/icons'
 // == IMPORT TYPE AND ACTION ==
 import { editPostLoanIdInventory, editPostLoanIdStudy, handleFieldChange, stockAlertSwitch } from '../../../slices/utilitiesSlice';
 import { DataLoan, postLoan } from '../../../slices/loanSlice';
-import { DataInventory, updateInventory } from '../../../slices/inventorySlice';
+import { DataInventory, getInventory, updateInventory } from '../../../slices/inventorySlice';
 
 function PostLoan () {
   const dispatch = useAppDispatch();
 
+  
   // CALL STORE //
   const { dataInventory } = useAppSelector(state => state.inventoryReducer);
   const { dataStudy } = useAppSelector(state => state.studyReducer);
   const { postLoanQuantity, postLoanIdInventory, postLoanidStudy, stockAlert } = useAppSelector(state => state.utilitiesReducer);
+
 
   // == ACTION ==
   /** Permet le changements des champs controlés */
@@ -63,32 +64,36 @@ function PostLoan () {
   }
   /** Soumet un nouveau pret */
   const handleSubmit = (e : BaseSyntheticEvent) => {
-    e.preventDefault();    
-    const objectInventory = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
-    const objectStudy = dataStudy.find(obj => obj.study_id === postLoanidStudy);
-
-    console.log('qtt object',objectInventory?.quantity);
+    e.preventDefault();
+    let select = document.querySelector('.selectInventory') as any;
+    // let option = select[0].getElementsByTagName('option') as any;
+    // select.setvalue('coucou')
+    // select!.value = "coucou";
+    console.log('select', select);
     
-    if(objectInventory!.quantity <= 0) {
-      dispatch(stockAlertSwitch());
-    } else {
-      const postLoanData: DataLoan = {
-        inventory_id: postLoanIdInventory!,
-        study_id: postLoanidStudy!,
-        loan_quantity: parseInt(`${postLoanQuantity}`, 10),
-        name: objectInventory!.name,
-        email: objectStudy!.email,
-      };
-      console.log('postLoanData',postLoanData);
-      const updateInventoryData: Partial<DataInventory>= {
-        inventory_id: postLoanIdInventory!,
-        name: objectInventory!.name,
-        quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
-        details: objectInventory!.details,
-      };    
-      dispatch(postLoan(postLoanData));
-      dispatch(updateInventory(updateInventoryData));
-    }
+    // const objectInventory = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
+    // const objectStudy = dataStudy.find(obj => obj.study_id === postLoanidStudy);
+    
+    // if(objectInventory!.quantity <= 0) {
+    //   dispatch(stockAlertSwitch());
+    // } else {
+    //   const postLoanData: DataLoan = {
+    //     inventory_id: postLoanIdInventory!,
+    //     study_id: postLoanidStudy!,
+    //     loan_quantity: parseInt(`${postLoanQuantity}`, 10),
+    //     name: objectInventory!.name,
+    //     email: objectStudy!.email,
+    //   };
+    //   const updateInventoryData: Partial<DataInventory>= {
+    //     inventory_id: postLoanIdInventory!,
+    //     name: objectInventory!.name,
+    //     quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
+    //     details: objectInventory!.details,
+    //   };    
+    //   dispatch(postLoan(postLoanData));
+    //   dispatch(updateInventory(updateInventoryData));
+    //   // dispatch(getInventory());
+    // }
   };
 
   return (
@@ -110,9 +115,9 @@ function PostLoan () {
           >
             <Thead>
               <Tr color={'black'}>
-                <Th p={2} width={'20%'} align={'left'}>Matériel</Th>
-                <Th p={2} width={'20%'} textAlign={'left'}>Etudiant</Th>
-                <Th p={2} width={'40%'} align={'left'}>Quantité</Th>
+                <Th p={2} width={'35%'} align={'left'}>Matériel</Th>
+                <Th p={2} width={'35%'} textAlign={'left'}>Etudiant</Th>
+                <Th p={2} width={'10%'} align={'left'}>Quantité</Th>
                 <Th p={1} width={'20%'} textAlign={'center'}></Th>
               </Tr>
             </Thead>
@@ -121,7 +126,9 @@ function PostLoan () {
                 <Td p={2}>
                 <FormControl>
                     <Select 
+                      className='selectInventory'
                       onChange={handleChangeInventorySelect}
+                      // defaultValue='Séléctionnez'
                       placeholder='Séléctionnez'
                     >
                       {dataInventory.map((inventoryItem)=> 
@@ -159,7 +166,7 @@ function PostLoan () {
                   </FormControl>
                 </Td>
                 <Td p={1.5}>
-                  <FormControl>
+                  <FormControl ml={5}>
                     <Button
                       colorScheme='blue'
                       onClick={handleSubmit}

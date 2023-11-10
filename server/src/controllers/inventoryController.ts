@@ -37,8 +37,7 @@ const inventoryController = {
     async patchInventory(req: Request, res: Response, next: NextFunction): Promise<void> {        
         const id: number = parseInt(req.params.inventory_id, 10);
         const quantity = parseInt(req.body.quantity, 10);
-        console.log(req.body);
-        
+
         if(typeof req.body.name !== 'string' || typeof req.body.quantity !== 'number' || typeof req.body.details !== 'string') {
             const err = new CustomError('Le format de données envoyé ne correpond pas');
             next(err);

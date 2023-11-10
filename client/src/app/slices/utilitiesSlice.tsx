@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface UtilitiesState {
   postInventoryName: string,
-  postInventoryQuantity: number | undefined,
+  postInventoryQuantity: string,
   postInventoryDetails: string,
   postStudyFirstname: string,
   postStudyLastname: string,
@@ -18,7 +18,7 @@ export interface UtilitiesState {
 
 const initialState: UtilitiesState = {
   postInventoryName: '',
-  postInventoryQuantity: undefined,
+  postInventoryQuantity: '',
   postInventoryDetails: '',
   postStudyFirstname: '',
   postStudyLastname: '',
@@ -62,12 +62,22 @@ const utilitiesSlice = createSlice({
         [action.payload.name]: action.payload.value,
       }
     },
-    // resetInventoryState: (state, action) => {
-    //   return {
-    //     ...state,
-    //     [action.payload.name]: action.payload.value,
-    //   };
-    // },
+    resetInventoryField: (state) => {
+      return {
+        ...state,
+        postInventoryName: '',
+        postInventoryQuantity: '',
+        postInventoryDetails: '',
+      };
+    },
+    resetStudyField: (state) => {
+      return {
+        ...state,
+        postStudyFirstname: '',
+        postStudyLastname: '',
+        postStudyEmail: '',
+      };
+    },
     addInventoryForModalEditing: (state, action) => {
       
         state.editingInventory = {
@@ -183,7 +193,8 @@ export const {
     handleFieldChangeInEditingInventory,
     handleFieldChangeInEditingStudy,
     handleFieldChangeInEditingLoan,
-    // resetInventoryState,
+    resetInventoryField,
+    resetStudyField,
     addInventoryForModalEditing,
     addStudyForModalEditing,
     addLoanForModalEditing,

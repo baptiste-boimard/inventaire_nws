@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { ReactElement, useEffect } from 'react';
+import { useEffect } from 'react';
 
 // == IMPORT CHAKRA UI ==
 import { Box, Center, Flex, Text} from '@chakra-ui/react'

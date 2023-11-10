@@ -28,7 +28,6 @@ export const getStudy = createAsyncThunk(
   async(_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     return await instance.get('/study')
       .then((response) => {
-        
         return dispatch(getStudyToState(response.data));
       })
       .catch((error) => {

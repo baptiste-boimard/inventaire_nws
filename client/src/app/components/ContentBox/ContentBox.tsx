@@ -12,7 +12,7 @@ import nws_logo from '../../docs/nws_logo.png';
 // == IMPORT COMPONENTS ==
 import Inventory from '../Inventory/inventory';
 import Study from '../Study/study';
-import LoanInProgress from '../Loan/loan';
+import Loan from '../Loan/loan';
 
 // == IMPORT ACTION ==
 import { getStudy } from '../../slices/studySlice';
@@ -36,7 +36,7 @@ function ContentBox () {
       <Routes>
         <Route path='/inventory' element={<Inventory />} />
         <Route path='/study' element={<Study />} />
-        <Route path='/loan' element={<LoanInProgress />} />
+        <Route path='/loan' element={<Loan />} />
       </Routes>
     </Box>
   );

@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { BaseSyntheticEvent } from 'react';
+import { BaseSyntheticEvent, useEffect } from 'react';
 
 // == IMPORT CHAKRA UI ==
 import {
@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 
 // == IMPORT ACTION ==
-import { handleFieldChange } from '../../../slices/utilitiesSlice';
+import { handleFieldChange, resetInventoryField } from '../../../slices/utilitiesSlice';
 import { DataInventory, postInventory } from '../../../slices/inventorySlice';
 
 function PostInventory () {
@@ -40,13 +40,16 @@ function PostInventory () {
   const handleSubmit = (e: React.FormEvent) => {
     const postInventoryData: Omit<DataInventory, 'created_at' | 'inventory_id'> = {
       name: postInventoryName,
-      quantity: postInventoryQuantity!,
+      quantity: parseInt(postInventoryQuantity,10),
       details: postInventoryDetails,
     };
     console.log(typeof postInventoryName, typeof postInventoryDetails, typeof postInventoryQuantity);
     
-    dispatch(postInventory(postInventoryData));    
+    dispatch(postInventory(postInventoryData));
+    dispatch(resetInventoryField());
   };
+
+  useEffect(()=> {}, [postInventoryQuantity]);
 
   return (
     <Box

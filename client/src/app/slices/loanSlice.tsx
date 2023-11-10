@@ -18,6 +18,7 @@ export interface DataLoan {
   lastname?: string,
   email?: string;
   loan_quantity?: number | undefined,
+  details?: string,
 };
 
 export interface Relaunch {
@@ -76,6 +77,7 @@ export const postLoan = createAsyncThunk(
     await instance.post(`/loan/${loan.inventory_id}/${loan.study_id}`, loan)
       .then((response) => {    
         // console.log('loanSlice',response);
+        dispatch(getLoan());
             
       })
       .catch((error) => {
@@ -96,20 +98,6 @@ export const deleteLoan = createAsyncThunk(
       .catch((error) => {
         // console.log(error);
         
-      })
-  }
-);
-
-/** Demande au back de mettre à jour le pret */
-export const updateLoan = createAsyncThunk(
-  'loan/updateLoan',
-  async(loan: DataLoan, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
-    await instance.patch(`/loan/${loan.loan_id}`, loan)
-      .then(() => {
-        dispatch(getLoan());
-      })
-      .catch((error) => {
-        // console.log(error);
       })
   }
 );

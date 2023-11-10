@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 
 // == IMPORT ACTION ==
-import { handleFieldChange } from '../../../slices/utilitiesSlice';
+import { resetStudyField, handleFieldChange } from '../../../slices/utilitiesSlice';
 import { DataStudy, postStudy } from '../../../slices/studySlice';
 
 function PostStudy () {
@@ -44,7 +44,8 @@ function PostStudy () {
       email: postStudyEmail,
     };
     
-    dispatch(postStudy(postStudyData));    
+    dispatch(postStudy(postStudyData));
+    dispatch(resetStudyField()); 
   };
 
   return (

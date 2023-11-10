@@ -1,4 +1,5 @@
-import { useAppSelector } from '../../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { useEffect } from 'react';
 
 // == IMPORT CHAKRA UI ==
 import { Box, Center, Flex, Text} from '@chakra-ui/react'
@@ -6,20 +7,20 @@ import { Table, Thead, Tbody, Tr, Th, TableContainer} from '@chakra-ui/react'
 
 // == IMPORT COMPONENTS ==
 import GetLoanItems from '../GetLoanItems/getLoanItems';
-import { useEffect } from 'react';
 
 // == IMPORT ACTION ==
+import { getLoan } from '../../../slices/loanSlice';
 
 
-function GetLoanInProgress () {
+function GetLoan () {
+  const dispatch = useAppDispatch();
   
   // == CALL STORE ==
   const { dataLoan } = useAppSelector(state => state.loanReducer);
 
   useEffect(() => {
-    console.log(dataLoan);
-    
-  })
+    dispatch(getLoan());
+  }, [dispatch]);
 
   return (
     <Flex 
@@ -61,4 +62,4 @@ function GetLoanInProgress () {
   );
 }
 
-export default GetLoanInProgress;
+export default GetLoan;
