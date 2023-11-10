@@ -48,21 +48,22 @@ function PostLoan () {
   };
   const handleSubmit = (e : BaseSyntheticEvent) => {
     e.preventDefault();    
+    const objectInventory = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
+    const objectStudy = dataStudy.find(obj => obj.study_id === postLoanidStudy);
     const postLoanData: DataLoan = {
       inventory_id: postLoanIdInventory!,
       study_id: postLoanidStudy!,
       quantity: parseInt(`${postLoanQuantity}`, 10),
+      name: objectInventory!.name,
+      email: objectStudy!.email,
     };
-    const object = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
-    console.log('object',object);  
+    console.log('postLoanData',postLoanData);
     const updateInventoryData: Partial<DataInventory>= {
       inventory_id: postLoanIdInventory!,
-      name: object!.name,
-      quantity: (object!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
-      details: object!.details,
-    };
-    console.log(updateInventoryData);
-    
+      name: objectInventory!.name,
+      quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
+      details: objectInventory!.details,
+    };    
     dispatch(postLoan(postLoanData));
     dispatch(updateInventory(updateInventoryData));
   };

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import dataMapperLoan from '../models/DataMappers/dataMapperLoan';
 import CustomError from '../handlers/CustomError';
 import { Loan } from '../types/loan';
+import sendMail, { MailData } from '../utils/sendMail';
 
 //Fonction permettant de déterminer un date avec un mois de plus
 function dateAddMonths(monthNbr: number, date: Date) {
@@ -31,7 +32,6 @@ const loanController = {
         
 
         const loaning_date: Date = new Date;
-        
         // const loaning_date: Date = new Date(req.body.loaning_date) || new Date;
         const due_date: Date = dateAddMonths(1, new Date);
 
@@ -46,13 +46,27 @@ const loanController = {
         
         const loan = await dataMapperLoan.postLoan(data);
         
-        if(loan) {
-            res.status(200).send(loan);
-        } else {
-            const err = new CustomError('Impossible d\'ajouter cet emprunt');
-            next(err);
+        if(!loan) {
+            throw new CustomError('Impossible d\'ajouter cet emprunt');
         }
+
+        const mailData: MailData = {
+            name: req.body.name,
+            quantity: req.body.quantity,
+            email: req.body.email,
+            loaning_date: loaning_date,
+            due_date: due_date,
+        };
+
+        const sucessMailSend = await sendMail(mailData);
+
+        if(!sucessMailSend) {
+            throw new CustomError('Une erreur s\'est produite durant l\'envoi du mail')    
+        }
+
+        res.status(200).send(loan);
     },
+    
     // Modifie en BDD un étudiant
     async patchLoan(req: Request, res: Response, next: NextFunction): Promise<void> {        
         const id: number = parseInt(req.params.loan_id);

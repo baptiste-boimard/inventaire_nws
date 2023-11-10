@@ -38,15 +38,15 @@ import {
   closeModalDeleteLoan,
 } from "../../../../../slices/utilitiesSlice";
 
-function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_date, due_date, enclose}: DataLoan) {
+function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_date, due_date, firstname, name, lastname}: DataLoan) {
   const dispatch = useAppDispatch();
 
   // == CALL STORE ==
   const { dataLoan } = useAppSelector(state => state.loanReducer);
   const {  editingLoan } = useAppSelector(state => state.utilitiesReducer);
   
-  const inventoryIdValue: any = editingLoan[`inventory_id-${loan_id}` as any];
-  const studyIdValue: any = editingLoan[`study_id-${loan_id}` as any];
+  const inventoryValue: any = editingLoan[`inventory_name-${loan_id}` as any];
+  const studyValue: any = editingLoan[`study_name-${loan_id}` as any];
   const quantityValue: any = editingLoan[`quantityLoan-${loan_id}` as any];
   const loaningDateValue: any = editingLoan[`loaningDate-${loan_id}` as any];
   const dueDateValue: any = editingLoan[`dueDate-${loan_id}` as any];
@@ -84,8 +84,8 @@ function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_
     e.preventDefault();
     const loan: DataLoan = {
       loan_id: loan_id,
-      inventory_id: inventoryIdValue!,
-      study_id: studyIdValue,
+      inventory_id: inventory_id!,
+      study_id: study_id,
       quantity: quantityValue,
       loaning_date: loaningDateValue,
       due_date: dueDateValue,
@@ -103,14 +103,14 @@ function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_
     const createEditingLoan:any = {
       [`isOpenModalLoanEdit-${loan_id}`]: false,
       [`isOpenModalLoanDelete-${loan_id}`]: false,
-      [`inventory_id-${loan_id}`]: inventory_id,
-      [`study_id-${loan_id}`]: study_id,
+      [`inventory_name-${loan_id}`]: name,
+      [`study_name-${loan_id}`]: `${firstname}   ${lastname}`,
       [`quantityLoan-${loan_id}`]: quantity,
       [`loaning_date-${loan_id}`]: loaning_date,
       [`due_date-${loan_id}`]: due_date,
     };
     dispatch(addLoanForModalEditing(createEditingLoan));
-  }, [dispatch, due_date, inventory_id, loan_id, loaning_date, quantity, study_id])
+  }, [dispatch, due_date, firstname, inventory_id, lastname, loan_id, loaning_date, name, quantity])
   return (
     <>
       {/* ===== MODAL EDIT ===== */}
@@ -141,7 +141,7 @@ function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_
                       <Td width={'40%'} ml={'2px'}>
                         <FormControl>
                           <Input type='text'
-                            value={inventoryIdValue}
+                            value={inventoryValue}
                             onChange={handleChange}
                             name={`inventory_id-${loan_id}`}
                             fontSize={14}
@@ -151,7 +151,7 @@ function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_
                       <Td width={'40%'} ml={'2px'}>
                         <FormControl>
                           <Input type='text'
-                            value={studyIdValue}
+                            value={studyValue}
                             onChange={handleChange}
                             name={`study_id-${loan_id}`}
                             fontSize={14}
@@ -243,8 +243,8 @@ function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_
                   </Thead>
                   <Tbody>
                     <Tr color={'black'}>
-                      <Td width={'30%'} pl={4}>{inventoryIdValue}</Td>
-                      <Td width={'30%'} pl={4}>{studyIdValue}</Td>
+                      <Td width={'30%'} pl={4}>{inventoryValue}</Td>
+                      <Td width={'30%'} pl={4}>{studyValue}</Td>
                       <Td width={'10%'} textAlign={'center'}>{quantityValue}</Td>
                       <Td width={'40%'} align='left' pl={4}>{loaningDateValue}</Td>
                       <Td width={'40%'} align='left' pl={4}>{dueDateValue}</Td>
@@ -276,11 +276,11 @@ function GetLoanInProgress ({loan_id, inventory_id, study_id, quantity, loaning_
 
         {/* ===== TABLE ITEM ===== */}
         <Tr color={'black'}>
-          <Td p={2} pl={4} width={'30%'}>{inventoryIdValue}</Td>
-          <Td p={2} pl={4} width={'30%'}>{studyIdValue}</Td>
+          <Td p={2} pl={4} width={'30%'}>{inventoryValue}</Td>
+          <Td p={2} pl={4} width={'30%'}>{studyValue}</Td>
           <Td p={2} width={'10%'} textAlign={'center'}>{quantityValue}</Td>
-          <Td p={2} pl={8} width={'40%'} align='left'>{loaningDateValue}</Td>
-          <Td p={2} pl={8} width={'40%'} align='left'>{dueDateValue}</Td>
+          {/* <Td p={2} pl={8} width={'40%'} align='left'>{loaningDateValue}</Td> */}
+          <Td p={2} pl={8} width={'20%'} align='left'>{dueDateValue}</Td>
           <Td p={2} width={'10%'} textAlign={'center'}>
             <IconButton
               onClick={handleOpenModalEdit}

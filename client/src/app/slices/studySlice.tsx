@@ -28,7 +28,6 @@ export const getStudy = createAsyncThunk(
   async(_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     return await instance.get('/study')
       .then((response) => {
-        console.log(response.data);         
         
         return dispatch(getStudyToState(response.data));
       })
@@ -89,9 +88,7 @@ const studySlice = createSlice({
   initialState,
   reducers: {
     /** Charge les données de la BDD dans le state dataStudy */
-    getStudyToState: (state, action) => { 
-        console.log(action.payload);
-        
+    getStudyToState: (state, action) => {         
         state.dataStudy = action.payload;
     },
   },

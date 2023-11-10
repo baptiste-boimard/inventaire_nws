@@ -13,6 +13,10 @@ export interface DataLoan {
   loaning_date?: Date,
   due_date?: Date,
   enclose?: boolean,
+  firstname?: string,
+  name?: string,
+  lastname?: string,
+  email?: string;
 };
 
 interface LoanState {
@@ -30,9 +34,7 @@ export const getLoan = createAsyncThunk(
   'loan/getLoan',
   async(_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     return await instance.get('/loan')
-      .then((response) => {
-        console.log('getLoan',response.data);         
-        
+      .then((response) => {        
         return dispatch(getLoanToState(response.data));
       })
       .catch((error) => {
@@ -47,15 +49,14 @@ export const postLoan = createAsyncThunk(
   'loan/postLoan',
   async(loan: DataLoan,
   { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
-    console.log(loan);
     
     await instance.post(`/loan/${loan.inventory_id}/${loan.study_id}`, loan)
-      .then((response) => {
-        console.log(response);
-        
+      .then((response) => {    
+        // console.log('loanSlice',response);
+            
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         
       })
   }
