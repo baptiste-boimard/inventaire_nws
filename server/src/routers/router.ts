@@ -23,9 +23,9 @@ router.delete('/study/:study_id',  routerWrapper(studyController.deleteOneStudy)
 
 //Route pour la table Loan
 router.post('/loan/:inventory_id/:study_id', routerWrapper(loanController.postLoan));
+router.post('/loan/relaunch', routerWrapper(loanController.studyRelaunch));
 router.get('/loan', routerWrapper(loanController.getLoan));
 router.get('/loan/:loan_id', routerWrapper(loanController.getOneLoan));
-router.patch('/loan/:loan_id', routerWrapper(loanController.patchLoan));
 router.delete('/loan/:loan_id', routerWrapper(loanController.deleteOneLoan));
 
 module.exports = router;

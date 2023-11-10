@@ -9,14 +9,23 @@ export interface DataLoan {
   loan_id?: number,
   inventory_id: number | undefined,
   study_id: number,
-  quantity: number,
-  loaning_date?: Date,
-  due_date?: Date,
+  quantity?: number,
+  loaning_date?: string,
+  due_date?: string,
   enclose?: boolean,
   firstname?: string,
   name?: string,
   lastname?: string,
   email?: string;
+  loan_quantity?: number | undefined,
+};
+
+export interface Relaunch {
+  name: string,
+  loan_quantity: number,
+  loaning_date: string,
+  due_date: string,
+  email: string,
 };
 
 interface LoanState {
@@ -40,6 +49,20 @@ export const getLoan = createAsyncThunk(
       .catch((error) => {
         // console.log(error);
         
+      })
+  }
+);
+
+/** Envoi d'un mail de rappel à l'étudiant */
+export const studyRelaunch = createAsyncThunk(
+  'loan/studyRelaunch',
+  async(relaunch: Relaunch, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
+    return await instance.post('/loan/relaunch', relaunch)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
       })
   }
 );

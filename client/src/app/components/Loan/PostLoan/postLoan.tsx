@@ -14,10 +14,18 @@ import {
   FormControl,
   Button,
   Select,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  IconButton,
 } from '@chakra-ui/react';
 
+import { CloseIcon } from '@chakra-ui/icons'
+
+
 // == IMPORT TYPE AND ACTION ==
-import { editPostLoanIdInventory, editPostLoanIdStudy, handleFieldChange } from '../../../slices/utilitiesSlice';
+import { editPostLoanIdInventory, editPostLoanIdStudy, handleFieldChange, stockAlertSwitch } from '../../../slices/utilitiesSlice';
 import { DataLoan, postLoan } from '../../../slices/loanSlice';
 import { DataInventory, updateInventory } from '../../../slices/inventorySlice';
 
@@ -27,9 +35,10 @@ function PostLoan () {
   // CALL STORE //
   const { dataInventory } = useAppSelector(state => state.inventoryReducer);
   const { dataStudy } = useAppSelector(state => state.studyReducer);
-  const { postLoanQuantity, postLoanIdInventory, postLoanidStudy } = useAppSelector(state => state.utilitiesReducer);
+  const { postLoanQuantity, postLoanIdInventory, postLoanidStudy, stockAlert } = useAppSelector(state => state.utilitiesReducer);
 
   // == ACTION ==
+  /** Permet le changements des champs controlés */
   const handleChange = (e: BaseSyntheticEvent) => {
     e.preventDefault();
     const changePayload = {
@@ -38,34 +47,48 @@ function PostLoan () {
     };
     dispatch(handleFieldChange(changePayload));
   };
+  /** Sélectionne les propriétés du matériel séléctionné */
   const handleChangeInventorySelect = (e: BaseSyntheticEvent) => { 
     const id = e.target.options[e.target.selectedIndex].id;    
     dispatch(editPostLoanIdInventory(id));
   };
+  /** Sélectionne les propriétés de l'étudiant séléctionné */
   const handleChangeStudySelect = (e: BaseSyntheticEvent) => { 
     const id = e.target.options[e.target.selectedIndex].id;
     dispatch(editPostLoanIdStudy(id));
   };
+  /** Ferme la fenetre d'alerte stock 0 */
+  const handleCloseStockAlert = () => {
+    dispatch(stockAlertSwitch());
+  }
+  /** Soumet un nouveau pret */
   const handleSubmit = (e : BaseSyntheticEvent) => {
     e.preventDefault();    
     const objectInventory = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
     const objectStudy = dataStudy.find(obj => obj.study_id === postLoanidStudy);
-    const postLoanData: DataLoan = {
-      inventory_id: postLoanIdInventory!,
-      study_id: postLoanidStudy!,
-      quantity: parseInt(`${postLoanQuantity}`, 10),
-      name: objectInventory!.name,
-      email: objectStudy!.email,
-    };
-    console.log('postLoanData',postLoanData);
-    const updateInventoryData: Partial<DataInventory>= {
-      inventory_id: postLoanIdInventory!,
-      name: objectInventory!.name,
-      quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
-      details: objectInventory!.details,
-    };    
-    dispatch(postLoan(postLoanData));
-    dispatch(updateInventory(updateInventoryData));
+
+    console.log('qtt object',objectInventory?.quantity);
+    
+    if(objectInventory!.quantity <= 0) {
+      dispatch(stockAlertSwitch());
+    } else {
+      const postLoanData: DataLoan = {
+        inventory_id: postLoanIdInventory!,
+        study_id: postLoanidStudy!,
+        loan_quantity: parseInt(`${postLoanQuantity}`, 10),
+        name: objectInventory!.name,
+        email: objectStudy!.email,
+      };
+      console.log('postLoanData',postLoanData);
+      const updateInventoryData: Partial<DataInventory>= {
+        inventory_id: postLoanIdInventory!,
+        name: objectInventory!.name,
+        quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
+        details: objectInventory!.details,
+      };    
+      dispatch(postLoan(postLoanData));
+      dispatch(updateInventory(updateInventoryData));
+    }
   };
 
   return (
@@ -150,6 +173,22 @@ function PostLoan () {
             </Tbody>
           </Table>
         </TableContainer>
+        {stockAlert &&(
+          <Alert status='error' color={'gray'}>
+            <IconButton
+              bg={'red'}
+              mr={5}
+              size={'xs'}
+              colorScheme='blue'
+              aria-label='Search database'
+              icon={<CloseIcon />}
+              onClick={handleCloseStockAlert}
+            />
+            {/* <AlertIcon /> */}
+            <AlertTitle>Création du prêt impossible</AlertTitle>
+            <AlertDescription>Le stock du matériel est à zéro</AlertDescription>
+          </Alert>
+        )}
       </Box>
     </Box>
   );

@@ -1,7 +1,7 @@
 
 // == IMPORT COMPONENTS ==
-import PostLoan from '../PostLoan/postLoan';
-import GetLoanInProgress from './GetLoanInProgress/getLoanInProgress';
+import PostLoan from './PostLoan/postLoan';
+import GetLoan from './GetLoan/getLoan';
 
 // IMPORT CHAKRA UI ==
 import { Box } from '@chakra-ui/react';
@@ -14,7 +14,7 @@ function LoanInProgress () {
         maxH='100%'
         p={4}
       >
-        <GetLoanInProgress />
+        <GetLoan />
         <PostLoan />
       </Box>
   );

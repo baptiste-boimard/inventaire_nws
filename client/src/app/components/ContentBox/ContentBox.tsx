@@ -12,9 +12,7 @@ import nws_logo from '../../docs/nws_logo.png';
 // == IMPORT COMPONENTS ==
 import Inventory from '../Inventory/inventory';
 import Study from '../Study/study';
-import LoanInProgress from '../Loan/LoanInProgress/loanInProgress';
-import LoanShortTime from '../Loan/LoanShortTime/loanShortTIme';
-import LoanEnclosed from '../Loan/LoanEnclosed/loanEnclosed';
+import LoanInProgress from '../Loan/loan';
 
 // == IMPORT ACTION ==
 import { getStudy } from '../../slices/studySlice';
@@ -38,9 +36,7 @@ function ContentBox () {
       <Routes>
         <Route path='/inventory' element={<Inventory />} />
         <Route path='/study' element={<Study />} />
-        <Route path='/loaninprogress' element={<LoanInProgress />} />
-        <Route path='/loanshorttime' element={<LoanShortTime />} />
-        <Route path='/loanenclosed' element={<LoanEnclosed />} />
+        <Route path='/loan' element={<LoanInProgress />} />
       </Routes>
     </Box>
   );

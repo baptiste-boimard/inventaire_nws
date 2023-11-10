@@ -5,13 +5,15 @@ import { Loan } from '../../types/loan';
 const dataMapperLoan = {
 
   //Enrengistre un emprunt dans la table loan
-  async postLoan(loan: Loan) {   
+  async postLoan(loan: Loan) { 
+    console.log('mapper',loan);
+      
     const query = {
       text: `INSERT INTO loan
-            (inventory_id, study_id, quantity, loaning_date, due_date)
+            (inventory_id, study_id, loan_quantity, loaning_date, due_date)
             VALUES ($1, $2, $3, $4, $5)
             RETURNING loan_id;`,
-      values: [loan.inventory_id, loan.study_id, loan.quantity, loan.loaning_date, loan.due_date],
+      values: [loan.inventory_id, loan.study_id, loan.loan_quantity, loan.loaning_date, loan.due_date],
     };
     const data = await client.query(query);
     
@@ -20,21 +22,7 @@ const dataMapperLoan = {
     }
     return data;
   },
-  //Modifie un étudiant dans la table study
-  async patchLoan(id: number, loan: Loan) {
-    const query = {
-      text: `UPDATE loan
-            SET inventory_id =$1, study_id=$2, loaning_date=$3, due_date=$4
-            WHERE loan_id = $5`,
-      values: [loan.inventory_id, loan.study_id, loan.loaning_date, loan.due_date, id],
-    };
-    const data = await client.query(query)
-    
-    if (!data) {
-      throw new CustomError('La modification de l\'emprunt a rencontré un problème');
-    }
-    return data;
-  },
+
   //Récupére tous les étudiants dans la base study
   async getLoan() {
     const query = {
@@ -59,7 +47,7 @@ const dataMapperLoan = {
     const query = {
       text: `SELECT * FROM loan as l
             JOIN
-            (SELECT inventory.inventory_id, inventory.name, inventory.quantity, inventory.details
+            (SELECT inventory.inventory_id, inventory.name, inventory.loan_quantity, inventory.details
             FROM inventory) as i
             ON l.inventory_id = i.inventory_id
             JOIN

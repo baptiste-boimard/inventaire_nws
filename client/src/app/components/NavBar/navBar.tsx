@@ -5,14 +5,8 @@ import {
   Accordion,
   AccordionItem,
   AccordionButton,
-  AccordionPanel,
   Box,
-  List,
-  ListItem,
-  ListIcon,
 } from '@chakra-ui/react'
-
-import { SmallAddIcon } from '@chakra-ui/icons'
 
 function NavBar () {
   return (
@@ -42,35 +36,15 @@ function NavBar () {
       </AccordionItem>
 
       <AccordionItem>
-        <h2>
-          <AccordionButton>
-            <Box as="span" flex='1' textAlign='left' fontSize='0.8em'>
-              Liste des emprunts
-            </Box>
-          </AccordionButton>
-        </h2>
-        <AccordionPanel pb={4} >
-        <List spacing={3} display='flex' flexDirection='column' alignContent='flex-start' p='0px'>
-          <NavLink to={'/loaninprogress'}>
-            <ListItem textAlign='left' fontSize='0.7em'>
-              <ListIcon as={SmallAddIcon} color='white' />
-              En cours
-            </ListItem>
-          </NavLink>
-          <NavLink to={'/loanshorttime'}>
-            <ListItem textAlign='left' fontSize='0.7em'>
-              <ListIcon as={SmallAddIcon} color='white' />
-              Délai cours
-            </ListItem>
-          </NavLink>
-          <NavLink to={'/loanenclosed'}>
-            <ListItem textAlign='left' fontSize='0.7em'>
-              <ListIcon as={SmallAddIcon} color='white' />
-              Cloturés
-            </ListItem>
-          </NavLink>
-        </List>
-        </AccordionPanel>
+        <NavLink to={'/loan'}>
+          <h2>
+            <AccordionButton>
+              <Box as="span" flex='1' textAlign='left' fontSize='0.8em'>
+                Liste des emprunts
+              </Box>
+            </AccordionButton>
+          </h2>
+        </NavLink>
       </AccordionItem>
     </Accordion>
   );

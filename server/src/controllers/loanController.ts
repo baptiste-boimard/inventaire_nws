@@ -2,18 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import dataMapperLoan from '../models/DataMappers/dataMapperLoan';
 import CustomError from '../handlers/CustomError';
 import { Loan } from '../types/loan';
-import sendMail, { MailData } from '../utils/sendMail';
-
-//Fonction permettant de déterminer un date avec un mois de plus
-function dateAddMonths(monthNbr: number, date: Date) {
-  const testDate = (new Date(date.getFullYear(), date.getMonth() + 1 + monthNbr, 0)).getDate();
-if (date.getDate() > testDate){
-date.setDate(testDate);
-}
-date.setMonth(date.getMonth() + monthNbr);
-return date;
-};
-
+import { MailData, RelaunchData, sendMail, sendMailRelaunch } from '../utils/sendMail';
+import moment from 'moment';
 
 //Controller gérant les requetes concernat les emprunts
 const loanController = {
@@ -22,27 +12,21 @@ const loanController = {
                 
         const inventory_id: number = parseInt(req.params.inventory_id, 10);
         const study_id: number = parseInt(req.params.study_id, 10);
-        const quantity: number = parseInt(req.body.quantity, 10)
-        
-        //Test si la date est conforme, si elle ne l'ai pas new Date donne l'année 1970
-        // const testedDate = (new Date(req.body.loaning_date)).getFullYear();
-        // if(testedDate === 1970) {
-        //     throw new CustomError('La date n\'est pas conforme')
-        // }
+        const loan_quantity: number = parseInt(req.body.loan_quantity, 10)      
+        console.log('controller',req.body);
         
 
-        const loaning_date: Date = new Date;
-        // const loaning_date: Date = new Date(req.body.loaning_date) || new Date;
-        const due_date: Date = dateAddMonths(1, new Date);
-
-
+        const loaning_date = moment().format('DD/MM/YYYY');
+        const due_date = moment().add(1, 'M').format('DD/MM/YYYY');
+        
         const data: Loan = {
             inventory_id: inventory_id,
             study_id: study_id,
-            quantity: quantity,
+            loan_quantity: loan_quantity,
             loaning_date: loaning_date,
             due_date: due_date,
         };                
+        console.log('datacontroller', data);
         
         const loan = await dataMapperLoan.postLoan(data);
         
@@ -52,7 +36,7 @@ const loanController = {
 
         const mailData: MailData = {
             name: req.body.name,
-            quantity: req.body.quantity,
+            loan_quantity: loan_quantity,
             email: req.body.email,
             loaning_date: loaning_date,
             due_date: due_date,
@@ -66,40 +50,28 @@ const loanController = {
 
         res.status(200).send(loan);
     },
-    
-    // Modifie en BDD un étudiant
-    async patchLoan(req: Request, res: Response, next: NextFunction): Promise<void> {        
-        const id: number = parseInt(req.params.loan_id);
-        
-        //Test si la date est conforme, si elle ne l'ai pas new Date donne l'année 1970
-        const testedDate = (new Date(req.body.loaning_date)).getFullYear();
-        
-        if(testedDate === 1970) {
-          throw new CustomError('La date n\'est pas conforme')
+
+    //** Envoi un mail de relance à l'atudiant */
+    async studyRelaunch(req: Request, res:Response, next: NextFunction): Promise<void> {
+        const relaunchData: RelaunchData = {
+            name: req.body.name,
+            loan_quantity: req.body.loan_quantity,
+            loaning_date: req.body.loaning_date,
+            due_date: req.body.due_date,
+            email: req.body.email,
+        }
+        const sucessMailRelaunch = await sendMailRelaunch(relaunchData);
+
+        if(!sucessMailRelaunch) {
+            throw new CustomError('Une erreur s\'est produite durant l\'envoi du mail')    
         }
 
-        const loaning_date: Date = new Date(req.body.loaning_date) || new Date;
-        const due_date: Date = dateAddMonths(1, new Date(req.body.loaning_date) || new Date);
-
-        const data: Loan = {
-          inventory_id: parseInt(req.body.inventory_id, 10),
-          study_id: parseInt(req.body.study_id, 10),
-          quantity: parseInt(req.body.quantity, 10),
-          loaning_date: loaning_date,
-          due_date: due_date,
-      };        
-      
-        const study = await dataMapperLoan.patchLoan(id, data);
-        if(study) {
-            res.status(200).send(study);
-        } else {
-            const err = new CustomError('Impossible de modifier cet emprunt');
-            next(err);
-        }
+        res.status(200)
     },
+    
     //Récupère tous les étudants en BDD
     async getLoan(req: Request, res: Response, next: NextFunction): Promise<void> {           
-        const loan = await dataMapperLoan.getLoan();
+        const loan = await dataMapperLoan.getLoan();        
         
         if(loan) {
             res.status(200).send(loan);
@@ -123,7 +95,7 @@ const loanController = {
             next(err);
         }
     },
-    // //Efface un étudiant en BDD
+    //Efface un étudiant en BDD
     async deleteOneLoan(req: Request, res: Response, next: NextFunction): Promise<void> {
         const id: number = parseInt(req.params.loan_id, 10);
         

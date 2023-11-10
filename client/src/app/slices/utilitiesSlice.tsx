@@ -13,6 +13,7 @@ export interface UtilitiesState {
   editingInventory: any,
   editingStudy: any,
   editingLoan: any,
+  stockAlert: boolean,
 };
 
 const initialState: UtilitiesState = {
@@ -28,6 +29,7 @@ const initialState: UtilitiesState = {
   editingInventory: {},
   editingStudy: {},
   editingLoan: {},
+  stockAlert: false,
 
   
 };
@@ -168,6 +170,9 @@ const utilitiesSlice = createSlice({
     editPostLoanIdStudy: (state, action) => {
       state.postLoanidStudy = parseInt(action.payload, 10);
     },
+    stockAlertSwitch: (state) => {
+      state.stockAlert = !state.stockAlert!
+    },
   },
   extraReducers: (builder) => {
   },
@@ -196,6 +201,7 @@ export const {
     closeModalDeleteLoan,
     editPostLoanIdInventory,
     editPostLoanIdStudy,
+    stockAlertSwitch,
 } = utilitiesSlice.actions;
 
 export default utilitiesSlice.reducer

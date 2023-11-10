@@ -1,26 +1,25 @@
-import { useAppDispatch, useAppSelector } from '../../../../hooks';
-import { useEffect } from 'react';
+import { useAppSelector } from '../../../hooks';
 
 // == IMPORT CHAKRA UI ==
 import { Box, Center, Flex, Text} from '@chakra-ui/react'
 import { Table, Thead, Tbody, Tr, Th, TableContainer} from '@chakra-ui/react'
 
 // == IMPORT COMPONENTS ==
-import GetLoanInProgressItems from '../GetLoanInProgress/GetLoanInProgressItems/getLoanInProgressItems';
+import GetLoanItems from '../GetLoanItems/getLoanItems';
+import { useEffect } from 'react';
 
 // == IMPORT ACTION ==
-import { getLoan } from '../../../../slices/loanSlice';
 
 
 function GetLoanInProgress () {
-  const dispatch = useAppDispatch();
-  
-  useEffect(() => {
-    dispatch(getLoan());
-  }, [dispatch]);
   
   // == CALL STORE ==
   const { dataLoan } = useAppSelector(state => state.loanReducer);
+
+  useEffect(() => {
+    console.log(dataLoan);
+    
+  })
 
   return (
     <Flex 
@@ -42,16 +41,18 @@ function GetLoanInProgress () {
             fontSize={13}
           >
             <Thead>
-              <Tr color={'black'}>
-                <Th p={2} width={'30%'}>Matériel</Th>
-                <Th p={2} width={'10%'}>Etudiant</Th>
-                <Th p={2} pl={8} width={'40%'}>Quantité</Th>
-                <Th p={2} width={'10%'}>Editer</Th>
-                <Th p={2} width={'10%'}>Supprimer</Th>
+              <Tr color={'black'} h={20}>
+                <Th p={2} width={'20%'}>Matériel</Th>
+                <Th p={2} width={'20%'}>Etudiant</Th>
+                <Th p={2} width={'10%'}>Quantité</Th>
+                <Th p={2} width={'15%'} textAlign={'center'}>{`Date`} <br /> {'d\'emprunt'}</Th>
+                <Th p={2} width={'15%'} textAlign={'center'}>{`Date`} <br /> {'de rendu'}</Th>
+                <Th p={2} width={'10%'}>Relancer</Th>
+                <Th p={2} width={'10%'}>Clôturer</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {dataLoan.map((loanItem) => <GetLoanInProgressItems key={loanItem.loan_id} {...loanItem} />) as any}
+              {dataLoan.map((loanItem) => <GetLoanItems key={loanItem.loan_id} {...loanItem} />) as any}
             </Tbody>
           </Table>
         </TableContainer>
