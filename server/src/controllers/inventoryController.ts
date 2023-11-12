@@ -16,8 +16,8 @@ const inventoryController = {
             typeof req.body.details !== 'string' ||
             Number.isInteger(quantity) !== true
         ) {
-            throw new Error('coucoucou');
-            // throw  new CustomError('Le format de données envoyé ne correpond pas');
+            res.status(400).send('Le format de données envoyé ne correpond pas')
+            return next();
         } else {
         }
         const data: Inventory = {
@@ -30,8 +30,8 @@ const inventoryController = {
         if(inventory) {
             res.status(200).send(inventory);
         } else {
-            const err = new CustomError('Impossible d\'ajouter cet artcle dans l\'inventaire');
-            next(err);
+            res.status(403).send('Impossible d\'ajouter cet artcle dans l\'inventaire');
+            return next();
         }
     },
     //Modifie en BDD un article
@@ -40,8 +40,8 @@ const inventoryController = {
         const quantity = parseInt(req.body.quantity, 10);
 
         if(typeof req.body.name !== 'string' || typeof req.body.quantity !== 'number' || typeof req.body.details !== 'string') {
-            const err = new CustomError('Le format de données envoyé ne correpond pas');
-            next(err);
+            res.status(400).send('Le format de données envoyé ne correpond pas');
+            return next();
         }
 
         const data: Inventory = {
@@ -55,8 +55,8 @@ const inventoryController = {
         if(inventory) {
             res.status(200).send(inventory);
         } else {
-            const err = new CustomError('Impossible de modifier cet artcle dans l\'inventaire');
-            next(err);
+            res.status(403).send('Impossible de modifier cet artcle dans l\'inventaire');
+            return next();
         }
     },
     async getInventory(req: Request, res: Response, next: NextFunction): Promise<void> {           
@@ -64,36 +64,37 @@ const inventoryController = {
         if(inventory) {
             res.status(200).send(inventory);
         } else {
-            const err = new CustomError('Impossible de récupérer les données de  l\'inventaire');
-            next(err);
+            res.status(403).send('Impossible de récupérer les données de  l\'inventaire');
+            return next();
         }
     },
     async getOneInventory(req: Request, res: Response, next: NextFunction): Promise<void> {
         const id: number = parseInt(req.params.inventory_id, 10);        
         if(!id) {
-            const err = new CustomError('Une erreur est survenue lors de votre demande');
-            next(err);
+            res.status(403).send('Une erreur est survenue lors de votre demande');
+            return next();
         }
         const inventory = await dataMapperInventory.getOneInventory(id);
         if(inventory) {
             res.status(200).send(inventory);
         } else {
-            const err = new CustomError('Les informations sur ce matériel ne sont pas disponibe');
-            next(err);
+            res.status(403).send('Les informations sur ce matériel ne sont pas disponibe');
+            return next();
         }
     },
     async deleteOneInventory(req: Request, res: Response, next: NextFunction): Promise<void> {
         const id: number = parseInt(req.params.inventory_id, 10);
         
         if(!id) {
-            const err = new CustomError('Une erreur est survenue lors de votre demande');
-            next(err);
+            res.status(403).send('Une erreur est survenue lors de votre demande');
+            return next();
         }
         const deleteInventory = await dataMapperInventory.deleteOneInventory(id);
         if(deleteInventory) {
             res.status(200).send(deleteInventory);
         } else {
-            const err = new CustomError('Vous ne pouvez pas supprimer cet article');
+            res.status(403).send('Vous ne pouvez pas supprimer cet article');
+            return next();
         }
     },
 };

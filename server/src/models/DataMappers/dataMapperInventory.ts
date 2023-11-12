@@ -18,7 +18,7 @@ const dataMapperInventory = {
     
     const data = await client.query(query)!
     if (!data) {
-      throw new CustomError('L\'ajout de l\'article dans l\'inventaire a rencontré un problème');
+      throw new CustomError('L\'ajout de l\'article dans l\'inventaire a rencontré un problème', 403);
     }
     return data;
   },
@@ -32,7 +32,7 @@ const dataMapperInventory = {
     const data = await client.query(query)
     
     if (!data) {
-      throw new CustomError('La modification de l\'article dans l\'inventaire a rencontré un problème');
+      throw new CustomError('La modification de l\'article dans l\'inventaire a rencontré un problème', 403);
     }
     return data;
   },
@@ -44,7 +44,7 @@ const dataMapperInventory = {
     };
     const data = await client.query(query)
     if (!data) {
-      throw new CustomError('Impossible de récupérer les données de  l\'inventaire');
+      throw new CustomError('Impossible de récupérer les données de  l\'inventaire', 403);
     }   
     return data.rows;
   },
@@ -56,7 +56,7 @@ const dataMapperInventory = {
     };
     const data = await client.query(query)
     if(!data) {
-      throw new CustomError('Impossible de récupérer les données de cet article');
+      throw new CustomError('Impossible de récupérer les données de cet article', 403);
     }
     return data.rows[0];
   },
@@ -69,7 +69,7 @@ const dataMapperInventory = {
     };
     const data = await client.query(query)
     if(!data) {
-      throw new CustomError('Vous ne pouvez pas supprimer cet article');
+      throw new CustomError('Vous ne pouvez pas supprimer cet article', 403);
     }
     return data;
   }

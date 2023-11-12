@@ -9,7 +9,8 @@ const studyController = {
     async postStudy(req: Request, res: Response, next: NextFunction): Promise<void> {        
         
         if(typeof req.body.firstname !== 'string' || typeof req.body.lastname !== 'string' || typeof req.body.email !== 'string') {
-            throw new CustomError('Le format de données envoyé ne correpond pas');
+            res.status(400).send('Le format de données envoyé ne correpond pas');
+            return next();
         }
         
         const data: Study = {
@@ -22,8 +23,8 @@ const studyController = {
         if(study) {
             res.status(200).send(study);
         } else {
-            const err = new CustomError('Impossible d\'ajouter cet étudiant');
-            next(err);
+            res.status(403).send('Impossible d\'ajouter cet étudiant');
+            return next();
         }
     },
     //Modifie en BDD un étudiant
@@ -31,7 +32,8 @@ const studyController = {
         const id: number = parseInt(req.params.study_id);
 
         if(typeof req.body.firstname !== 'string' || typeof req.body.lastname !== 'string' || typeof req.body.email !== 'string') {
-            throw new CustomError('Le format de données envoyé ne correpond pas');
+            res.status(400).send('Le format de données envoyé ne correpond pas');
+            return next();
         }
 
         const data: Study = {
@@ -43,8 +45,8 @@ const studyController = {
         if(study) {
             res.status(200).send(study);
         } else {
-            const err = new CustomError('Impossible de modifier cet étudiant');
-            next(err);
+            res.status(403).send('Impossible de modifier cet étudiant');
+            return next();
         }
     },
     //Récupère tous les étudiants en BDD
@@ -53,23 +55,23 @@ const studyController = {
         if(study) {
             res.status(200).send(study);
         } else {
-            const err = new CustomError('Impossible de récupérer les données des étudiant');
-            next(err);
+            res.status(403).send('Impossible de récupérer les données des étudiant');
+            return next();
         }
     },
     //Récupère un étudiant en BDD
     async getOneStudy(req: Request, res: Response, next: NextFunction): Promise<void> {
         const id: number = parseInt(req.params.study_id, 10);        
         if(!id) {
-            const err = new CustomError('Une erreur est survenue lors de votre demande');
-            next(err);
+            res.status(403).send('Une erreur est survenue lors de votre demande');
+            return next();
         }
         const study = await dataMapperStudy.getOneStudy(id);
         if(study) {
             res.status(200).send(study);
         } else {
-            const err = new CustomError('Les informations sur cet étudiant ne sont pas disponible');
-            next(err);
+            res.status(403).send('Les informations sur cet étudiant ne sont pas disponible');
+            return next();
         }
     },
     //Efface un étudiant en BDD
@@ -77,14 +79,15 @@ const studyController = {
         const id: number = parseInt(req.params.study_id, 10);
         
         if(!id) {
-            const err = new CustomError('Une erreur est survenue lors de votre demande');
-            next(err);
+            res.status(403).send('Une erreur est survenue lors de votre demande');
+            return next();
         }
         const deleteStudy = await dataMapperStudy.deleteOneStudy(id);
         if(deleteStudy) {
             res.status(200).send(deleteStudy);
         } else {
-            const err = new CustomError('Vous ne pouvez pas supprimer cet étudiant');
+            res.status(403).send('Vous ne pouvez pas supprimer cet étudiant');
+            return next();
         }
     },
 };

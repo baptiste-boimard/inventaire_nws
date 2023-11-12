@@ -17,7 +17,7 @@ const dataMapperLoan = {
     const data = await client.query(query);
     
     if (!data) {
-      throw new CustomError('L\'ajout de l\'emprunt a rencontré un problème');
+      throw new CustomError('L\'ajout de l\'emprunt a rencontré un problème', 403);
     }    
     return data;
   },
@@ -37,7 +37,7 @@ const dataMapperLoan = {
     };
     const data = await client.query(query)
     if (!data) {
-      throw new CustomError('Impossible de récupérer les données de  l\'emprunt');
+      throw new CustomError('Impossible de récupérer les données de  l\'emprunt', 403);
     }   
     return data.rows;
   },
@@ -58,7 +58,7 @@ const dataMapperLoan = {
     };
     const data = await client.query(query)
     if(!data) {
-      throw new CustomError('Impossible de récupérer les données de cet emprunt');
+      throw new CustomError('Impossible de récupérer les données de cet emprunt', 403);
     }
     return data.rows[0];
   },
@@ -72,7 +72,7 @@ const dataMapperLoan = {
     };
     const data = await client.query(query)
     if(!data) {
-      throw new CustomError('Vous ne pouvez pas supprimer cet emprunt');
+      throw new CustomError('Vous ne pouvez pas supprimer cet emprunt', 403);
     }
     return data;
   }

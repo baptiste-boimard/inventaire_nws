@@ -27,7 +27,8 @@ const loanController = {
         const loan = await dataMapperLoan.postLoan(data);
         
         if(!loan) {
-            throw new CustomError('Impossible d\'ajouter cet emprunt');
+            res.status(403).send('Impossible d\'ajouter cet emprunt');
+            return next();
         }
 
         const mailData: MailData = {
@@ -42,7 +43,8 @@ const loanController = {
         
         
         if(!sucessMailSend) {
-            throw new CustomError('Une erreur s\'est produite durant l\'envoi du mail')    
+            res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`)    
+            return next();
         }
 
         res.status(200).send(loan);
@@ -63,7 +65,8 @@ const loanController = {
         
         
         if(!sucessMailRelaunch) {
-            throw new CustomError('Une erreur s\'est produite durant l\'envoi du mail')    
+            res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`)    
+            return next();
         }
 
         res.status(200).send(sucessMailRelaunch);
@@ -76,23 +79,23 @@ const loanController = {
         if(loan) {
             res.status(200).send(loan);
         } else {
-            const err = new CustomError('Impossible de récupérer les données des emprunts');
-            next(err);
+            res.status(403).send('Impossible de récupérer les données des emprunts');
+            return next();
         }
     },
     //Récupère un étudiant en BDD
     async getOneLoan(req: Request, res: Response, next: NextFunction): Promise<void> {
         const id: number = parseInt(req.params.loan_id, 10);        
         if(!id) {
-            const err = new CustomError('Une erreur est survenue lors de votre demande');
-            next(err);
+            res.status(403).send('Une erreur est survenue lors de votre demande');
+            return next();
         }
         const loan = await dataMapperLoan.getOneLoan(id);
         if(loan) {
             res.status(200).send(loan);
         } else {
-            const err = new CustomError('Les informations sur cet emprunt ne sont pas disponible');
-            next(err);
+            res.status(403).send('Les informations sur cet emprunt ne sont pas disponible');
+            return next();
         }
     },
     //Efface un étudiant en BDD
@@ -100,14 +103,15 @@ const loanController = {
         const id: number = parseInt(req.params.loan_id, 10);
         
         if(!id) {
-            const err = new CustomError('Une erreur est survenue lors de votre demande');
-            next(err);
+            res.status(403).send('Une erreur est survenue lors de votre demande');
+            return next();
         }
         const deleteStudy = await dataMapperLoan.deleteOneLoan(id);
         if(deleteStudy) {
             res.status(200).send(deleteStudy);
         } else {
-            const err = new CustomError('Vous ne pouvez pas supprimer cet emprunt');
+            res.status(403).send('Vous ne pouvez pas supprimer cet emprunt');
+            return next();
         }
     },
 };

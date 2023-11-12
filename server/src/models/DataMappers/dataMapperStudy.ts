@@ -16,7 +16,7 @@ const dataMapperStudy = {
     const data = await client.query(query)
     
     if (!data) {
-      throw new CustomError('L\'ajout de l\'étudiant a rencontré un problème');
+      throw new CustomError('L\'ajout de l\'étudiant a rencontré un problème', 403);
     }
     return data;
   },
@@ -31,7 +31,7 @@ const dataMapperStudy = {
     const data = await client.query(query)
     
     if (!data) {
-      throw new CustomError('La modification de l\'étudiant a rencontré un problème');
+      throw new CustomError('La modification de l\'étudiant a rencontré un problème', 403);
     }
     return data;
   },
@@ -44,7 +44,7 @@ const dataMapperStudy = {
     };
     const data = await client.query(query)
     if (!data) {
-      throw new CustomError('Impossible de récupérer les données de  l\'étudiant');
+      throw new CustomError('Impossible de récupérer les données de  l\'étudiant', 403);
     }   
     return data.rows;
   },
@@ -57,7 +57,7 @@ const dataMapperStudy = {
     };
     const data = await client.query(query)
     if(!data) {
-      throw new CustomError('Impossible de récupérer les données de cet étudiant');
+      throw new CustomError('Impossible de récupérer les données de cet étudiant', 403);
     }
     return data.rows[0];
   },
@@ -71,7 +71,7 @@ const dataMapperStudy = {
     };
     const data = await client.query(query)
     if(!data) {
-      throw new CustomError('Vous ne pouvez pas supprimer cet étudiant');
+      throw new CustomError('Vous ne pouvez pas supprimer cet étudiant', 403);
     }
     return data;
   }
