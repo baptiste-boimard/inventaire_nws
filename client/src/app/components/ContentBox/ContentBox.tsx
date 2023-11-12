@@ -13,6 +13,8 @@ import nws_logo from '../../docs/nws_logo.png';
 import Inventory from '../Inventory/inventory';
 import Study from '../Study/study';
 import Loan from '../Loan/loan';
+import Accueil from '../Accueil/accueil';
+import NotFound from '../NotFound/notFound';
 
 // == IMPORT ACTION ==
 import { getStudy } from '../../slices/studySlice';
@@ -37,6 +39,8 @@ function ContentBox () {
         <Route path='/inventory' element={<Inventory />} />
         <Route path='/study' element={<Study />} />
         <Route path='/loan' element={<Loan />} />
+        <Route path='/' element={<Accueil />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </Box>
   );

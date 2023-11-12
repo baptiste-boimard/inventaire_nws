@@ -16,7 +16,8 @@ const inventoryController = {
             typeof req.body.details !== 'string' ||
             Number.isInteger(quantity) !== true
         ) {
-            throw  new CustomError('Le format de données envoyé ne correpond pas');
+            throw new Error('coucoucou');
+            // throw  new CustomError('Le format de données envoyé ne correpond pas');
         } else {
         }
         const data: Inventory = {
