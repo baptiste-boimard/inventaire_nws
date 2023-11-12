@@ -8,7 +8,7 @@ const app = express();
 
 const router = require('./routers/router')
 
-const PORT: number = parseInt(process.env.PORT as string);
+const PORT: number = parseInt(process.env.PORT as string, 10);
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json({extended: true}));

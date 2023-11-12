@@ -745,7 +745,7 @@ var handleError_default = handleError;
 var express = require("express");
 var app = express();
 var router = require_router();
-var PORT = parseInt(process.env.PORT);
+var PORT = parseInt(process.env.PORT, 10);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ extended: true }));
 app.use((req, res, next) => {
