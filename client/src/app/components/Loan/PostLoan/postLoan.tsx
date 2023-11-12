@@ -65,35 +65,35 @@ function PostLoan () {
   /** Soumet un nouveau pret */
   const handleSubmit = (e : BaseSyntheticEvent) => {
     e.preventDefault();
-    let select = document.querySelector('.selectInventory') as any;
+    // let select = document.querySelector('.selectInventory') as any;
     // let option = select[0].getElementsByTagName('option') as any;
     // select.setvalue('coucou')
     // select!.value = "coucou";
-    console.log('select', select);
+    // console.log('select', select);
     
-    // const objectInventory = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
-    // const objectStudy = dataStudy.find(obj => obj.study_id === postLoanidStudy);
+    const objectInventory = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
+    const objectStudy = dataStudy.find(obj => obj.study_id === postLoanidStudy);
     
-    // if(objectInventory!.quantity <= 0) {
-    //   dispatch(stockAlertSwitch());
-    // } else {
-    //   const postLoanData: DataLoan = {
-    //     inventory_id: postLoanIdInventory!,
-    //     study_id: postLoanidStudy!,
-    //     loan_quantity: parseInt(`${postLoanQuantity}`, 10),
-    //     name: objectInventory!.name,
-    //     email: objectStudy!.email,
-    //   };
-    //   const updateInventoryData: Partial<DataInventory>= {
-    //     inventory_id: postLoanIdInventory!,
-    //     name: objectInventory!.name,
-    //     quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
-    //     details: objectInventory!.details,
-    //   };    
-    //   dispatch(postLoan(postLoanData));
-    //   dispatch(updateInventory(updateInventoryData));
-    //   // dispatch(getInventory());
-    // }
+    if(objectInventory!.quantity <= 0) {
+      dispatch(stockAlertSwitch());
+    } else {
+      const postLoanData: DataLoan = {
+        inventory_id: postLoanIdInventory!,
+        study_id: postLoanidStudy!,
+        loan_quantity: parseInt(`${postLoanQuantity}`, 10),
+        name: objectInventory!.name,
+        email: objectStudy!.email,
+      };
+      const updateInventoryData: Partial<DataInventory>= {
+        inventory_id: postLoanIdInventory!,
+        name: objectInventory!.name,
+        quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
+        details: objectInventory!.details,
+      };    
+      dispatch(postLoan(postLoanData));
+      dispatch(updateInventory(updateInventoryData));
+      // dispatch(getInventory());
+    }
   };
 
   return (

@@ -12,7 +12,7 @@ const dataMapperInventory = {
       text: `INSERT INTO inventory
             (name, quantity, details)
             VALUES ($1, $2, $3)
-            RETURNING inventory_id;`,
+            RETURNING *;`,
       values: [inventory.name, inventory.quantity, inventory.details],
     };
     

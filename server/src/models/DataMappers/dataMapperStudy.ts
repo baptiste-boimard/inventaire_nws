@@ -10,7 +10,7 @@ const dataMapperStudy = {
       text: `INSERT INTO study
             (firstname, lastname, email)
             VALUES ($1, $2, $3)
-            RETURNING study_id;`,
+            RETURNING *;`,
       values: [study.firstname, study.lastname, study.email],
     };
     const data = await client.query(query)

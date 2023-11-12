@@ -12,9 +12,7 @@ const loanController = {
                 
         const inventory_id: number = parseInt(req.params.inventory_id, 10);
         const study_id: number = parseInt(req.params.study_id, 10);
-        const loan_quantity: number = parseInt(req.body.loan_quantity, 10)      
-        console.log('controller',req.body);
-        
+        const loan_quantity: number = parseInt(req.body.loan_quantity, 10);      
 
         const loaning_date = moment().format('DD/MM/YYYY');
         const due_date = moment().add(1, 'M').format('DD/MM/YYYY');
@@ -25,9 +23,7 @@ const loanController = {
             loan_quantity: loan_quantity,
             loaning_date: loaning_date,
             due_date: due_date,
-        };                
-        console.log('datacontroller', data);
-        
+        };          
         const loan = await dataMapperLoan.postLoan(data);
         
         if(!loan) {
@@ -41,9 +37,10 @@ const loanController = {
             loaning_date: loaning_date,
             due_date: due_date,
         };
-
+        
         const sucessMailSend = await sendMail(mailData);
-
+        
+        
         if(!sucessMailSend) {
             throw new CustomError('Une erreur s\'est produite durant l\'envoi du mail')    
         }
@@ -60,13 +57,16 @@ const loanController = {
             due_date: req.body.due_date,
             email: req.body.email,
         }
+        
+        
         const sucessMailRelaunch = await sendMailRelaunch(relaunchData);
-
+        
+        
         if(!sucessMailRelaunch) {
             throw new CustomError('Une erreur s\'est produite durant l\'envoi du mail')    
         }
 
-        res.status(200)
+        res.status(200).send(sucessMailRelaunch);
     },
     
     //Récupère tous les étudants en BDD

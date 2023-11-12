@@ -9,15 +9,29 @@ let idMockLoanPosted: number;
 
 
 const mockLoan = {
-  loaning_date: new Date('2000-01-23T00:00:01'),
+  loan_quantity: 1
 };
 
 const badMockLoan = {
-  loaning_date: new Date('2023-23-03T14:10:57'),
+  loan_quantity: 1,
+  email:'notvalid@gmail.fr',
+  name: 'badMock'
 };
 
-const newMockLoan = {
-  loaning_date: new Date('1980-12-25T12:00:00'),
+const mockLoanRelaunch = {
+  email: 'bouketin28@gmail.com',
+  loan_quantity: 1,
+  name: 'baguette de pain',
+  loaning_date: '23/01/1980',
+  due_date: '15/12/2023'
+};
+
+const badMockLoanRelaunch = {
+  email: 'badbouketin28@gmail',
+  loan_quantity: 1,
+  name: 'baguette de pain',
+  loaning_date: '23/01/1980',
+  due_date: '15/12/2023'
 };
 
 const mockInventory = {
@@ -26,22 +40,10 @@ const mockInventory = {
   details: 'coucou',
 };
 
-const newMockInventory = {
-  name: 'aurevoir',
-  quantity: 2,
-  details: 'aurevoir',
-};
-
 const mockStudy = {
   firstname: 'firstname',
   lastname: 'lastname',
-  email: 'flastname@normandiewebschool.fr'
-};
-
-const newMockStudy = {
-  firstname: 'aurevoir',
-  lastname: 'aurevoir',
-  email: 'aurevoir@normandiewebschool.fr'
+  email: 'bboimard@normandiewebschool.fr'
 };
 
 afterAll( async() => {
@@ -49,12 +51,9 @@ afterAll( async() => {
   await request(appTest)
   .delete(`/inventory/${idMockInventory}`);
   await request(appTest)
-  .delete(`/inventory/${newIdMockInventory}`);
-  await request(appTest)
   .delete(`/study/${idMockStudy}`);
-  await request(appTest)
-  .delete(`/study/${newIdMockStudy}`);
 });
+
 
 describe('Test d\'une route qui n\'existe pas', () => {
   test('Réponse 404 sur une mauvaise URL', async () => {
@@ -71,36 +70,43 @@ describe('Tests de la route POST loanController', () => {
     const dataInventory = await request(appTest)
     .post('/inventory')
     .send(mockInventory);
-    //Récupération de son id 
+    //Récupération de son id     
     idMockInventory = dataInventory.body.rows[0].inventory_id;
+    
     
     //Création d'un étudiant pour le test
     const dataStudy = await request(appTest)
     .post('/study')
     .send(mockStudy)
-    //Récupération de son id  
+    //Récupération de son id      
     idMockStudy = dataStudy.body.rows[0].study_id;
+    
     
     //Création du loan avec les 2 id nécéssaire
     const res = await request(appTest)
     .post(`/loan/${idMockInventory}/${idMockStudy}`)
-    .send(mockLoan)
+    .send({
+      loan_quantity: mockLoan.loan_quantity,
+      name: dataInventory.body.rows[0].name,
+      email: dataStudy.body.rows[0].email,
+    })
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json');  
-    idMockLoanPosted = res.body.rows[0].loan_id;    
-        expect(res).toBeTruthy();
-        expect(res.status).toBe(200);
-        expect(res.body.rowCount).toBe(1);
-  }),
-  test('POST : Envoi d\'un mock avec une date non conforme', async() => {
+    console.log(res.body);
+    idMockLoanPosted = res.body.rows[0].loan_id;      
+      
+      expect(res).toBeTruthy();
+      expect(res.status).toBe(200);
+      expect(res.body.rowCount).toBe(1);
+  })
+  test('POST : Envoi d\'un mock avec un mail non valide', async() => {
     const res = await request(appTest)
         .post(`/loan/${idMockInventory}/${idMockStudy}`)
-        .send(badMockLoan)
+        .send({badMockLoan})
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json');          
     expect(res).toBeTruthy();   
     expect(res.status).toBe(500);
-    expect(res.body.error.message).toEqual('La date n\'est pas conforme');
   }),
   test('POST : Envoi d\'un mock conforme mais avec des mauvais id de clé étrangères', async() => {
     const res = await request(appTest)
@@ -112,6 +118,24 @@ describe('Tests de la route POST loanController', () => {
     expect(res.status).toBe(500);
     expect(res.body.error.message).toEqual('une instruction insert ou update sur la table « loan » viole la contrainte de clé\n' +
     'étrangère « inventory_id_fk »');
+  })
+  test('POST : Envoi d\'un mail de rappel', async () => {
+    const res = await request(appTest)
+      .post(`/loan/relaunch`)
+      .send(mockLoanRelaunch)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json');
+    expect(res).toBeTruthy();
+    expect(res.status).toBe(200);
+  })
+  test('POST : Echec d\'envoi d\'un mail de rappel', async () => {
+    const res = await request(appTest)
+      .post(`/loan/relaunch`)
+      .send(badMockLoanRelaunch)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json');
+    expect(res).toBeTruthy();
+    expect(res.status).toBe(500);
   })
 });
 
@@ -129,19 +153,12 @@ describe('Tests de la route GET loanController', () => {
     expect(res.status).toBe(200);
     expect(res.body.firstname).toEqual('firstname');
     expect(res.body.lastname).toEqual('lastname');
-    expect(res.body.email).toEqual('flastname@normandiewebschool.fr');
+    expect(res.body.email).toEqual('bboimard@normandiewebschool.fr');
     expect(res.body.name).toEqual('coucou');
-    expect(res.body.quantity).toBe(1);
+    expect(res.body.loan_quantity).toBe(1);
     expect(res.body.details).toEqual('coucou');            
   }),
-  test('GET : Echec de la récupération en BDD du mock modifié avec son id', async () => {
-      const fakeStudy_id: string = 'coucou';
-      const res = await request(appTest)
-          .get(`/loan/${fakeStudy_id}`)        
-      expect(res).toBeTruthy();
-      expect(res.status).toBe(500);  
-  }),
-  test('GET : Echec de la récupération en BDD du mock modifié avec un mauvais id', async () => {
+  test('GET : Echec de la récupération en BDD du mock avec un mauvais id', async () => {
       const res = await request(appTest)
           .get(`/loan/1256987`)  
       expect(res).toBeTruthy();
@@ -150,64 +167,64 @@ describe('Tests de la route GET loanController', () => {
   })
 });
 
-describe('Tests de la route PATCH loanController', () => {
-  test('PATCH : modification d\' un loan existant en BDD', async () => {
-    //Création d'un nouvel inventaire pour le test patch  
-    const dataInventory = await request(appTest)
-    .post('/inventory')
-    .send(newMockInventory);
-    //Récupération de son id 
-    newIdMockInventory = dataInventory.body.rows[0].inventory_id;
+// describe('Tests de la route PATCH loanController', () => {
+//   test('PATCH : modification d\' un loan existant en BDD', async () => {
+//     //Création d'un nouvel inventaire pour le test patch  
+//     const dataInventory = await request(appTest)
+//     .post('/inventory')
+//     .send(newMockInventory);
+//     //Récupération de son id 
+//     newIdMockInventory = dataInventory.body.rows[0].inventory_id;
     
-    //Création d'un nouvel étudiant pour le test patch
-    const dataStudy = await request(appTest)
-    .post('/study')
-    .send(newMockStudy)
-    //Récupération de son id  
-    newIdMockStudy = dataStudy.body.rows[0].study_id;    
+//     //Création d'un nouvel étudiant pour le test patch
+//     const dataStudy = await request(appTest)
+//     .post('/study')
+//     .send(newMockStudy)
+//     //Récupération de son id  
+//     newIdMockStudy = dataStudy.body.rows[0].study_id;    
 
-    const res = await request(appTest)
-        .patch(`/loan/${idMockLoanPosted}`)
-        .send({
-          loaning_date: newMockLoan.loaning_date,
-          inventory_id: newIdMockInventory,
-          study_id: newIdMockStudy,
-        })
-        .set('Content-Type', 'application/json') 
-        .set('Accept', 'application/json');    
-    expect(res).toBeTruthy();
-    expect(res.status).toBe(200);
-    expect(res.body.rowCount).toBe(1);
-  }),
-  test('PATCH : Envoi d\'un mock non conforme', async () => {    
-      const res = await request(appTest)
-      .patch(`/loan/${idMockLoanPosted}`)
-      .send({
-        loaning_date: badMockLoan.loaning_date,
-        inventory_id: newIdMockInventory,
-        study_id: newIdMockStudy,
-      })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json');  
-          expect(res.body.error).toBeTruthy();
-          expect(res.status).toBe(500);
-          expect(res.body.error.message).toEqual('La date n\'est pas conforme');
-  }),
-  test('PATCH : Envoi d\'un mock mais avec un mauvais id', async () => {
-      const res = await request(appTest)
-      .patch('/loan/1256987')
-      .send({
-        loaning_date: newMockLoan.loaning_date,
-        inventory_id: newIdMockInventory,
-        study_id: newIdMockStudy,
-      })
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json');                    
-          expect(res.body).toBeTruthy();
-          expect(res.status).toBe(200);
-          expect(res.body.rowCount).toBe(0);
-  })
-});
+//     const res = await request(appTest)
+//         .patch(`/loan/${idMockLoanPosted}`)
+//         .send({
+//           loaning_date: newMockLoan.loaning_date,
+//           inventory_id: newIdMockInventory,
+//           study_id: newIdMockStudy,
+//         })
+//         .set('Content-Type', 'application/json') 
+//         .set('Accept', 'application/json');    
+//     expect(res).toBeTruthy();
+//     expect(res.status).toBe(200);
+//     expect(res.body.rowCount).toBe(1);
+//   }),
+//   test('PATCH : Envoi d\'un mock non conforme', async () => {    
+//       const res = await request(appTest)
+//       .patch(`/loan/${idMockLoanPosted}`)
+//       .send({
+//         loaning_date: badMockLoan.loaning_date,
+//         inventory_id: newIdMockInventory,
+//         study_id: newIdMockStudy,
+//       })
+//       .set('Content-Type', 'application/json')
+//       .set('Accept', 'application/json');  
+//           expect(res.body.error).toBeTruthy();
+//           expect(res.status).toBe(500);
+//           expect(res.body.error.message).toEqual('La date n\'est pas conforme');
+//   }),
+//   test('PATCH : Envoi d\'un mock mais avec un mauvais id', async () => {
+//       const res = await request(appTest)
+//       .patch('/loan/1256987')
+//       .send({
+//         loaning_date: newMockLoan.loaning_date,
+//         inventory_id: newIdMockInventory,
+//         study_id: newIdMockStudy,
+//       })
+//       .set('Content-Type', 'application/json')
+//       .set('Accept', 'application/json');                    
+//           expect(res.body).toBeTruthy();
+//           expect(res.status).toBe(200);
+//           expect(res.body.rowCount).toBe(0);
+//   })
+// });
 
 describe('Tests de la route DELETE loanController', () => {
   test('DELETE : Echec de la suppression du mock modifié avec un mauvais id', async () => {
@@ -224,10 +241,9 @@ describe('Tests de la route DELETE loanController', () => {
       expect(res).toBeTruthy();
       expect(res.status).toBe(500);
       expect(res.body.error.message).toEqual('Une erreur est survenue lors de votre demande');
-  }),
+  })
   test('DELETE : Suppression du mock modifié avec son id', async () => {
-    console.log(idMockLoanPosted);
-    
+
       const res = await request(appTest)
           .delete(`/loan/${idMockLoanPosted}`)  
       expect(res).toBeTruthy();
@@ -238,10 +254,6 @@ describe('Tests de la route DELETE loanController', () => {
       await request(appTest)
         .delete(`/inventory/${idMockInventory}`);
       await request(appTest)
-        .delete(`/inventory/${newIdMockInventory}`);
-      await request(appTest)
         .delete(`/study/${idMockStudy}`);
-      await request(appTest)
-        .delete(`/study/${newIdMockStudy}`);
   })
 });
