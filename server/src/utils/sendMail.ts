@@ -67,7 +67,8 @@ async function sendMailRelaunch(relaunchData: RelaunchData) {
       <p>N'oubliez pas !!</p>
       <p>Cordialement, bonne journée.</p>`
     };
-
+    console.log(transporter.sendMail(mailOptions));
+    
   return transporter.sendMail(mailOptions);
 
 
