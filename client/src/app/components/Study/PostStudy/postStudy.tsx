@@ -38,14 +38,13 @@ function PostStudy () {
   };
   /** Envoi le nouveau matériel au back */
   const handleSubmit = (e: React.FormEvent) => {
-    const postStudyData: DataStudy = {
-      firstname: postStudyFirstname,
-      lastname: postStudyLastname!,
-      email: postStudyEmail,
-    };
-    
-    dispatch(postStudy(postStudyData));
-    dispatch(resetStudyField()); 
+      const postStudyData: DataStudy = {
+        firstname: postStudyFirstname,
+        lastname: postStudyLastname!,
+        email: postStudyEmail,
+      };
+      dispatch(postStudy(postStudyData));
+      dispatch(resetStudyField()); 
   };
 
   return (

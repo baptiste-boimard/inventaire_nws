@@ -1,15 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
 import dataMapperStudy from '../models/DataMappers/dataMapperStudy';
-import CustomError from '../handlers/CustomError';
+import client from '../models/dbClient';
 import { Study } from '../types/study';
 
 //Controller gérant les requetes concernat les étudiants
 const studyController = {
     //Enrengistre en BDD un nouvel étudiant
     async postStudy(req: Request, res: Response, next: NextFunction): Promise<void> {        
+        console.log(req.body);
         
         if(typeof req.body.firstname !== 'string' || typeof req.body.lastname !== 'string' || typeof req.body.email !== 'string') {
             res.status(400).send('Le format de données envoyé ne correpond pas');
+            return next();
+        }
+
+        if(req.body.firstname === '' || req.body.lastname === '' || req.body.email === '') {
+            res.status(400).send('Le format de données envoyé ne correpond pas');
+            return next();
+        }
+
+        const existingEmail = await client.query({
+            text: `SELECT * FROM study
+                    WHERE study.email = $1`,
+            values: [req.body.email],
+        });
+
+        console.log(existingEmail.rowCount);
+        
+        if(existingEmail.rowCount) {
+            res.status(403).send('Un étudiant avec cet email existe dèjà')
             return next();
         }
         

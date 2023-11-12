@@ -42,9 +42,7 @@ function PostInventory () {
       name: postInventoryName,
       quantity: parseInt(postInventoryQuantity,10),
       details: postInventoryDetails,
-    };
-    console.log(typeof postInventoryName, typeof postInventoryDetails, typeof postInventoryQuantity);
-    
+    };    
     dispatch(postInventory(postInventoryData));
     dispatch(resetInventoryField());
   };

@@ -51,7 +51,6 @@ export const getLoan = createAsyncThunk(
         return dispatch(getLoanToState(response.data));
       })
       .catch((error) => {
-        // console.log(error);
         
       })
   }
@@ -63,10 +62,8 @@ export const studyRelaunch = createAsyncThunk(
   async(relaunch: Relaunch, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     return await instance.post('/loan/relaunch', relaunch)
       .then((response) => {
-        console.log(response);
       })
       .catch((error) => {
-        console.log(error);
       })
   }
 );
@@ -75,17 +72,13 @@ export const studyRelaunch = createAsyncThunk(
 export const postLoan = createAsyncThunk(
   'loan/postLoan',
   async(loan: any,
-  { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
-    
-    await instance.post(`/loan/${loan.postLoanData.inventory_id}/${loan.psotLoanData.study_id}`, loan)
+  { dispatch, getState, rejectWithValue, fulfillWithValue }) => {    
+    await instance.post(`/loan/${loan.postLoanData.inventory_id}/${loan.postLoanData.study_id}`, loan.postLoanData)
       .then((response) => {    
-        // console.log('loanSlice',response);
-        dispatch(getLoan());
         dispatch(updateInventory(loan.updateInventoryData));
-            
+        dispatch(getLoan());
       })
       .catch((error) => {
-        // console.log(error);
         
       })
   }
@@ -99,9 +92,7 @@ export const deleteLoan = createAsyncThunk(
       .then(() => {
         dispatch(getLoan());
       })
-      .catch((error) => {
-        // console.log(error);
-        
+      .catch((error) => {        
       })
   }
 );

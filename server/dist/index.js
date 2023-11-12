@@ -1,11 +1,32 @@
 "use strict";
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 
 // src/handlers/CustomError.ts
 var CustomError;
@@ -13,8 +34,9 @@ var init_CustomError = __esm({
   "src/handlers/CustomError.ts"() {
     "use strict";
     CustomError = class _CustomError extends Error {
-      constructor(message) {
+      constructor(message, status) {
         super(message);
+        this.status = status;
         Object.setPrototypeOf(this, _CustomError.prototype);
       }
     };
@@ -51,28 +73,14 @@ var init_dataMapperLoan = __esm({
       async postLoan(loan) {
         const query = {
           text: `INSERT INTO loan
-            (inventory_id, study_id, loaning_date, due_date)
-            VALUES ($1, $2, $3, $4)
-            RETURNING loan_id;`,
-          values: [loan.inventory_id, loan.study_id, loan.loaning_date, loan.due_date]
+            (inventory_id, study_id, loan_quantity, loaning_date, due_date)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING *;`,
+          values: [loan.inventory_id, loan.study_id, loan.loan_quantity, loan.loaning_date, loan.due_date]
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("L'ajout de l'emprunt a rencontr\xE9 un probl\xE8me");
-        }
-        return data;
-      },
-      //Modifie un étudiant dans la table study
-      async patchLoan(id, loan) {
-        const query = {
-          text: `UPDATE loan
-            SET inventory_id =$1, study_id=$2, loaning_date=$3, due_date=$4
-            WHERE loan_id = $5`,
-          values: [loan.inventory_id, loan.study_id, loan.loaning_date, loan.due_date, id]
-        };
-        const data = await dbClient_default.query(query);
-        if (!data) {
-          throw new CustomError("La modification de l'emprunt a rencontr\xE9 un probl\xE8me");
+          throw new CustomError("L'ajout de l'emprunt a rencontr\xE9 un probl\xE8me", 403);
         }
         return data;
       },
@@ -91,9 +99,9 @@ var init_dataMapperLoan = __esm({
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de  l'emprunt");
+          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de  l'emprunt", 403);
         }
-        return data.rows[0];
+        return data.rows;
       },
       //Récupére un étudiant dans la base study
       async getOneLoan(id) {
@@ -112,7 +120,7 @@ var init_dataMapperLoan = __esm({
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de cet emprunt");
+          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de cet emprunt", 403);
         }
         return data.rows[0];
       },
@@ -125,7 +133,7 @@ var init_dataMapperLoan = __esm({
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("Vous ne pouvez pas supprimer cet emprunt");
+          throw new CustomError("Vous ne pouvez pas supprimer cet emprunt", 403);
         }
         return data;
       }
@@ -134,68 +142,138 @@ var init_dataMapperLoan = __esm({
   }
 });
 
-// src/controllers/loanController.ts
-function dateAddMonths(monthNbr, date) {
-  const testDate = new Date(date.getFullYear(), date.getMonth() + 1 + monthNbr, 0).getDate();
-  if (date.getDate() > testDate) {
-    date.setDate(testDate);
+// src/utils/createMailTransporter.ts
+var nodemailer, createMailTransporter, createMailTransporter_default;
+var init_createMailTransporter = __esm({
+  "src/utils/createMailTransporter.ts"() {
+    "use strict";
+    nodemailer = require("nodemailer");
+    createMailTransporter = () => {
+      const transporter = nodemailer.createTransport({
+        // si SMTP ou autre consulter la doc de nodemailer
+        service: "hotmail",
+        auth: {
+          user: process.env.NODEMAILER_USER,
+          pass: process.env.NODEMAILER_PASS
+        }
+      });
+      return transporter;
+    };
+    createMailTransporter_default = createMailTransporter;
   }
-  date.setMonth(date.getMonth() + monthNbr);
-  return date;
+});
+
+// src/utils/sendMail.ts
+async function sendMail(mailData) {
+  return new Promise((resolve) => {
+    const transporter = createMailTransporter_default();
+    const mailOptions = {
+      from: '"Bureau des emprunts de la NWS" <inv_bb_nws@outlook.fr>',
+      to: mailData.email,
+      subject: "Confirmation de votre pr\xEAt",
+      html: `<p>Bonjour, je vous confirme le pr\xEAt de la part de la NWS de ${mailData.loan_quantity} ${mailData.name} \xE0 la date du ${mailData.loaning_date}</p>
+      <p>Ce mat\xE9riel sera \xE0 rendre avant la date du ${mailData.due_date}</p>
+      <p>Cordialement, bonne journ\xE9e.</p>`
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
 }
-var loanController, loanController_default;
+async function sendMailRelaunch(relaunchData) {
+  const transporter = nodemailer2.createTransport({
+    // si SMTP ou autre consulter la doc de nodemailer
+    service: "hotmail",
+    auth: {
+      user: process.env.NODEMAILER_USER,
+      pass: process.env.NODEMAILER_PASS
+    }
+  });
+  const mailOptions = {
+    from: '"Bureau des emprunts de la NWS" <inv_bb_nws@outlook.fr>',
+    to: relaunchData.email,
+    subject: "Rappel vous avez un mat\xE9riel \xE0 ramener \xE0 la NWS",
+    html: `<p>Bonjour, je vous rappel le pr\xEAt de la part de la NWS de ${relaunchData.loan_quantity} ${relaunchData.name} \xE0 la date du ${relaunchData.loaning_date}</p>
+      <p>Ce mat\xE9riel est \xE0 rendre avant la date du ${relaunchData.due_date}</p>
+      <p>N'oubliez pas !!</p>
+      <p>Cordialement, bonne journ\xE9e.</p>`
+  };
+  return transporter.sendMail(mailOptions);
+}
+var nodemailer2;
+var init_sendMail = __esm({
+  "src/utils/sendMail.ts"() {
+    "use strict";
+    init_createMailTransporter();
+    nodemailer2 = require("nodemailer");
+  }
+});
+
+// src/controllers/loanController.ts
+var import_moment, loanController, loanController_default;
 var init_loanController = __esm({
   "src/controllers/loanController.ts"() {
     "use strict";
     init_dataMapperLoan();
-    init_CustomError();
+    init_sendMail();
+    import_moment = __toESM(require("moment"));
     loanController = {
       //Enrengistre en BDD un nouvel emprunt
       async postLoan(req, res, next) {
-        const inventory_id = parseInt(req.params.inventory_id);
-        const study_id = parseInt(req.params.study_id);
-        const testedDate = new Date(req.body.loaning_date).getFullYear();
-        if (testedDate === 1970) {
-          throw new CustomError("La date n'est pas conforme");
+        const inventory_id = parseInt(req.params.inventory_id, 10);
+        const study_id = parseInt(req.params.study_id, 10);
+        const loan_quantity = parseInt(req.body.loan_quantity, 10);
+        if (typeof loan_quantity !== "number" || Number.isInteger(loan_quantity) !== true) {
+          res.status(400).send("Le format de donn\xE9es envoy\xE9 ne correpond pas");
+          return next();
         }
-        const loaning_date = new Date(req.body.loaning_date) || /* @__PURE__ */ new Date();
-        const due_date = dateAddMonths(1, new Date(req.body.loaning_date) || /* @__PURE__ */ new Date());
+        const loaning_date = (0, import_moment.default)().format("DD/MM/YYYY");
+        const due_date = (0, import_moment.default)().add(1, "M").format("DD/MM/YYYY");
         const data = {
           inventory_id,
           study_id,
+          loan_quantity,
           loaning_date,
           due_date
         };
         const loan = await dataMapperLoan_default.postLoan(data);
-        if (loan) {
-          res.status(200).send(loan);
-        } else {
-          const err = new CustomError("Impossible d'ajouter cet emprunt");
-          next(err);
+        if (!loan) {
+          res.status(403).send("Impossible d'ajouter cet emprunt");
+          return next();
         }
-      },
-      // Modifie en BDD un étudiant
-      async patchLoan(req, res, next) {
-        const id = parseInt(req.params.loan_id);
-        const testedDate = new Date(req.body.loaning_date).getFullYear();
-        if (testedDate === 1970) {
-          throw new CustomError("La date n'est pas conforme");
-        }
-        const loaning_date = new Date(req.body.loaning_date) || /* @__PURE__ */ new Date();
-        const due_date = dateAddMonths(1, new Date(req.body.loaning_date) || /* @__PURE__ */ new Date());
-        const data = {
-          inventory_id: parseInt(req.body.inventory_id, 10),
-          study_id: parseInt(req.body.study_id),
+        const mailData = {
+          name: req.body.name,
+          loan_quantity,
+          email: req.body.email,
           loaning_date,
           due_date
         };
-        const study = await dataMapperLoan_default.patchLoan(id, data);
-        if (study) {
-          res.status(200).send(study);
-        } else {
-          const err = new CustomError("Impossible de modifier cet emprunt");
-          next(err);
+        const sucessMailSend = await sendMail(mailData);
+        if (!sucessMailSend) {
+          res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`);
+          return next();
         }
+        res.status(200).send(loan);
+      },
+      //** Envoi un mail de relance à l'atudiant */
+      async studyRelaunch(req, res, next) {
+        const relaunchData = {
+          name: req.body.name,
+          loan_quantity: req.body.loan_quantity,
+          loaning_date: req.body.loaning_date,
+          due_date: req.body.due_date,
+          email: req.body.email
+        };
+        const sucessMailRelaunch = await sendMailRelaunch(relaunchData);
+        if (!sucessMailRelaunch) {
+          res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`);
+          return next();
+        }
+        res.status(200).send(sucessMailRelaunch);
       },
       //Récupère tous les étudants en BDD
       async getLoan(req, res, next) {
@@ -203,37 +281,38 @@ var init_loanController = __esm({
         if (loan) {
           res.status(200).send(loan);
         } else {
-          const err = new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es des emprunts");
-          next(err);
+          res.status(403).send("Impossible de r\xE9cup\xE9rer les donn\xE9es des emprunts");
+          return next();
         }
       },
       //Récupère un étudiant en BDD
       async getOneLoan(req, res, next) {
         const id = parseInt(req.params.loan_id, 10);
         if (!id) {
-          const err = new CustomError("Une erreur est survenue lors de votre demande");
-          next(err);
+          res.status(403).send("Une erreur est survenue lors de votre demande");
+          return next();
         }
         const loan = await dataMapperLoan_default.getOneLoan(id);
         if (loan) {
           res.status(200).send(loan);
         } else {
-          const err = new CustomError("Les informations sur cet emprunt ne sont pas disponible");
-          next(err);
+          res.status(403).send("Les informations sur cet emprunt ne sont pas disponible");
+          return next();
         }
       },
-      // //Efface un étudiant en BDD
+      //Efface un étudiant en BDD
       async deleteOneLoan(req, res, next) {
         const id = parseInt(req.params.loan_id, 10);
         if (!id) {
-          const err = new CustomError("Une erreur est survenue lors de votre demande");
-          next(err);
+          res.status(403).send("Une erreur est survenue lors de votre demande");
+          return next();
         }
         const deleteStudy = await dataMapperLoan_default.deleteOneLoan(id);
         if (deleteStudy) {
           res.status(200).send(deleteStudy);
         } else {
-          const err = new CustomError("Vous ne pouvez pas supprimer cet emprunt");
+          res.status(403).send("Vous ne pouvez pas supprimer cet emprunt");
+          return next();
         }
       }
     };
@@ -255,12 +334,12 @@ var init_dataMapperInventory = __esm({
           text: `INSERT INTO inventory
             (name, quantity, details)
             VALUES ($1, $2, $3)
-            RETURNING inventory_id;`,
+            RETURNING *;`,
           values: [inventory.name, inventory.quantity, inventory.details]
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("L'ajout de l'article dans l'inventaire a rencontr\xE9 un probl\xE8me");
+          throw new CustomError("L'ajout de l'article dans l'inventaire a rencontr\xE9 un probl\xE8me", 403);
         }
         return data;
       },
@@ -273,7 +352,7 @@ var init_dataMapperInventory = __esm({
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("La modification de l'article dans l'inventaire a rencontr\xE9 un probl\xE8me");
+          throw new CustomError("La modification de l'article dans l'inventaire a rencontr\xE9 un probl\xE8me", 403);
         }
         return data;
       },
@@ -285,7 +364,7 @@ var init_dataMapperInventory = __esm({
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de  l'inventaire");
+          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de  l'inventaire", 403);
         }
         return data.rows;
       },
@@ -297,21 +376,22 @@ var init_dataMapperInventory = __esm({
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de cet article");
+          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de cet article", 403);
         }
         return data.rows[0];
       },
       async deleteOneInventory(id) {
-        const query = {
-          text: `DELETE FROM inventory
-            WHERE inventory_id = $1`,
-          values: [id]
-        };
-        const data = await dbClient_default.query(query);
-        if (!data) {
-          throw new CustomError("Vous ne pouvez pas supprimer cet article");
+        try {
+          const query = {
+            text: `DELETE FROM inventory
+              WHERE inventory_id = $1`,
+            values: [id]
+          };
+          const data = await dbClient_default.query(query);
+          return data;
+        } catch (error) {
+          throw new CustomError(error.message, 403);
         }
-        return data;
       }
     };
     dataMapperInventory_default = dataMapperInventory;
@@ -324,13 +404,13 @@ var init_inventoryController = __esm({
   "src/controllers/inventoryController.ts"() {
     "use strict";
     init_dataMapperInventory();
-    init_CustomError();
     inventoryController = {
       //Enrengistre en BDD un nouvel article
       async postInventory(req, res, next) {
         const quantity = parseInt(req.body.quantity, 10);
         if (typeof req.body.name !== "string" || typeof quantity !== "number" || typeof req.body.details !== "string" || Number.isInteger(quantity) !== true) {
-          throw new CustomError("Le format de donn\xE9es envoy\xE9 ne correpond pas");
+          res.status(400).send("Le format de donn\xE9es envoy\xE9 ne correpond pas");
+          return next();
         } else {
         }
         const data = {
@@ -342,8 +422,8 @@ var init_inventoryController = __esm({
         if (inventory) {
           res.status(200).send(inventory);
         } else {
-          const err = new CustomError("Impossible d'ajouter cet artcle dans l'inventaire");
-          next(err);
+          res.status(403).send("Impossible d'ajouter cet artcle dans l'inventaire");
+          return next();
         }
       },
       //Modifie en BDD un article
@@ -351,8 +431,8 @@ var init_inventoryController = __esm({
         const id = parseInt(req.params.inventory_id, 10);
         const quantity = parseInt(req.body.quantity, 10);
         if (typeof req.body.name !== "string" || typeof req.body.quantity !== "number" || typeof req.body.details !== "string") {
-          const err = new CustomError("Le format de donn\xE9es envoy\xE9 ne correpond pas");
-          next(err);
+          res.status(400).send("Le format de donn\xE9es envoy\xE9 ne correpond pas");
+          return next();
         }
         const data = {
           name: req.body.name,
@@ -363,8 +443,8 @@ var init_inventoryController = __esm({
         if (inventory) {
           res.status(200).send(inventory);
         } else {
-          const err = new CustomError("Impossible de modifier cet artcle dans l'inventaire");
-          next(err);
+          res.status(403).send("Impossible de modifier cet artcle dans l'inventaire");
+          return next();
         }
       },
       async getInventory(req, res, next) {
@@ -372,35 +452,36 @@ var init_inventoryController = __esm({
         if (inventory) {
           res.status(200).send(inventory);
         } else {
-          const err = new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de  l'inventaire");
-          next(err);
+          res.status(403).send("Impossible de r\xE9cup\xE9rer les donn\xE9es de  l'inventaire");
+          return next();
         }
       },
       async getOneInventory(req, res, next) {
         const id = parseInt(req.params.inventory_id, 10);
         if (!id) {
-          const err = new CustomError("Une erreur est survenue lors de votre demande");
-          next(err);
+          res.status(403).send("Une erreur est survenue lors de votre demande");
+          return next();
         }
         const inventory = await dataMapperInventory_default.getOneInventory(id);
         if (inventory) {
           res.status(200).send(inventory);
         } else {
-          const err = new CustomError("Les informations sur ce mat\xE9riel ne sont pas disponibe");
-          next(err);
+          res.status(403).send("Les informations sur ce mat\xE9riel ne sont pas disponibe");
+          return next();
         }
       },
       async deleteOneInventory(req, res, next) {
         const id = parseInt(req.params.inventory_id, 10);
         if (!id) {
-          const err = new CustomError("Une erreur est survenue lors de votre demande");
-          next(err);
+          res.status(403).send("Une erreur est survenue lors de votre demande");
+          return next();
         }
         const deleteInventory = await dataMapperInventory_default.deleteOneInventory(id);
         if (deleteInventory) {
           res.status(200).send(deleteInventory);
         } else {
-          const err = new CustomError("Vous ne pouvez pas supprimer cet article");
+          res.status(403).send("Vous ne pouvez pas supprimer cet article");
+          return next();
         }
       }
     };
@@ -422,12 +503,12 @@ var init_dataMapperStudy = __esm({
           text: `INSERT INTO study
             (firstname, lastname, email)
             VALUES ($1, $2, $3)
-            RETURNING study_id;`,
+            RETURNING *;`,
           values: [study.firstname, study.lastname, study.email]
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("L'ajout de l'\xE9tudiant a rencontr\xE9 un probl\xE8me");
+          throw new CustomError("L'ajout de l'\xE9tudiant a rencontr\xE9 un probl\xE8me", 403);
         }
         return data;
       },
@@ -441,7 +522,7 @@ var init_dataMapperStudy = __esm({
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("La modification de l'\xE9tudiant a rencontr\xE9 un probl\xE8me");
+          throw new CustomError("La modification de l'\xE9tudiant a rencontr\xE9 un probl\xE8me", 403);
         }
         return data;
       },
@@ -454,7 +535,7 @@ var init_dataMapperStudy = __esm({
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de  l'\xE9tudiant");
+          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de  l'\xE9tudiant", 403);
         }
         return data.rows;
       },
@@ -467,22 +548,23 @@ var init_dataMapperStudy = __esm({
         };
         const data = await dbClient_default.query(query);
         if (!data) {
-          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de cet \xE9tudiant");
+          throw new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es de cet \xE9tudiant", 403);
         }
         return data.rows[0];
       },
       //Efface un étudiant dans la base study
       async deleteOneStudy(id) {
-        const query = {
-          text: `DELETE FROM study
-            WHERE study_id = $1`,
-          values: [id]
-        };
-        const data = await dbClient_default.query(query);
-        if (!data) {
-          throw new CustomError("Vous ne pouvez pas supprimer cet \xE9tudiant");
+        try {
+          const query = {
+            text: `DELETE FROM study
+              WHERE study_id = $1`,
+            values: [id]
+          };
+          const data = await dbClient_default.query(query);
+          return data;
+        } catch (error) {
+          throw new CustomError(error.message, 403);
         }
-        return data;
       }
     };
     dataMapperStudy_default = dataMapperStudy;
@@ -495,12 +577,28 @@ var init_studyControler = __esm({
   "src/controllers/studyControler.ts"() {
     "use strict";
     init_dataMapperStudy();
-    init_CustomError();
+    init_dbClient();
     studyController = {
       //Enrengistre en BDD un nouvel étudiant
       async postStudy(req, res, next) {
+        console.log(req.body);
         if (typeof req.body.firstname !== "string" || typeof req.body.lastname !== "string" || typeof req.body.email !== "string") {
-          throw new CustomError("Le format de donn\xE9es envoy\xE9 ne correpond pas");
+          res.status(400).send("Le format de donn\xE9es envoy\xE9 ne correpond pas");
+          return next();
+        }
+        if (req.body.firstname === "" || req.body.lastname === "" || req.body.email === "") {
+          res.status(400).send("Le format de donn\xE9es envoy\xE9 ne correpond pas");
+          return next();
+        }
+        const existingEmail = await dbClient_default.query({
+          text: `SELECT * FROM study
+                    WHERE study.email = $1`,
+          values: [req.body.email]
+        });
+        console.log(existingEmail.rowCount);
+        if (existingEmail.rowCount) {
+          res.status(403).send("Un \xE9tudiant avec cet email existe d\xE8j\xE0");
+          return next();
         }
         const data = {
           firstname: req.body.firstname,
@@ -511,15 +609,16 @@ var init_studyControler = __esm({
         if (study) {
           res.status(200).send(study);
         } else {
-          const err = new CustomError("Impossible d'ajouter cet \xE9tudiant");
-          next(err);
+          res.status(403).send("Impossible d'ajouter cet \xE9tudiant");
+          return next();
         }
       },
       //Modifie en BDD un étudiant
       async patchStudy(req, res, next) {
         const id = parseInt(req.params.study_id);
         if (typeof req.body.firstname !== "string" || typeof req.body.lastname !== "string" || typeof req.body.email !== "string") {
-          throw new CustomError("Le format de donn\xE9es envoy\xE9 ne correpond pas");
+          res.status(400).send("Le format de donn\xE9es envoy\xE9 ne correpond pas");
+          return next();
         }
         const data = {
           firstname: req.body.firstname,
@@ -530,8 +629,8 @@ var init_studyControler = __esm({
         if (study) {
           res.status(200).send(study);
         } else {
-          const err = new CustomError("Impossible de modifier cet \xE9tudiant");
-          next(err);
+          res.status(403).send("Impossible de modifier cet \xE9tudiant");
+          return next();
         }
       },
       //Récupère tous les étudiants en BDD
@@ -540,37 +639,38 @@ var init_studyControler = __esm({
         if (study) {
           res.status(200).send(study);
         } else {
-          const err = new CustomError("Impossible de r\xE9cup\xE9rer les donn\xE9es des \xE9tudiant");
-          next(err);
+          res.status(403).send("Impossible de r\xE9cup\xE9rer les donn\xE9es des \xE9tudiant");
+          return next();
         }
       },
       //Récupère un étudiant en BDD
       async getOneStudy(req, res, next) {
         const id = parseInt(req.params.study_id, 10);
         if (!id) {
-          const err = new CustomError("Une erreur est survenue lors de votre demande");
-          next(err);
+          res.status(403).send("Une erreur est survenue lors de votre demande");
+          return next();
         }
         const study = await dataMapperStudy_default.getOneStudy(id);
         if (study) {
           res.status(200).send(study);
         } else {
-          const err = new CustomError("Les informations sur cet \xE9tudiant ne sont pas disponible");
-          next(err);
+          res.status(403).send("Les informations sur cet \xE9tudiant ne sont pas disponible");
+          return next();
         }
       },
       //Efface un étudiant en BDD
       async deleteOneStudy(req, res, next) {
         const id = parseInt(req.params.study_id, 10);
         if (!id) {
-          const err = new CustomError("Une erreur est survenue lors de votre demande");
-          next(err);
+          res.status(403).send("Une erreur est survenue lors de votre demande");
+          return next();
         }
         const deleteStudy = await dataMapperStudy_default.deleteOneStudy(id);
         if (deleteStudy) {
           res.status(200).send(deleteStudy);
         } else {
-          const err = new CustomError("Vous ne pouvez pas supprimer cet \xE9tudiant");
+          res.status(403).send("Vous ne pouvez pas supprimer cet \xE9tudiant");
+          return next();
         }
       }
     };
@@ -616,9 +716,9 @@ var require_router = __commonJS({
     router2.patch("/study/:study_id", routerWrapper_default(studyControler_default.patchStudy));
     router2.delete("/study/:study_id", routerWrapper_default(studyControler_default.deleteOneStudy));
     router2.post("/loan/:inventory_id/:study_id", routerWrapper_default(loanController_default.postLoan));
+    router2.post("/loan/relaunch", routerWrapper_default(loanController_default.studyRelaunch));
     router2.get("/loan", routerWrapper_default(loanController_default.getLoan));
     router2.get("/loan/:loan_id", routerWrapper_default(loanController_default.getOneLoan));
-    router2.patch("/loan/:loan_id", routerWrapper_default(loanController_default.patchLoan));
     router2.delete("/loan/:loan_id", routerWrapper_default(loanController_default.deleteOneLoan));
     module2.exports = router2;
   }
@@ -630,7 +730,7 @@ var import_config = require("dotenv/config");
 // src/handlers/handleError.ts
 var debug = require("debug")("HANDLEERROR");
 var handleError = async (error, req, res, next) => {
-  debug(error.message, error.status);
+  debug(`${error.message} | status : ${error.status}`);
   res.status(error.status || 500);
   res.send({
     error: {
@@ -638,7 +738,6 @@ var handleError = async (error, req, res, next) => {
       status: error.status
     }
   });
-  console.log(error);
 };
 var handleError_default = handleError;
 

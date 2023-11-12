@@ -10,10 +10,15 @@ const loanController = {
     //Enrengistre en BDD un nouvel emprunt
     async postLoan(req: Request, res: Response, next: NextFunction): Promise<void> {        
                 
+        
         const inventory_id: number = parseInt(req.params.inventory_id, 10);
         const study_id: number = parseInt(req.params.study_id, 10);
         const loan_quantity: number = parseInt(req.body.loan_quantity, 10);      
-
+        
+        if (typeof loan_quantity !== 'number' || Number.isInteger(loan_quantity) !== true) {
+            res.status(400).send('Le format de données envoyé ne correpond pas');
+            return next();
+       }
         const loaning_date = moment().format('DD/MM/YYYY');
         const due_date = moment().add(1, 'M').format('DD/MM/YYYY');
         
@@ -23,7 +28,7 @@ const loanController = {
             loan_quantity: loan_quantity,
             loaning_date: loaning_date,
             due_date: due_date,
-        };          
+        };                  
         const loan = await dataMapperLoan.postLoan(data);
         
         if(!loan) {
@@ -41,7 +46,6 @@ const loanController = {
         
         const sucessMailSend = await sendMail(mailData);
         
-        console.log(sucessMailSend);
         
         if(!sucessMailSend) {
             res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`)    

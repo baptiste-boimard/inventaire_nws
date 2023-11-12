@@ -26,7 +26,7 @@ import { CloseIcon } from '@chakra-ui/icons'
 // == IMPORT TYPE AND ACTION ==
 import { editPostLoanIdInventory, editPostLoanIdStudy, handleFieldChange, stockAlertSwitch } from '../../../slices/utilitiesSlice';
 import { DataLoan, postLoan } from '../../../slices/loanSlice';
-import { DataInventory, updateInventory } from '../../../slices/inventorySlice';
+import { DataInventory } from '../../../slices/inventorySlice';
 
 function PostLoan () {
   const dispatch = useAppDispatch();
@@ -35,27 +35,27 @@ function PostLoan () {
   // CALL STORE //
   const { dataInventory } = useAppSelector(state => state.inventoryReducer);
   const { dataStudy } = useAppSelector(state => state.studyReducer);
-  const { postLoanQuantity, postLoanIdInventory, postLoanidStudy, stockAlert } = useAppSelector(state => state.utilitiesReducer);
-
+  const { stockAlert } = useAppSelector(state => state.utilitiesReducer);
+  const  { postLoanIdInventory, postLoanidStudy, postLoanQuantity} = useAppSelector(state => state.utilitiesReducer);
 
   // == ACTION ==
   /** Permet le changements des champs controlés */
   const handleChange = (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    const changePayload = {
-      name: e.target.name,
-      value: e.target.value,
-    };
-    dispatch(handleFieldChange(changePayload));
+      const changePayload = {
+        name: e.target.name,
+        value: e.target.value,
+      };
+      dispatch(handleFieldChange(changePayload));
   };
   /** Sélectionne les propriétés du matériel séléctionné */
-  const handleChangeInventorySelect = (e: BaseSyntheticEvent) => { 
-    const id = e.target.options[e.target.selectedIndex].id;    
+  const handleChangeInventorySelect = (e: BaseSyntheticEvent) => {     
+    const id: number = e.target.options[e.target.selectedIndex].id;    
     dispatch(editPostLoanIdInventory(id));
   };
   /** Sélectionne les propriétés de l'étudiant séléctionné */
   const handleChangeStudySelect = (e: BaseSyntheticEvent) => { 
-    const id = e.target.options[e.target.selectedIndex].id;
+    const id: number = e.target.options[e.target.selectedIndex].id;
     dispatch(editPostLoanIdStudy(id));
   };
   /** Ferme la fenetre d'alerte stock 0 */
@@ -65,30 +65,30 @@ function PostLoan () {
   /** Soumet un nouveau pret */
   const handleSubmit = (e : BaseSyntheticEvent) => {
     e.preventDefault();
-    const objectInventory = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
-    const objectStudy = dataStudy.find(obj => obj.study_id === postLoanidStudy);
+    const objectInventory = dataInventory.find(obj => obj.inventory_id! === postLoanIdInventory);
+    const objectStudy = dataStudy.find(obj => obj.study_id! === postLoanidStudy);
     
     if(objectInventory!.quantity <= 0) {
       dispatch(stockAlertSwitch());
     } else {
-      const postLoanData: DataLoan = {
-        inventory_id: postLoanIdInventory!,
-        study_id: postLoanidStudy!,
-        loan_quantity: parseInt(`${postLoanQuantity}`, 10),
-        name: objectInventory!.name,
-        email: objectStudy!.email,
-      };
-      const updateInventoryData: Partial<DataInventory>= {
-        inventory_id: postLoanIdInventory!,
-        name: objectInventory!.name,
-        quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
-        details: objectInventory!.details,
-      };
-      const payload: any = {
-        postLoanData: postLoanData,
-        updateInventoryData: updateInventoryData
-      }
-      dispatch(postLoan(payload));
+        const postLoanData: DataLoan = {
+          inventory_id: postLoanIdInventory!,
+          study_id: postLoanidStudy!,
+          loan_quantity: parseInt(`${postLoanQuantity}`, 10),
+          name: objectInventory!.name,
+          email: objectStudy!.email,
+        };
+        const updateInventoryData: Partial<DataInventory>= {
+          inventory_id: postLoanIdInventory!,
+          name: objectInventory!.name,
+          quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
+          details: objectInventory!.details,
+        };
+        const payload: any = {
+          postLoanData: postLoanData,
+          updateInventoryData: updateInventoryData
+        }
+        dispatch(postLoan(payload));
     }
   };
 
@@ -124,9 +124,8 @@ function PostLoan () {
                     <Select 
                       className='selectInventory'
                       onChange={handleChangeInventorySelect}
-                      // defaultValue='Séléctionnez'
-                      placeholder='Séléctionnez'
                     >
+                      <option id={'0'}>Séléctionnez</option>
                       {dataInventory.map((inventoryItem)=> 
                         <option key={inventoryItem.inventory_id} id={`${inventoryItem.inventory_id}`} >
                           {`${inventoryItem.name}  (${inventoryItem.quantity})`}
