@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// == IMPORT ACTION ==
+import { updateInventory } from "./inventorySlice";
+
 const instance = axios.create({
   baseURL: process.env.REACT_APP_URL_SERVER
 });
@@ -71,13 +74,14 @@ export const studyRelaunch = createAsyncThunk(
 /** Envoi à la BDD un nouvel emprunt */
 export const postLoan = createAsyncThunk(
   'loan/postLoan',
-  async(loan: DataLoan,
+  async(loan: any,
   { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     
-    await instance.post(`/loan/${loan.inventory_id}/${loan.study_id}`, loan)
+    await instance.post(`/loan/${loan.postLoanData.inventory_id}/${loan.psotLoanData.study_id}`, loan)
       .then((response) => {    
         // console.log('loanSlice',response);
         dispatch(getLoan());
+        dispatch(updateInventory(loan.updateInventoryData));
             
       })
       .catch((error) => {

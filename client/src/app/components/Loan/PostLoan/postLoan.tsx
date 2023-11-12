@@ -65,12 +65,6 @@ function PostLoan () {
   /** Soumet un nouveau pret */
   const handleSubmit = (e : BaseSyntheticEvent) => {
     e.preventDefault();
-    // let select = document.querySelector('.selectInventory') as any;
-    // let option = select[0].getElementsByTagName('option') as any;
-    // select.setvalue('coucou')
-    // select!.value = "coucou";
-    // console.log('select', select);
-    
     const objectInventory = dataInventory.find(obj => obj.inventory_id === postLoanIdInventory);
     const objectStudy = dataStudy.find(obj => obj.study_id === postLoanidStudy);
     
@@ -89,9 +83,12 @@ function PostLoan () {
         name: objectInventory!.name,
         quantity: (objectInventory!.quantity - parseInt(`${postLoanQuantity}`, 10)) as number,
         details: objectInventory!.details,
-      };    
-      dispatch(postLoan(postLoanData));
-      dispatch(updateInventory(updateInventoryData));
+      };
+      const payload: any = {
+        postLoanData: postLoanData,
+        updateInventoryData: updateInventoryData
+      }
+      dispatch(postLoan(payload));
     }
   };
 
