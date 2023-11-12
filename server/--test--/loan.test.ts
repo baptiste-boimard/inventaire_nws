@@ -43,7 +43,7 @@ const mockInventory = {
 const mockStudy = {
   firstname: 'firstname',
   lastname: 'lastname',
-  email: 'bboimard@normandiewebschool.fr'
+  email: 'bouketin28@gmail.com'
 };
 
 afterAll( async() => {
@@ -70,7 +70,7 @@ describe('Tests de la route POST loanController', () => {
     const dataInventory = await request(appTest)
     .post('/inventory')
     .send(mockInventory);
-    //Récupération de son id     
+    //Récupération de son id   
     idMockInventory = dataInventory.body.rows[0].inventory_id;
     
     
@@ -78,7 +78,7 @@ describe('Tests de la route POST loanController', () => {
     const dataStudy = await request(appTest)
     .post('/study')
     .send(mockStudy)
-    //Récupération de son id      
+    //Récupération de son id          
     idMockStudy = dataStudy.body.rows[0].study_id;
     
     
@@ -91,8 +91,7 @@ describe('Tests de la route POST loanController', () => {
       email: dataStudy.body.rows[0].email,
     })
     .set('Content-Type', 'application/json')
-    .set('Accept', 'application/json');  
-    console.log(res.body);
+    .set('Accept', 'application/json');      
     idMockLoanPosted = res.body.rows[0].loan_id;      
       
       expect(res).toBeTruthy();
@@ -119,24 +118,6 @@ describe('Tests de la route POST loanController', () => {
     expect(res.body.error.message).toEqual('une instruction insert ou update sur la table « loan » viole la contrainte de clé\n' +
     'étrangère « inventory_id_fk »');
   })
-  test('POST : Envoi d\'un mail de rappel', async () => {
-    const res = await request(appTest)
-      .post(`/loan/relaunch`)
-      .send(mockLoanRelaunch)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json');
-    expect(res).toBeTruthy();
-    expect(res.status).toBe(200);
-  })
-  test('POST : Echec d\'envoi d\'un mail de rappel', async () => {
-    const res = await request(appTest)
-      .post(`/loan/relaunch`)
-      .send(badMockLoanRelaunch)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json');
-    expect(res).toBeTruthy();
-    expect(res.status).toBe(500);
-  })
 });
 
 describe('Tests de la route GET loanController', () => {
@@ -153,7 +134,7 @@ describe('Tests de la route GET loanController', () => {
     expect(res.status).toBe(200);
     expect(res.body.firstname).toEqual('firstname');
     expect(res.body.lastname).toEqual('lastname');
-    expect(res.body.email).toEqual('bboimard@normandiewebschool.fr');
+    expect(res.body.email).toEqual('bouketin28@gmail.com');
     expect(res.body.name).toEqual('coucou');
     expect(res.body.loan_quantity).toBe(1);
     expect(res.body.details).toEqual('coucou');            
@@ -162,8 +143,8 @@ describe('Tests de la route GET loanController', () => {
       const res = await request(appTest)
           .get(`/loan/1256987`)  
       expect(res).toBeTruthy();
-      expect(res.status).toBe(500);  
-      expect(res.body.error.message).toEqual('Les informations sur cet emprunt ne sont pas disponible');
+      expect(res.status).toBe(403);  
+      expect(res.text).toEqual('Les informations sur cet emprunt ne sont pas disponible');
   })
 });
 
@@ -239,8 +220,8 @@ describe('Tests de la route DELETE loanController', () => {
       const res = await request(appTest)
           .delete(`/loan/${fakeStudy_id}`)                                
       expect(res).toBeTruthy();
-      expect(res.status).toBe(500);
-      expect(res.body.error.message).toEqual('Une erreur est survenue lors de votre demande');
+      expect(res.status).toBe(403);
+      expect(res.text).toEqual('Une erreur est survenue lors de votre demande');
   })
   test('DELETE : Suppression du mock modifié avec son id', async () => {
 

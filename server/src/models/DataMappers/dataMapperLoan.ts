@@ -15,6 +15,7 @@ const dataMapperLoan = {
       values: [loan.inventory_id, loan.study_id, loan.loan_quantity, loan.loaning_date, loan.due_date],
     };
     const data = await client.query(query);
+    console.log('dataloan', data);
     
     if (!data) {
       throw new CustomError('L\'ajout de l\'emprunt a rencontré un problème', 403);

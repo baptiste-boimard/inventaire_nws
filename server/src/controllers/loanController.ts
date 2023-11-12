@@ -41,6 +41,7 @@ const loanController = {
         
         const sucessMailSend = await sendMail(mailData);
         
+        console.log(sucessMailSend);
         
         if(!sucessMailSend) {
             res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`)    
@@ -62,9 +63,7 @@ const loanController = {
         
         
         const sucessMailRelaunch = await sendMailRelaunch(relaunchData);
-        
-        console.log('return success',sucessMailRelaunch);
-        
+
         if(!sucessMailRelaunch) {
             res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`)    
             return next();

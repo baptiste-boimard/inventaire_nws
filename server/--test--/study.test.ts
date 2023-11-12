@@ -38,8 +38,8 @@ describe('Tests de la route POST studyController', () => {
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json');                  
         expect(res).toBeTruthy();   
-        expect(res.status).toBe(500);
-        expect(res.body.error.message).toEqual('Le format de données envoyé ne correpond pas');
+        expect(res.status).toBe(400);
+        expect(res.text).toEqual('Le format de données envoyé ne correpond pas');
     }),
     test('POST : Envoi d\'un mock conforme', async () => {
         const res = await request(appTest)
@@ -70,19 +70,20 @@ describe('Tests de la route GET studyController', () => {
         expect(res.body.lastname).toEqual('lastname');
         expect(res.body.email).toEqual('flastname@normandiewebschool.fr');            
     }),
-    test('GET : Echec de la récupération en BDD du mock modifié avec son id', async () => {
+    test('GET : Echec de la récupération en BDD du mock avec son id', async () => {
         const fakeStudy_id: string = 'coucou';
         const res = await request(appTest)
-            .get(`/study/${fakeStudy_id}`)        
+            .get(`/study/${fakeStudy_id}`) 
         expect(res).toBeTruthy();
-        expect(res.status).toBe(500);  
+        expect(res.status).toBe(403);  
+        expect(res.text).toEqual('Une erreur est survenue lors de votre demande')
     }),
-    test('GET : Echec de la récupération en BDD du mock modifié avec un mauvais id', async () => {
+    test('GET : Echec de la récupération en BDD du mock avec un mauvais id', async () => {
         const res = await request(appTest)
             .get(`/study/1256987`)  
         expect(res).toBeTruthy();
-        expect(res.status).toBe(500);  
-        expect(res.body.error.message).toEqual('Les informations sur cet étudiant ne sont pas disponible');
+        expect(res.status).toBe(403);  
+        expect(res.text).toEqual('Les informations sur cet étudiant ne sont pas disponible');
     })
 });
 
@@ -102,10 +103,10 @@ describe('Tests de la route PATCH studyController', () => {
         .patch(`/study/${idMockStudyPosted}`)
         .send(badMockStudy)
         .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json');  
-            expect(res.body.error).toBeTruthy();
-            expect(res.status).toBe(500);
-            expect(res.body.error.message).toEqual('Le format de données envoyé ne correpond pas');
+        .set('Accept', 'application/json');          
+            expect(res.body.error).not.toBeTruthy();
+            expect(res.status).toBe(400);
+            expect(res.text).toEqual('Le format de données envoyé ne correpond pas');
     }),
     test('PATCH : Envoi d\'un mock conforme mais avec un mauvais id', async () => {
         const res = await request(appTest)
@@ -132,8 +133,8 @@ describe('Tests de la route DELETE studyController', () => {
         const res = await request(appTest)
             .delete(`/study/${fakeStudy_id}`)                                
         expect(res).toBeTruthy();
-        expect(res.status).toBe(500);
-        expect(res.body.error.message).toEqual('Une erreur est survenue lors de votre demande');
+        expect(res.status).toBe(403);
+        expect(res.text).toEqual('Une erreur est survenue lors de votre demande');
     }),
     test('DELETE : Suppression du mock modifié avec son id', async () => {
         const study_id = idMockStudyPosted;

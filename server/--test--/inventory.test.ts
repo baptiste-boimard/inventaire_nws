@@ -35,10 +35,10 @@ describe('Tests de la route POST inventoryController', () => {
             .post('/inventory')
             .send(badMockInventory)
             .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json');            
+            .set('Accept', 'application/json');                        
         expect(res).toBeTruthy();   
-        expect(res.status).toBe(500);
-        expect(res.body.error.message).toEqual('Le format de données envoyé ne correpond pas');
+        expect(res.status).toBe(400);
+        expect(res.text).toEqual('Le format de données envoyé ne correpond pas');
     }),
     test('POST : Envoi d\'un mockInventory conforme', async () => {
         const res = await request(appTest)
@@ -68,19 +68,20 @@ describe('Tests de la route GET inventoryController', () => {
         expect(res.body.quantity).toEqual(2);
         expect(res.body.details).toEqual('Cable de 3m');            
     }),
-    test('GET : Echec de la récupération en BDD du mock modifié avec son id', async () => {
+    test('GET : Echec de la récupération en BDD du mock avec son id', async () => {
         const fakeInventory_id: string = 'coucou';
         const res = await request(appTest)
-            .get(`/inventory/${fakeInventory_id}`)        
+            .get(`/inventory/${fakeInventory_id}`)                
         expect(res).toBeTruthy();
-        expect(res.status).toBe(500);  
+        expect(res.status).toBe(403);  
+        expect(res.text).toEqual('Une erreur est survenue lors de votre demande')
     }),
-    test('GET : Echec de la récupération en BDD du mock modifié avec un mauvais id', async () => {
+    test('GET : Echec de la récupération en BDD du mock avec un mauvais id', async () => {
         const res = await request(appTest)
             .get(`/inventory/1256987`)  
         expect(res).toBeTruthy();
-        expect(res.status).toBe(500);  
-        expect(res.body.error.message).toEqual('Les informations sur ce matériel ne sont pas disponibe');
+        expect(res.status).toBe(403);  
+        expect(res.text).toEqual('Les informations sur ce matériel ne sont pas disponibe');
     })
 });
 
@@ -101,9 +102,9 @@ describe('Tests de la route PATCH inventoryController', () => {
         .send(badMockInventory)
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json');  
-            expect(res.body.error).toBeTruthy();
-            expect(res.status).toBe(500);
-            expect(res.body.error.message).toEqual('Le format de données envoyé ne correpond pas');
+            expect(res.body.error).not.toBeTruthy();
+            expect(res.status).toBe(400);
+            expect(res.text).toEqual('Le format de données envoyé ne correpond pas');
     }),
     test('PATCH : Envoi d\'un mockInventory mais avec un mauvais id', async () => {
         const res = await request(appTest)
@@ -132,8 +133,8 @@ describe('Tests de la route DELETE inventoryController', () => {
         const res = await request(appTest)
             .delete(`/inventory/${fakeInventory_id}`)                                
         expect(res).toBeTruthy();
-        expect(res.status).toBe(500);
-        expect(res.body.error.message).toEqual('Une erreur est survenue lors de votre demande');
+        expect(res.status).toBe(403);
+        expect(res.text).toEqual('Une erreur est survenue lors de votre demande');
     }),
     test('DELETE : Suppression du mock modifié avec son id', async () => {
         const res = await request(appTest)

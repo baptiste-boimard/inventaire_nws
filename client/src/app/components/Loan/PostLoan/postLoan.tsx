@@ -26,7 +26,7 @@ import { CloseIcon } from '@chakra-ui/icons'
 // == IMPORT TYPE AND ACTION ==
 import { editPostLoanIdInventory, editPostLoanIdStudy, handleFieldChange, stockAlertSwitch } from '../../../slices/utilitiesSlice';
 import { DataLoan, postLoan } from '../../../slices/loanSlice';
-import { DataInventory, getInventory, updateInventory } from '../../../slices/inventorySlice';
+import { DataInventory, updateInventory } from '../../../slices/inventorySlice';
 
 function PostLoan () {
   const dispatch = useAppDispatch();
@@ -92,7 +92,6 @@ function PostLoan () {
       };    
       dispatch(postLoan(postLoanData));
       dispatch(updateInventory(updateInventoryData));
-      // dispatch(getInventory());
     }
   };
 
