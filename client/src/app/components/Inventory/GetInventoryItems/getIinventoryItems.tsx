@@ -21,6 +21,9 @@ import {
   ModalCloseButton,
   FormControl,
   Input,
+  Alert,
+  AlertTitle,
+  AlertDescription,
 } from '@chakra-ui/react'
 
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
@@ -38,13 +41,13 @@ import {
   closeModalDelete,
 } from "../../../slices/utilitiesSlice";
 
-
+import { closeErrorDelete } from '../../../slices/inventorySlice';
 
 function GetInventoryItems ({inventory_id, name, quantity, details }: DataInventory ) {
   const dispatch = useAppDispatch();
 
   // == CALL STORE ==
-  const { dataInventory } = useAppSelector(state => state.inventoryReducer);
+  const { dataInventory, isErrorDeleteForeignKey } = useAppSelector(state => state.inventoryReducer);
   const {  editingInventory } = useAppSelector(state => state.utilitiesReducer);
   
   const nameValue: any = editingInventory[`name-${inventory_id}` as any];
@@ -54,6 +57,11 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
   const isOpenDelete: any = editingInventory[`isOpenModalInventoryDelete-${inventory_id}` as any];
 
   // == ACTION ==
+  /** Fermeture de l'arlerte pour erreur forign key */
+  const handleCloseAlert = () => {
+    dispatch(closeErrorDelete());
+    handleCloseModalDelete();
+  }
   /** Ouverture de la modal Edit */
   const handleOpenModalEdit = () => {
     dispatch(openModalEdit(`isOpenModalInventoryEdit-${inventory_id}`));    
@@ -93,8 +101,11 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
   };
   /** Demande au back la suppression d'un inventory */
   const handleDeleteInventory = () => {
-    dispatch(deleteInventory(inventory_id!));
-    handleCloseModalDelete();
+    const payload: any = {
+      closeModalDelete: `isOpenModalInventoryDelete-${inventory_id}`,
+      idInventory: inventory_id!,
+    }
+    dispatch(deleteInventory(payload));
   }
   /** Création dans le slice utilities des variable permettant l'eidtion dynamique */
   useEffect(() => {
@@ -202,7 +213,9 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
           <ModalOverlay />
           <ModalContent>
             <ModalHeader fontSize={16} py={2.5}>Confirmer la suppression</ModalHeader>
-            <ModalCloseButton />
+            {!isErrorDeleteForeignKey && (
+              <ModalCloseButton />
+            )}
             <ModalBody>
               <TableContainer>
                 <Table variant='striped' colorScheme='gray' size={'2xl'}>
@@ -223,23 +236,43 @@ function GetInventoryItems ({inventory_id, name, quantity, details }: DataInvent
                 </Table>
               </TableContainer>
             </ModalBody>
-            <ModalFooter py={2} pt={0}>
-              <Button
-                colorScheme='pink'
-                mr={3}
-                onClick={handleCloseModalDelete}
+
+            {isErrorDeleteForeignKey && (
+              <Alert status='error' color={'gray'}>
+                <AlertTitle>Suprression impossible</AlertTitle>
+                <AlertDescription>Le matériel est utilisé dans un prêt</AlertDescription>
+                <Button
+                  bg={'red'}
+                  ml={20}
+                  size={'xs'}
+                  colorScheme='red'
+                  aria-label='Search database'
+                  onClick={handleCloseAlert}
+                  >
+                  Fermer
+                </Button>
+              </Alert>
+            )}
+
+            {!isErrorDeleteForeignKey && (
+              <ModalFooter py={2} pt={0}>
+                <Button
+                  colorScheme='pink'
+                  mr={3}
+                  onClick={handleCloseModalDelete}
+                  size={'sm'}
+                >
+                  Annuler
+                </Button>
+                <Button
+                colorScheme="green"
+                onClick={handleDeleteInventory}
                 size={'sm'}
-              >
-                Annuler
-              </Button>
-              <Button
-              colorScheme="green"
-              onClick={handleDeleteInventory}
-              size={'sm'}
-            >
-              Confirmer
-            </Button>
-            </ModalFooter>
+                >
+                  Confirmer
+                </Button>
+              </ModalFooter>
+            )}
           </ModalContent>
         </Modal>
         {/* ===== MODAL DELETE ===== */}

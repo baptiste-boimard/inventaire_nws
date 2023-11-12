@@ -2,11 +2,30 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { BaseSyntheticEvent, useEffect } from "react";
 
 // == IMPORT CHAKRA UI ==
-import { Button, IconButton } from "@chakra-ui/react";
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/react';
+import {
+  Button,
+  IconButton,
+  Alert,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  FormControl,
+  Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  AlertTitle,
+  AlertDescription,
+} from '@chakra-ui/react';
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
-import { FormControl,  Input } from '@chakra-ui/react'
 
 // == IMPORT TYPE AND ACTION ==
 import { DataStudy, deleteStudy, updateStudy } from "../../../slices/studySlice";
@@ -21,13 +40,15 @@ import {
   closeModalDeleteStudy,
 } from "../../../slices/utilitiesSlice";
 
+import { closeErrorDelete } from "../../../slices/studySlice";
+
 
 
 function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
   const dispatch = useAppDispatch();
 
   // == CALL STORE ==
-  const { dataStudy } = useAppSelector(state => state.studyReducer);
+  const { dataStudy, isErrorDeleteForeignKey } = useAppSelector(state => state.studyReducer);
   const { editingStudy } = useAppSelector(state => state.utilitiesReducer);
   
   const firstnameValue: any = editingStudy[`firstname-${study_id}` as any];
@@ -37,6 +58,11 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
   const isOpenDeleteStudy: any = editingStudy[`isOpenDeleteStudy-${study_id}` as any];
 
   // == ACTION ==
+  /** Fermeture de l'arlete pour erreur foreign key */
+  const handleCloseAlert = () => {
+    dispatch(closeErrorDelete());
+    handleCloseModalDelete();
+  };
   /** Ouverture de la modal Edit */
   const handleOpenModalEdit = () => {
     dispatch(openModalEditStudy(`isOpenEditStudy-${study_id}`));    
@@ -51,7 +77,7 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
   };
   /** Fermeture de la modal delete */
   const handleCloseModalDelete = () => {
-    dispatch(closeModalDeleteStudy(`isOpenDeleteStudy-${study_id}`));    
+    dispatch(closeModalDeleteStudy(`isOpenDeleteStudy-${study_id}`));
   };
   /** Gestion des chanmps controlés */
   const handleChange = (e: BaseSyntheticEvent) => {
@@ -76,8 +102,11 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
   };
   /** Demande au back la suppression d'un inventory */
   const handleDeleteInventory = () => {
-    dispatch(deleteStudy(study_id!));
-    handleCloseModalDelete();
+    const payload: any= {
+      closeModalDelete: `isOpenDeleteStudy-${study_id}`,
+      idStudy: study_id!,
+    };
+    dispatch(deleteStudy(payload));
   }
   /** Création dans le slice utilities des variable permettant l'eidtion dynamique */
   useEffect(() => {    
@@ -186,7 +215,9 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
           <ModalOverlay />
           <ModalContent>
             <ModalHeader fontSize={16} py={2.5}>Confirmer la suppression</ModalHeader>
-            <ModalCloseButton />
+            {!isErrorDeleteForeignKey && (
+              <ModalCloseButton />
+            )}
             <ModalBody>
               <TableContainer>
                 <Table variant='striped' colorScheme='gray' size={'2xl'}>
@@ -207,23 +238,41 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                 </Table>
               </TableContainer>
             </ModalBody>
-            <ModalFooter py={2} pt={0}>
-              <Button
-                colorScheme='pink'
-                mr={3}
-                onClick={handleCloseModalDelete}
-                size={'sm'}
-              >
-                Annuler
-              </Button>
-              <Button
-              colorScheme="green"
-              onClick={handleDeleteInventory}
-              size={'sm'}
-            >
-              Confirmer
-            </Button>
-            </ModalFooter>
+            {isErrorDeleteForeignKey && (
+              <Alert status='error' color={'gray'}>
+                <AlertTitle>Suprression impossible</AlertTitle>
+                <AlertDescription>Le matériel est utilisé dans un prêt</AlertDescription>
+                <Button
+                  bg={'red'}
+                  ml={20}
+                  size={'xs'}
+                  colorScheme='red'
+                  aria-label='Search database'
+                  onClick={handleCloseAlert}
+                  >
+                    Fermer
+                  </Button>
+                </Alert>
+              )}
+            {!isErrorDeleteForeignKey && (
+                <ModalFooter py={2} pt={0}>
+                  <Button
+                    colorScheme='pink'
+                    mr={3}
+                    onClick={handleCloseModalDelete}
+                    size={'sm'}
+                  >
+                    Annuler
+                  </Button>
+                  <Button
+                  colorScheme="green"
+                  onClick={handleDeleteInventory}
+                  size={'sm'}
+                  >
+                  Confirmer
+                  </Button>
+                </ModalFooter>
+              )}
           </ModalContent>
         </Modal>
         {/* ===== MODAL DELETE ===== */}

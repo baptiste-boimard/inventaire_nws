@@ -63,17 +63,18 @@ const dataMapperStudy = {
   },
   //Efface un étudiant dans la base study
   async deleteOneStudy(id: number) {
-    
-    const query = {
-      text: `DELETE FROM study
-            WHERE study_id = $1`,
-      values: [id],
-    };
-    const data = await client.query(query)
-    if(!data) {
-      throw new CustomError('Vous ne pouvez pas supprimer cet étudiant', 403);
+    try {
+      const query = {
+        text: `DELETE FROM study
+              WHERE study_id = $1`,
+        values: [id],
+      };
+      const data = await client.query(query)
+      return data;
+      
+    } catch (error: any) { 
+      throw new CustomError(error.message, 403);
     }
-    return data;
   }
 };
 

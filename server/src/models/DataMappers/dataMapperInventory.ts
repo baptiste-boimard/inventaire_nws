@@ -60,19 +60,21 @@ const dataMapperInventory = {
     }
     return data.rows[0];
   },
+
   async deleteOneInventory(id: number) {
-    
-    const query = {
-      text: `DELETE FROM inventory
-            WHERE inventory_id = $1`,
-      values: [id],
-    };
-    const data = await client.query(query)
-    if(!data) {
-      throw new CustomError('Vous ne pouvez pas supprimer cet article', 403);
+    try {
+      const query = {
+        text: `DELETE FROM inventory
+              WHERE inventory_id = $1`,
+        values: [id],
+      };
+      const data = await client.query(query)
+      return data;
+    } catch (error: any) {
+      throw new CustomError(error.message, 403);
     }
-    return data;
   }
+
 };
 
 export default dataMapperInventory;

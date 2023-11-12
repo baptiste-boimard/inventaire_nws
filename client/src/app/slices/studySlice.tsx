@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// == IMPORT  ACTION ==
+import { closeModalDeleteStudy } from "./utilitiesSlice";
+
 const instance = axios.create({
   baseURL: process.env.REACT_APP_URL_SERVER
 });
@@ -15,11 +18,13 @@ export interface DataStudy {
 interface StudyState {
   dataStudy: Array<DataStudy>,
   dataStudyDefault: Array<DataStudy>,
+  isErrorDeleteForeignKey: boolean,
 }
 
 const initialState: StudyState = {
   dataStudy: [],
   dataStudyDefault: [],
+  isErrorDeleteForeignKey: false,
 };
 
 /** Demande au back tous les study */
@@ -30,9 +35,7 @@ export const getStudy = createAsyncThunk(
       .then((response) => {
         return dispatch(getStudyToState(response.data));
       })
-      .catch((error) => {
-        // console.log(error);
-        
+      .catch((error) => {        
       })
   }
 );
@@ -40,14 +43,17 @@ export const getStudy = createAsyncThunk(
 /** Demande au back de supprimer un study */
 export const deleteStudy = createAsyncThunk(
   'study/deleteStudy',
-  async(idStudy: number, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
-    return await instance.delete(`/study/${idStudy}`)
+  async(payload: any, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
+    return await instance.delete(`/study/${payload.idStudy}`)
       .then(() => {
         dispatch(getStudy());
+        dispatch(closeModalDeleteStudy(payload.closeModalDelete));
       })
       .catch((error) => {
-        // console.log(error);
-        
+        if(error.response.data.error.message === 'UPDATE ou DELETE sur la table « study » viole la contrainte de clé étrangère « study_id_fk » de la table « loan »')
+          { 
+            dispatch(errorDeleteForeignKeyStudy())      
+          }
       })
   }
 );
@@ -61,7 +67,6 @@ export const updateStudy = createAsyncThunk(
         dispatch(getStudy());
       })
       .catch((error) => {
-        // console.log(error);
       })
   }
 );
@@ -76,7 +81,6 @@ export const postStudy = createAsyncThunk(
         dispatch(getStudy());
       })
       .catch((error) => {
-        // console.log(error);
       })
   }
 )
@@ -90,12 +94,18 @@ const studySlice = createSlice({
     getStudyToState: (state, action) => {         
         state.dataStudy = action.payload;
     },
+    errorDeleteForeignKeyStudy: (state) => {
+      state.isErrorDeleteForeignKey = true;
+    },
+    closeErrorDelete: (state) => {
+      state.isErrorDeleteForeignKey = false
+    }
   },
   extraReducers(builder) {
 
   }
 });
 
-export const { getStudyToState } = studySlice.actions;
+export const { getStudyToState, errorDeleteForeignKeyStudy, closeErrorDelete } = studySlice.actions;
 
 export default studySlice.reducer;

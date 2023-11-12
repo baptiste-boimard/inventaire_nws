@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// == IMPORT ACTION ==
+import { closeModalDelete } from './utilitiesSlice';
+
 const instance = axios.create({
   baseURL: process.env.REACT_APP_URL_SERVER
 });
@@ -15,11 +18,13 @@ export interface DataInventory {
 interface InventoryState {
   dataInventory: Array<DataInventory>,
   dataInventoryDefault: Array<DataInventory>,
+  isErrorDeleteForeignKey: boolean,
 };
 
 const initialState: InventoryState = {
   dataInventory: [],
   dataInventoryDefault: [],
+  isErrorDeleteForeignKey: false,
 };
 
 /** Demande au back tous les inventory */
@@ -41,14 +46,17 @@ export const getInventory = createAsyncThunk(
 /** Demande au back de supprimer un inventory */
 export const deleteInventory = createAsyncThunk(
   'inventory/deleteInventory',
-  async(idInventory: number, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
-    return await instance.delete(`/inventory/${idInventory}`)
+  async(payload: any, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
+    return await instance.delete(`/inventory/${payload.idInventory}`)
       .then(() => {
         dispatch(getInventory());
+        dispatch(closeModalDelete(payload.closeModalDelete));
       })
       .catch((error) => {
-        // console.log(error);
-        
+        if(error.response.data.error.message === 'UPDATE ou DELETE sur la table « inventory » viole la contrainte de clé étrangère « inventory_id_fk » de la table « loan »')
+          {
+            dispatch(errorDeleteForeignKeyInventory())      
+          }
       })
   }
 );
@@ -91,12 +99,18 @@ const inventorySlice = createSlice({
     getInventoryToState: (state, action) => {   
         state.dataInventory = action.payload;
     },
+    errorDeleteForeignKeyInventory: (state) => {
+      state.isErrorDeleteForeignKey = true;
+    },
+    closeErrorDelete: (state) => {
+      state.isErrorDeleteForeignKey = false
+    }
   },
   extraReducers(builder) {
 
   }
 });
 
-export const { getInventoryToState } = inventorySlice.actions;
+export const { getInventoryToState, errorDeleteForeignKeyInventory, closeErrorDelete } = inventorySlice.actions;
 
 export default inventorySlice.reducer;
