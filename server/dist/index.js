@@ -724,9 +724,6 @@ var require_router = __commonJS({
   }
 });
 
-// src/index.ts
-var import_config = require("dotenv/config");
-
 // src/handlers/handleError.ts
 var debug = require("debug")("HANDLEERROR");
 var handleError = async (error, req, res, next) => {
@@ -742,6 +739,7 @@ var handleError = async (error, req, res, next) => {
 var handleError_default = handleError;
 
 // src/index.ts
+require("dotenv").config();
 var express = require("express");
 var app = express();
 var router = require_router();

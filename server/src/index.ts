@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import 'dotenv/config'
+require(`dotenv`).config();
 import handleError from './handlers/handleError';
 
 const express = require('express')
