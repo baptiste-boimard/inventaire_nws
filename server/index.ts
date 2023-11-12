@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-
 require('dotenv').config();
 const PORT: number = parseInt(process.env.PORT!, 10);
 const express = require('express')
@@ -19,7 +18,7 @@ app.use((req: Request ,res: Response ,next: NextFunction) => {
 app.use(router);
 app.use(express.static('docs'));
 
-app.listen(PORT, () => {
+app.listen(PORT, process.env.URL_SERVER, () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
 
