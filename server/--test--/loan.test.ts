@@ -69,7 +69,9 @@ describe('Tests de la route POST loanController', () => {
     //Création d'un inventaire pour le test    
     const dataInventory = await request(appTest)
     .post('/inventory')
-    .send(mockInventory);
+    .send(mockInventory)
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json');   
     //Récupération de son id   
     idMockInventory = dataInventory.body.rows[0].inventory_id;
     console.log(idMockInventory);
@@ -79,6 +81,8 @@ describe('Tests de la route POST loanController', () => {
     const dataStudy = await request(appTest)
     .post('/study')
     .send(mockStudy)
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json');   
     //Récupération de son id
     
     idMockStudy = dataStudy.body.rows[0].study_id;
