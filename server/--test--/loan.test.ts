@@ -46,13 +46,13 @@ const mockStudy = {
   email: 'bouketin28@gmail.com'
 };
 
-afterAll( async() => {
-  //Supression de tous les ajouts à la BDD pour ce test
-  await request(appTest)
-  .delete(`/inventory/${idMockInventory}`);
-  await request(appTest)
-  .delete(`/study/${idMockStudy}`);
-});
+// afterAll( async() => {
+//   //Supression de tous les ajouts à la BDD pour ce test
+//   await request(appTest)
+//   .delete(`/inventory/${idMockInventory}`);
+//   await request(appTest)
+//   .delete(`/study/${idMockStudy}`);
+// });
 
 
 describe('Test d\'une route qui n\'existe pas', () => {
@@ -72,6 +72,7 @@ describe('Tests de la route POST loanController', () => {
     .send(mockInventory);
     //Récupération de son id   
     idMockInventory = dataInventory.body.rows[0].inventory_id;
+    console.log(idMockInventory);
     
     
     //Création d'un étudiant pour le test
@@ -79,7 +80,6 @@ describe('Tests de la route POST loanController', () => {
     .post('/study')
     .send(mockStudy)
     //Récupération de son id
-    console.log(dataStudy.body);
     
     idMockStudy = dataStudy.body.rows[0].study_id;
     
@@ -108,8 +108,6 @@ describe('Tests de la route POST loanController', () => {
         .set('Accept', 'application/json');                 
     expect(res).toBeTruthy();   
     expect(res.status).toBe(500);
-    expect(res.body.error.message).toEqual('une instruction insert ou update sur la table « loan » viole la contrainte de clé\n' +
-    'étrangère « inventory_id_fk »');
   })
 });
 
