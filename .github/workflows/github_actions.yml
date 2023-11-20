@@ -25,7 +25,7 @@ jobs:
 
       - name: Connect to Postgresql and create tables
         working-directory: ./server
-        run: node client.js
+        run: node ./github/client.js
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
