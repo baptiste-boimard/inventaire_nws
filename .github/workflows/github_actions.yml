@@ -29,6 +29,9 @@ jobs:
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
+      - name: Lancement des Tests
+        working-directory: ./server
+        run: npm test
 
   # test:
   #   runs-on: ubuntu-latest
