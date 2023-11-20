@@ -4,7 +4,7 @@
   "description": "Un inventaire pour répertorier les emprunts au sein de l'école",
   "main": "./src/index.ts",
   "scripts": {
-    "test": "PGSSLMODE=disable jest --silent='false' --no-cache --forceExit",
+    "test": "jest --silent='false' --no-cache --forceExit --detectOpenHandles",
     "dev": "DEBUG=HANDLEERROR nodemon --watch src -e js,ts,json --exec \"ts-node src/index.ts\"",
     "build": "tsup src/index.ts --format cjs --clean",
     "start": "node dist/index.js"

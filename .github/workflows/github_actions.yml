@@ -34,7 +34,7 @@ jobs:
         working-directory: ./server
         run: npm test inventory.test.ts
         env: 
-          URL_DATABASE: 'postgres://postgres:postgres@localhost:5432/postgres'
+          URL_DATABASE: 'postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable'
 
   # test:
   #   runs-on: ubuntu-latest
