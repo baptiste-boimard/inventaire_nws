@@ -78,7 +78,9 @@ describe('Tests de la route POST loanController', () => {
     const dataStudy = await request(appTest)
     .post('/study')
     .send(mockStudy)
-    //Récupération de son id          
+    //Récupération de son id
+    console.log(dataStudy.body);
+    
     idMockStudy = dataStudy.body.rows[0].study_id;
     
     

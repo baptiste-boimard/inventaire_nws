@@ -7,7 +7,6 @@ import { Study } from '../types/study';
 const studyController = {
     //Enrengistre en BDD un nouvel étudiant
     async postStudy(req: Request, res: Response, next: NextFunction): Promise<void> {        
-        console.log(req.body);
         
         if(typeof req.body.firstname !== 'string' || typeof req.body.lastname !== 'string' || typeof req.body.email !== 'string') {
             res.status(400).send('Le format de données envoyé ne correpond pas');
@@ -25,7 +24,6 @@ const studyController = {
             values: [req.body.email],
         });
 
-        console.log(existingEmail.rowCount);
         
         if(existingEmail.rowCount) {
             res.status(403).send('Un étudiant avec cet email existe dèjà')
