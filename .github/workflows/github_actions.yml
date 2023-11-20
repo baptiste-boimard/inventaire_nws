@@ -18,12 +18,15 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with: 
-          path: server
+          cache: 'npm'
+          cache-dependency-path: |
+            server/package-lock.json
       - run: cd server
       - run: npm ci
+
       - name: Connect to Postgresql
         run: node client.js
         env:
