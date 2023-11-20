@@ -29,10 +29,13 @@ jobs:
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
-          URL_DATABASE: 'postgres://postgres:postgres@localhost:5432/postgres'
+          
       - name: Lancement des Tests
         working-directory: ./server
         run: npm test
+        env: 
+          URL_DATABASE: 'postgres://postgres:postgres@localhost:5432/postgres'
+          # r
 
   # test:
   #   runs-on: ubuntu-latest
