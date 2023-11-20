@@ -3,7 +3,7 @@ name: inventaire_nws
 on: [push]
 
 jobs:
-  test:
+  database:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -23,7 +23,8 @@ jobs:
         working-directory: ./server
         run: npm ci
 
-      - name: Connect to Postgresql
+      - name: Connect to Postgresql and create tables
+        working-directory: ./server
         run: node client.js
         env:
           POSTGRES_HOST: localhost
