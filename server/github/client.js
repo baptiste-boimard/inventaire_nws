@@ -28,6 +28,28 @@ const table = `CREATE TABLE IF NOT EXISTS public.inventory (
                 "created_at" TIMESTAMPTZ DEFAULT NOW(),
                 "updated_at" TIMESTAMPTZ,
                 CONSTRAINT study_id_pk PRIMARY KEY (study_id)
+              );
+              
+              CREATE TABLE IF NOT EXISTS public.loan (
+                "loan_id" INT GENERATED ALWAYS AS IDENTITY,
+                "inventory_id" INT NOT NULL, 
+                "study_id" INT NOT NULL, 
+                "loan_quantity" INT NOT NULL,
+                "loaning_date" TEXT NOT NULL,
+                "due_date" TEXT NOT NULL,
+                "created_at" TIMESTAMPTZ DEFAULT NOW(),
+                "updated_at" TIMESTAMPTZ,
+                CONSTRAINT loan_id_pk PRIMARY KEY (loan_id),
+                CONSTRAINT inventory_id_fk FOREIGN KEY (inventory_id)
+                  REFERENCES public.inventory (inventory_id) MATCH SIMPLE
+                  ON UPDATE NO ACTION
+                  ON DELETE NO ACTION
+                  NOT VALID,
+                CONSTRAINT study_id_fk FOREIGN KEY (study_id)
+                REFERENCES public.study (study_id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION
+                NOT VALID
               );`
 // const table2 = 'CREATE TABLE IF NOT EXISTS public.study ("study_id" INT GENERATED ALWAYS AS IDENTITY, "firstname" TEXT NOT NULL, "lastname" TEXT NOT NULL, "email" TEXT NOT NULL UNIQUE, "created_at" TIMESTAMPTZ DEFAULT NOW(), "updated_at" TIMESTAMPTZ, CONSTRAINT study_id_pk PRIMARY KEY (study_id))'
 // const table3 = 'CREATE TABLE IF NOT EXISTS public.loan ("loan_id" INT GENERATED ALWAYS AS IDENTITY, "inventory_id" INT NOT NULL, "study_id" INT NOT NULL, "loan_quantity" INT NOT NULL, "loaning_date" TEXT NOT NULL, "due_date" TEXT NOT NULL, "created_at" TIMESTAMPTZ DEFAULT NOW(), "updated_at" TIMESTAMPTZ, CONSTRAINT loan_id_pk PRIMARY KEY (loan_id), CONSTRAINT inventory_id_fk FOREIGN KEY (inventory_id) REFERENCES public.inventory (inventory_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION NOT VALID, CONSTRAINT study_id_fk FOREIGN KEY (study_id) REFERENCES public.study (study_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION NOT VALID)'
