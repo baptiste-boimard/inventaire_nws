@@ -19,12 +19,12 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v4
-      - name: npm install
+      - name: Npm install
         working-directory: ./server
         run: npm ci
 
       - name: Connect to Postgresql and create tables
-        working-directory: ./server
+        working-directory: ./.github/workflows
         run: node client.js
         env:
           POSTGRES_HOST: localhost
