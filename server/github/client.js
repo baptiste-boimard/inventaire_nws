@@ -55,6 +55,13 @@ pgclient.query(table, (err, res) => {
     if (err) throw err
 });
 
+pgclient.query(`
+                INSERT INTO inventory
+                (name, quantity, setails)
+                VALUES($1,$2,$3)`, `
+                [coucou, 1, coucou]`, (err, res) => {
+  if (err) throw err
+});
 
 
 pgclient.query('SELECT * FROM inventory', (err, res) => {
