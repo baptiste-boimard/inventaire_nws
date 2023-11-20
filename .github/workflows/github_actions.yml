@@ -20,8 +20,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      # - name:
-      #   run: npm ci
+        with: 
+          path: server
+      - run: cd server
+      - run: npm ci
       - name: Connect to Postgresql
         run: node client.js
         env:
