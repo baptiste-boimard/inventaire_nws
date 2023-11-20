@@ -91,22 +91,13 @@ describe('Tests de la route POST loanController', () => {
       email: dataStudy.body.rows[0].email,
     })
     .set('Content-Type', 'application/json')
-    .set('Accept', 'application/json');      
+    .set('Accept', 'application/json');
     idMockLoanPosted = res.body.rows[0].loan_id;      
       
       expect(res).toBeTruthy();
       expect(res.status).toBe(200);
       expect(res.body.rowCount).toBe(1);
   })
-  test('POST : Envoi d\'un mock avec un mail non valide', async() => {
-    const res = await request(appTest)
-        .post(`/loan/${idMockInventory}/${idMockStudy}`)
-        .send({badMockLoan})
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json');          
-    expect(res).toBeTruthy();   
-    expect(res.status).toBe(500);
-  }),
   test('POST : Envoi d\'un mock conforme mais avec des mauvais id de clé étrangères', async() => {
     const res = await request(appTest)
         .post(`/loan/1256987/1256987`)

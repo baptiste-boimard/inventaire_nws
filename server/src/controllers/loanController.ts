@@ -35,7 +35,7 @@ const loanController = {
             res.status(403).send('Impossible d\'ajouter cet emprunt');
             return next();
         }
-
+        
         const mailData: MailData = {
             name: req.body.name,
             loan_quantity: loan_quantity,
