@@ -24,8 +24,8 @@ jobs:
         run: npm ci
 
       - name: Connect to Postgresql and create tables
-        working-directory: ./.github/workflows
-        run: node client.js
+        working-directory: ./server
+        run: node ../.github/workflows/client.js
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
