@@ -23,7 +23,7 @@ jobs:
       # - name:
       #   run: npm ci
       - name: Connect to Postgresql
-        run: node.client.js
+        run: node client.js
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
