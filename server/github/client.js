@@ -58,9 +58,17 @@ pgclient.query(table, (err, res) => {
 
 pgclient.query(`
                 INSERT INTO inventory
-                (name, quantity, details)
-                VALUES($1,$2,$3) RETURNING *`, 
-                ['pascoucou', 1, 'pascoucou'], (err, res) => {
+                (inventory_id, name, quantity, details)
+                VALUES($1,$2,$3,$4) RETURNING *`, 
+                [128,'pascoucou', 1, 'pascoucou'], (err, res) => {
+  if (err) throw err
+});
+
+gclient.query(`
+                INSERT INTO study
+                (study_id, firstname, lastname, email)
+                VALUES($1,$2,$3,$4) RETURNING *`, 
+                [128,'pascoucou', '1', 'pascoucou'], (err, res) => {
   if (err) throw err
 });
 
