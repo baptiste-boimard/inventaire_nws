@@ -85,11 +85,11 @@ pgclient.query(`
 // });
 
 
-// pgclient.query('SELECT * FROM inventory', (err, res) => {
-//     if (err) throw err
-//     console.log(err, res.rows) // Print the data in student table
-//     pgclient.end()
-// });
+pgclient.query('SELECT * FROM inventory', (err, res) => {
+    if (err) throw err
+    console.log(err, res.rows) // Print the data in student table
+    pgclient.end()
+});
 
 pgclient.query('SELECT * FROM study', (err, res) => {
   if (err) throw err
