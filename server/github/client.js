@@ -76,13 +76,13 @@ pgclient.query(`
   if (err) throw err
 });
 
-// pgclient.query(`
-//                 INSERT INTO loan
-//                 (inventory_id, study_id, loan_quantity, loaning_date, due_date )
-//                 VALUES($1,$2,$3,$4,$5) RETURNING *`, 
-//                 [128, 128, 1, '12/8/98', '12/9/98'], (err, res) => {
-//   if (err) throw err
-// });
+pgclient.query(`
+                INSERT INTO loan
+                (inventory_id, study_id, loan_quantity, loaning_date, due_date )
+                VALUES($1,$2,$3,$4,$5) RETURNING *`, 
+                [128, 128, 1, '12/8/98', '12/9/98'], (err, res) => {
+  if (err) throw err
+});
 
 
 // pgclient.query('SELECT * FROM inventory', (err, res) => {
