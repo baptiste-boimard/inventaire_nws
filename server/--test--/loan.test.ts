@@ -97,7 +97,7 @@ describe('Tests de la route POST loanController', () => {
     })
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json');
-    console.log(res.body.rows[0].loan_id);
+    console.log(res.body);
     idMockLoanPosted = res.body.rows[0].loan_id;      
       
       expect(res).toBeTruthy();
