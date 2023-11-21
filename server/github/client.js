@@ -13,7 +13,8 @@ pgclient.connect();
 const table = `CREATE TABLE IF NOT EXISTS public.inventory (
                 "inventory_id" INT GENERATED ALWAYS AS IDENTITY,
                 "name" TEXT NOT NULL UNIQUE,
-                "quantity" INT, "details" TEXT,
+                "quantity" INT,
+                "details" TEXT,
                 "created_at" TIMESTAMPTZ DEFAULT NOW(),
                 "updated_at" TIMESTAMPTZ,
                 CONSTRAINT inventory_id_pk PRIMARY KEY (inventory_id)

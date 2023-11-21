@@ -76,7 +76,6 @@ describe('Tests de la route POST loanController', () => {
     idMockInventory = dataInventory.body.rows[0].inventory_id;
     console.log(idMockInventory);
     
-    
     //Création d'un étudiant pour le test
     const dataStudy = await request(appTest)
     .post('/study')
@@ -84,9 +83,7 @@ describe('Tests de la route POST loanController', () => {
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json');   
     //Récupération de son id
-    
     idMockStudy = dataStudy.body.rows[0].study_id;
-    
     
     //Création du loan avec les 2 id nécéssaire
     const res = await request(appTest)
