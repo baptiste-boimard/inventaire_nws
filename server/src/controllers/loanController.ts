@@ -31,6 +31,8 @@ const loanController = {
         };                  
         const loan = await dataMapperLoan.postLoan(data);
         
+        console.log('sortie controller',loan);
+        
         if(!loan) {
             res.status(403).send('Impossible d\'ajouter cet emprunt');
             return next();
