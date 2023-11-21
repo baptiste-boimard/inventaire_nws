@@ -64,7 +64,7 @@ pgclient.query(`
   if (err) throw err
 });
 
-gclient.query(`
+pgclient.query(`
                 INSERT INTO study
                 (study_id, firstname, lastname, email)
                 VALUES($1,$2,$3,$4) RETURNING *`, 
