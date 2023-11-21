@@ -73,8 +73,8 @@ describe('Tests de la route POST loanController', () => {
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json');   
     //Récupération de son id   
-    console.log(dataInventory.body.rows);
     idMockInventory = dataInventory.body.rows[0].inventory_id;
+    console.log(idMockInventory);
     
     //Création d'un étudiant pour le test
     const dataStudy = await request(appTest)
@@ -84,6 +84,8 @@ describe('Tests de la route POST loanController', () => {
     .set('Accept', 'application/json');   
     //Récupération de son id
     idMockStudy = dataStudy.body.rows[0].study_id;
+    console.log(idMockStudy);
+
     
     //Création du loan avec les 2 id nécéssaire
     const res = await request(appTest)
@@ -95,6 +97,7 @@ describe('Tests de la route POST loanController', () => {
     })
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json');
+    console.log(res.body.rows[0].loan_id);
     idMockLoanPosted = res.body.rows[0].loan_id;      
       
       expect(res).toBeTruthy();
