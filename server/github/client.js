@@ -18,8 +18,9 @@ const table = `CREATE TABLE IF NOT EXISTS public.inventory (
                 "created_at" TIMESTAMPTZ DEFAULT NOW(),
                 "updated_at" TIMESTAMPTZ,
                 CONSTRAINT inventory_id_pk PRIMARY KEY (inventory_id)
-              );
+              );`
 
+const table2 = `
               CREATE TABLE IF NOT EXISTS public.study (
                 "study_id" INT ,
                 "firstname" TEXT NOT NULL,
@@ -54,6 +55,10 @@ const table = `CREATE TABLE IF NOT EXISTS public.inventory (
 
 pgclient.query(table, (err, res) => {
     if (err) throw err
+});
+
+pgclient.query(table2, (err, res) => {
+  if (err) throw err
 });
 
 pgclient.query(`
