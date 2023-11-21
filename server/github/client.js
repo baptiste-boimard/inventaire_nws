@@ -60,13 +60,13 @@ pgclient.query(table, (err, res) => {
 //   if (err) throw err
 // });
 
-// pgclient.query(`
-//                 INSERT INTO inventory
-//                 (inventory_id, name, quantity, details)
-//                 VALUES($1,$2,$3,$4) RETURNING *`, 
-//                 [128,'pascoucou', 1, 'pascoucou'], (err, res) => {
-//   if (err) throw err
-// });
+pgclient.query(`
+                INSERT INTO inventory
+                (name, quantity, details)
+                VALUES($1,$2,$3) RETURNING *`, 
+                ['pascoucou', 1, 'pascoucou'], (err, res) => {
+  if (err) throw err
+});
 
 // pgclient.query(`
 //                 INSERT INTO study
@@ -85,11 +85,11 @@ pgclient.query(table, (err, res) => {
 // });
 
 
-// pgclient.query('SELECT * FROM inventory', (err, res) => {
-//     if (err) throw err
-//     console.log(err, res.rows) // Print the data in student table
-//     pgclient.end()
-// });
+pgclient.query('SELECT * FROM inventory', (err, res) => {
+    if (err) throw err
+    console.log(err, res.rows) // Print the data in student table
+    pgclient.end()
+});
 
 // pgclient.query('SELECT * FROM study', (err, res) => {
 //   if (err) throw err
