@@ -28,29 +28,29 @@ const table = `CREATE TABLE IF NOT EXISTS public.inventory (
                 "created_at" TIMESTAMPTZ DEFAULT NOW(),
                 "updated_at" TIMESTAMPTZ,
                 CONSTRAINT study_id_pk PRIMARY KEY (study_id)
-              );`
+              );
               
-              // CREATE TABLE IF NOT EXISTS public.loan (
-              //   "loan_id" INT GENERATED ALWAYS AS IDENTITY,
-              //   "inventory_id" INT NOT NULL, 
-              //   "study_id" INT NOT NULL, 
-              //   "loan_quantity" INT NOT NULL,
-              //   "loaning_date" TEXT NOT NULL,
-              //   "due_date" TEXT NOT NULL,
-              //   "created_at" TIMESTAMPTZ DEFAULT NOW(),
-              //   "updated_at" TIMESTAMPTZ,
-              //   CONSTRAINT loan_id_pk PRIMARY KEY (loan_id),
-              //   CONSTRAINT inventory_id_fk FOREIGN KEY (inventory_id)
-              //     REFERENCES public.inventory (inventory_id) MATCH SIMPLE
-              //     ON UPDATE NO ACTION
-              //     ON DELETE NO ACTION
-              //     NOT VALID,
-              //   CONSTRAINT study_id_fk FOREIGN KEY (study_id)
-              //   REFERENCES public.study (study_id) MATCH SIMPLE
-              //   ON UPDATE NO ACTION
-              //   ON DELETE NO ACTION
-              //   NOT VALID
-              // );`
+              CREATE TABLE IF NOT EXISTS public.loan (
+                "loan_id" INT GENERATED ALWAYS AS IDENTITY,
+                "inventory_id" INT NOT NULL, 
+                "study_id" INT NOT NULL, 
+                "loan_quantity" INT NOT NULL,
+                "loaning_date" TEXT NOT NULL,
+                "due_date" TEXT NOT NULL,
+                "created_at" TIMESTAMPTZ DEFAULT NOW(),
+                "updated_at" TIMESTAMPTZ,
+                CONSTRAINT loan_id_pk PRIMARY KEY (loan_id),
+                CONSTRAINT inventory_id_fk FOREIGN KEY (inventory_id)
+                  REFERENCES public.inventory (inventory_id) MATCH SIMPLE
+                  ON UPDATE NO ACTION
+                  ON DELETE NO ACTION
+                  NOT VALID,
+                CONSTRAINT study_id_fk FOREIGN KEY (study_id)
+                REFERENCES public.study (study_id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION
+                NOT VALID
+              );`
 
 pgclient.query(table, (err, res) => {
     if (err) throw err
@@ -60,13 +60,13 @@ pgclient.query(table, (err, res) => {
 //   if (err) throw err
 // });
 
-// pgclient.query(`
-//                 INSERT INTO inventory
-//                 (inventory_id, name, quantity, details)
-//                 VALUES($1,$2,$3,$4) RETURNING *`, 
-//                 [128,'pascoucou', 1, 'pascoucou'], (err, res) => {
-//   if (err) throw err
-// });
+pgclient.query(`
+                INSERT INTO inventory
+                (inventory_id, name, quantity, details)
+                VALUES($1,$2,$3,$4) RETURNING *`, 
+                [128,'pascoucou', 1, 'pascoucou'], (err, res) => {
+  if (err) throw err
+});
 
 pgclient.query(`
                 INSERT INTO study
@@ -91,14 +91,14 @@ pgclient.query(`
 //     pgclient.end()
 // });
 
-pgclient.query('SELECT * FROM study', (err, res) => {
-  if (err) throw err
-  console.log(err, res.rows) // Print the data in student table
-  pgclient.end()
-});
-
-// pgclient.query('SELECT * FROM loan', (err, res) => {
+// pgclient.query('SELECT * FROM study', (err, res) => {
 //   if (err) throw err
 //   console.log(err, res.rows) // Print the data in student table
 //   pgclient.end()
 // });
+
+pgclient.query('SELECT * FROM loan', (err, res) => {
+  if (err) throw err
+  console.log(err, res.rows) // Print the data in student table
+  pgclient.end()
+});
