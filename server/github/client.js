@@ -56,9 +56,9 @@ pgclient.query(table, (err, res) => {
     if (err) throw err
 });
 
-pgclient.query(table2, (err, res) => {
-  if (err) throw err
-});
+// pgclient.query(table2, (err, res) => {
+//   if (err) throw err
+// });
 
 // pgclient.query(`
 //                 INSERT INTO inventory
