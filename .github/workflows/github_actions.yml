@@ -32,7 +32,7 @@ jobs:
           
       - name: Lancement des Tests
         working-directory: ./server
-        run: npm test loan.test.ts
+        run: npm test inventory.test.ts && npm test loan.test.ts
         env: 
           URL_DATABASE: 'postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable'
 

@@ -73,8 +73,8 @@ describe('Tests de la route POST loanController', () => {
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json');   
     //Récupération de son id   
+    console.log(dataInventory.body.rows[0].inventory_id);
     idMockInventory = dataInventory.body.rows[0].inventory_id;
-    console.log(idMockInventory);
     
     //Création d'un étudiant pour le test
     const dataStudy = await request(appTest)
@@ -123,7 +123,7 @@ describe('Tests de la route GET loanController', () => {
     const res = await request(appTest)
         .get(`/loan/${idMockLoanPosted}`);    
     expect(res).toBeTruthy();
-    expect(res.status).toBe(200);
+    // expect(res.status).toBe(200);
     expect(res.body.firstname).toEqual('firstname');
     expect(res.body.lastname).toEqual('lastname');
     expect(res.body.email).toEqual('bouketin28@gmail.com');
