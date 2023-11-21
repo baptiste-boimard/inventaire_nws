@@ -87,7 +87,7 @@ describe('Tests de la route POST loanController', () => {
     console.log(idMockStudy);
 
     
-    //Création du loan avec les 2 id nécéssaire
+    //Création du loan avec les 2 id nécéssaire en mockant le service de mail
     const res = await request(appTest)
     .post(`/loan/${idMockInventory}/${idMockStudy}`)
     .send({
