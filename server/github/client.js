@@ -62,20 +62,20 @@ pgclient.query(table2, (err, res) => {
 });
 
 pgclient.query(`
-                INSERT INTO inventory
-                (inventory_id, name, quantity, details)
-                VALUES($1,$2,$3,$4) RETURNING *`, 
-                [128,'pascoucou', 1, 'pascoucou'], (err, res) => {
-  if (err) throw err
-});
-
-pgclient.query(`
                 INSERT INTO study
                 (study_id, firstname, lastname, email)
                 VALUES($1,$2,$3,$4) RETURNING *`, 
                 [128,'pascoucou', '1', 'pascoucou'], (err, res) => {
   if (err) throw err
 });
+
+// pgclient.query(`
+//                 INSERT INTO study
+//                 (study_id, firstname, lastname, email)
+//                 VALUES($1,$2,$3,$4) RETURNING *`, 
+//                 [128,'pascoucou', '1', 'pascoucou'], (err, res) => {
+//   if (err) throw err
+// });
 
 pgclient.query(`
                 INSERT INTO loan
