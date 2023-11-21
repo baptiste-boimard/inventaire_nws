@@ -30,9 +30,7 @@ const loanController = {
             due_date: due_date,
         };                  
         const loan = await dataMapperLoan.postLoan(data);
-        
-        console.log('sortie controller',loan);
-        
+                
         if(!loan) {
             res.status(403).send('Impossible d\'ajouter cet emprunt');
             return next();
@@ -47,8 +45,7 @@ const loanController = {
         };
         
         const sucessMailSend = await sendMail(mailData);
-        
-        
+                
         if(!sucessMailSend) {
             res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`)    
             return next();

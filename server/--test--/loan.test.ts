@@ -54,6 +54,18 @@ const mockStudy = {
 //   .delete(`/study/${idMockStudy}`);
 // });
 
+const sendMailMock = jest.fn().mockResolvedValue(true);
+
+// jest.mock('nodemailer');
+// const nodemailer = require('nodemailer');
+const {sendMail} = require('../src/utils/sendMail');
+jest.mock('../src/utils/sendMail')
+
+beforeAll( () => {
+  sendMailMock.mockClear();
+  // nodemailer.createTransport.mockClear();
+});
+
 
 describe('Test d\'une route qui n\'existe pas', () => {
   test('Réponse 404 sur une mauvaise URL', async () => {
@@ -74,7 +86,6 @@ describe('Tests de la route POST loanController', () => {
     .set('Accept', 'application/json');   
     //Récupération de son id   
     idMockInventory = dataInventory.body.rows[0].inventory_id;
-    console.log(idMockInventory);
     
     //Création d'un étudiant pour le test
     const dataStudy = await request(appTest)
@@ -84,10 +95,10 @@ describe('Tests de la route POST loanController', () => {
     .set('Accept', 'application/json');   
     //Récupération de son id
     idMockStudy = dataStudy.body.rows[0].study_id;
-    console.log(idMockStudy);
-
     
     //Création du loan avec les 2 id nécéssaire en mockant le service de mail
+    // nodemailer.createTransport.mockReturnValue({sendMail: sendMailMock})
+    sendMail.mockReturnValue({sendMail: sendMailMock});
     const res = await request(appTest)
     .post(`/loan/${idMockInventory}/${idMockStudy}`)
     .send({
@@ -103,7 +114,7 @@ describe('Tests de la route POST loanController', () => {
       expect(res).toBeTruthy();
       expect(res.status).toBe(200);
       expect(res.body.rowCount).toBe(1);
-  })
+  }, 20000)
   test('POST : Envoi d\'un mock conforme mais avec des mauvais id de clé étrangères', async() => {
     const res = await request(appTest)
         .post(`/loan/1256987/1256987`)
