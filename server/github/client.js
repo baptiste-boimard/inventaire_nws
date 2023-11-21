@@ -11,7 +11,7 @@ const pgclient = new Client({
 pgclient.connect();
 
 const table = `CREATE TABLE IF NOT EXISTS public.inventory (
-                "inventory_id" INT GENERATED ALWAYS AS IDENTITY,
+                "inventory_id" INT ,
                 "name" TEXT NOT NULL UNIQUE,
                 "quantity" INT,
                 "details" TEXT,
@@ -21,7 +21,7 @@ const table = `CREATE TABLE IF NOT EXISTS public.inventory (
               );
 
               CREATE TABLE IF NOT EXISTS public.study (
-                "study_id" INT GENERATED ALWAYS AS IDENTITY,
+                "study_id" INT ,
                 "firstname" TEXT NOT NULL,
                 "lastname" TEXT NOT NULL,
                 "email" TEXT NOT NULL UNIQUE,
