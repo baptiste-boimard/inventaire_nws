@@ -18,9 +18,9 @@ const table = `CREATE TABLE IF NOT EXISTS public.inventory (
                 "created_at" TIMESTAMPTZ DEFAULT NOW(),
                 "updated_at" TIMESTAMPTZ,
                 CONSTRAINT inventory_id_pk PRIMARY KEY (inventory_id)
-              );`
+              );
 
-const table2 = `CREATE TABLE IF NOT EXISTS public.study (
+                CREATE TABLE IF NOT EXISTS public.study (
                 "study_id" INT ,
                 "firstname" TEXT NOT NULL,
                 "lastname" TEXT NOT NULL,
