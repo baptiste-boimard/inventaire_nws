@@ -46,24 +46,15 @@ const mockStudy = {
   email: 'bouketin28@gmail.com'
 };
 
-// afterAll( async() => {
-//   //Supression de tous les ajouts à la BDD pour ce test
-//   await request(appTest)
-//   .delete(`/inventory/${idMockInventory}`);
-//   await request(appTest)
-//   .delete(`/study/${idMockStudy}`);
-// });
 
-const sendMailMock = jest.fn().mockResolvedValue(true);
-
-// jest.mock('nodemailer');
-// const nodemailer = require('nodemailer');
+//on mock la fonction demander l'envoi de mail
 const {sendMail} = require('../src/utils/sendMail');
 jest.mock('../src/utils/sendMail')
+//le retour de la fonction est une promesse qui donne true
+const sendMailMock = jest.fn().mockResolvedValue(true);
 
 beforeAll( () => {
   sendMailMock.mockClear();
-  // nodemailer.createTransport.mockClear();
 });
 
 
@@ -96,8 +87,7 @@ describe('Tests de la route POST loanController', () => {
     //Récupération de son id
     idMockStudy = dataStudy.body.rows[0].study_id;
     
-    //Création du loan avec les 2 id nécéssaire en mockant le service de mail
-    // nodemailer.createTransport.mockReturnValue({sendMail: sendMailMock})
+    //Création du loan avec les 2 id nécéssaire en mockant la fonction qui demande le service de mail
     sendMail.mockReturnValue({sendMail: sendMailMock});
     const res = await request(appTest)
     .post(`/loan/${idMockInventory}/${idMockStudy}`)
@@ -108,7 +98,6 @@ describe('Tests de la route POST loanController', () => {
     })
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json');
-    console.log(res.body);
     idMockLoanPosted = res.body.rows[0].loan_id;      
       
       expect(res).toBeTruthy();
