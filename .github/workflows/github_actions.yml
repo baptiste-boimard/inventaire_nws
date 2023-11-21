@@ -29,14 +29,14 @@ jobs:
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
-          NODEMAILER_PASS: ${{secrets.NODEMAILER_PASS}}
-          NODEMAILER_USER: ${{secrets.NODEMAILER_USER}}
           
       - name: Lancement des Tests
         working-directory: ./server
         run: npm test loan.test.ts
         env: 
           URL_DATABASE: 'postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable'
+          NODEMAILER_PASS: ${{secrets.NODEMAILER_PASS}}
+          NODEMAILER_USER: ${{secrets.NODEMAILER_USER}}
 
   # test:
   #   runs-on: ubuntu-latest
