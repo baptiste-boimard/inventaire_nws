@@ -60,7 +60,7 @@ pgclient.query(`
                 INSERT INTO inventory
                 (name, quantity, details)
                 VALUES($1,$2,$3) RETURNING *`, 
-                ['coucou', 1, 'coucou'], (err, res) => {
+                ['pascoucou', 1, 'pascoucou'], (err, res) => {
   if (err) throw err
 });
 
