@@ -37,9 +37,9 @@ jobs:
           URL_DATABASE: 'postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable'
 
   build-and-push-image-back:
-    runs-on: ubuntu:latest
-    needs: [database-and-test]
+    runs-on: ubuntu-latest
     if: github.ref_name == 'main'
+    needs: [database-and-test]
     permissions:
       contents: read
       packages: write
