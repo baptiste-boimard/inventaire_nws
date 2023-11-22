@@ -2,7 +2,7 @@ FROM node:18.18.2-alpine3.18 AS back-inventory
 
 WORKDIR /app
 
-COPY package.json package-lock.json tsconfig.json ./
+COPY package.json package-lock.json ./
 
 RUN npm install
 
