@@ -1,5 +1,7 @@
 services:
   back-inventory:
+    build:
+      context: ./server
     image: ghcr.io/baptiste-boimard/inventory_nws_back:main
     ports:
       - 3040:3040
