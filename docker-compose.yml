@@ -2,6 +2,9 @@ services:
   back-inventory:
     build:
       context: ./server
-    image: ghcr.io/baptiste-boimard/inventory_nws_back:main
     ports:
-      - 3040:3040
+      - "3040:3040"
+    environment:
+      - PORT=3040
+      - URL_DATABASE=postgres://nwsinventory:nwsinventory@51.75.133.155:5432/nwsinventory
+    image: ghcr.io/baptiste-boimard/inventory_nws_back:main
