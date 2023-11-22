@@ -581,7 +581,6 @@ var init_studyControler = __esm({
     studyController = {
       //Enrengistre en BDD un nouvel étudiant
       async postStudy(req, res, next) {
-        console.log(req.body);
         if (typeof req.body.firstname !== "string" || typeof req.body.lastname !== "string" || typeof req.body.email !== "string") {
           res.status(400).send("Le format de donn\xE9es envoy\xE9 ne correpond pas");
           return next();
@@ -595,7 +594,6 @@ var init_studyControler = __esm({
                     WHERE study.email = $1`,
           values: [req.body.email]
         });
-        console.log(existingEmail.rowCount);
         if (existingEmail.rowCount) {
           res.status(403).send("Un \xE9tudiant avec cet email existe d\xE8j\xE0");
           return next();
