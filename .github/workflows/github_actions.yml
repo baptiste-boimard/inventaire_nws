@@ -38,6 +38,7 @@ jobs:
 
   build-and-push-image-back:
     runs-on: ubuntu:latest
+    needs: [database-and-test]
     if: github.ref_name == 'main'
     permissions:
       contents: read
