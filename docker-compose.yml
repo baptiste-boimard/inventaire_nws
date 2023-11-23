@@ -10,7 +10,7 @@ services:
       - NODEMAILER_USER=inv_bb_nws@outlook.fr
       - NODEMAILER_PASS=Zr9(nSb!2Ycm2F+
 
-    image: ghcr.io/baptiste-boimard/inventory_nws_back:main
+    image: ghcr.io/baptiste-boimard/inventory_nws_back:latest
 
   front-inventory:
     build:
@@ -19,4 +19,4 @@ services:
       - "3100:3100"
     environment:
       - REACT_APP_URL_SERVER=http://51.75.133.155:3040
-    image: ghcr.io/baptiste-boimard/inventory_nws_front:main
+    image: ghcr.io/baptiste-boimard/inventory_nws_front:latest
