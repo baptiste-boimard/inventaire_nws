@@ -97,5 +97,5 @@ jobs:
             ssh -o StrictHostKeyChecking=no ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "\
             ls -la && \
             cd inventaire_nws && \
-            sudo docker compose -f docker-compose.yml up -d --pull=always"
+            sudo docker compose -f docker-compose.yml up -d --pull always"
             #ffgdd
