@@ -59,7 +59,7 @@ jobs:
         with:
           context: ./server
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          tags: ghcr.io/inventory_nws_back:${{ github.ref_name }}
 
   
   deploy:
