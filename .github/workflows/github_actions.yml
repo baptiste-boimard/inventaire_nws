@@ -98,4 +98,4 @@ jobs:
             ls -la && \
             cd inventaire_nws && \
             sudo docker compose -f docker-compose.yml up -d --pull=always"
-            #ff
+            #ffgd

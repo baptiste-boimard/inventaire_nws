@@ -1,7 +1,7 @@
 services:
   back-inventory:
-    # build:
-    #   context: ./server
+    build:
+      context: ./server
     ports:
       - "3040:3040"
     environment:
@@ -13,8 +13,8 @@ services:
     image: ghcr.io/baptiste-boimard/inventory_nws_back:main
 
   front-inventory:
-    # build:
-    #   context: ./client
+    build:
+      context: ./client
     ports:
       - "3100:3100"
     environment:
