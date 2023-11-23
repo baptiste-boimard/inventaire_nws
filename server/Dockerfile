@@ -10,6 +10,7 @@ COPY . .
 
 RUN npm run build
 
+# Ouverture du port pour l'envoi de mail
 EXPOSE 587/tcp
 
 # COPY docker/next/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
