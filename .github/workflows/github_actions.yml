@@ -52,7 +52,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.TOKEN_GITHUB }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
@@ -95,7 +95,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          # password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.TOKEN_GITHUB }}
 
       - uses: webfactory/ssh-agent@v0.8.0
         with:
@@ -105,4 +105,4 @@ jobs:
           ls -la && \
           cd inventaire_nws && \
           sudo docker compose -f docker-compose.prod.yml up -d --pull=always"
-        #ffgddfhhdd
+        #ffgddfhhdds
