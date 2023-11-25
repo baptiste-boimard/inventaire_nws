@@ -59,8 +59,7 @@ jobs:
         with:
           context: ./server
           push: true
-          tags: ghcr.io/${{ github.repository }}_back:${{ github.ref_name }}
-
+          tags: ghcr.io/${{ github.repository }}_back
   build-and-push-image-front:
     runs-on: ubuntu-latest
     if: github.ref_name == 'main'
@@ -84,7 +83,7 @@ jobs:
         with:
           context: ./server
           push: true
-          tags: ghcr.io/${{ github.repository }}_front:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}_front
   
   deploy:
     runs-on: ubuntu-latest
@@ -104,8 +103,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "\
           ls -la && \
           cd inventaire_nws && \
-          sudo docker pull ghcr.io/baptiste-boimard/inventaire_nws_front:main && \
-          sudo docker pull ghcr.io/baptiste-boimard/inventaire_nws_back:main && \
-          sudo docker compose -f docker-compose.prod.yml up -d"
-        # git pull && \
-        # sudo docker compose -f docker-compose.yml up -d --pull=always"
+          git pull && \
+          sudo docker compose -f docker-compose.yml up -d --pull=always"
+        # sudo docker pull ghcr.io/baptiste-boimard/inventaire_nws_front:main && \
+        # sudo docker pull ghcr.io/baptiste-boimard/inventaire_nws_back:main && \
+        # sudo docker compose -f docker-compose.prod.yml up -d"
