@@ -106,4 +106,4 @@ jobs:
           cd inventaire_nws && \
           sudo docker compose -f docker-compose.prod.yml up -d --pull=always"
         # git pull && \
-        #ffgddfhhddsddd
+        #ffgddfhhddsddd~¹~#
