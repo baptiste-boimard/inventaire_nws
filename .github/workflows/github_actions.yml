@@ -104,9 +104,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}} "\
           ls -la && \
           cd inventaire_nws && \
-          git pull && \
-          sudo docker compose -f docker-compose.yml up -d --pull=always"
-        # sudo docker pull ghcr.io/baptiste-boimard/inventaire_nws_front:main && \
-        # sudo docker pull ghcr.io/baptiste-boimard/inventaire_nws_back:main && \
-        #ffgddfhhddsddd~¹~#
-        # sudo docker compose -f docker-compose.prod.yml up -d"
+          sudo docker pull ghcr.io/baptiste-boimard/inventaire_nws_front:main && \
+          sudo docker pull ghcr.io/baptiste-boimard/inventaire_nws_back:main && \
+          sudo docker compose -f docker-compose.prod.yml up -d"
+        # git pull && \
+        # sudo docker compose -f docker-compose.yml up -d --pull=always"
