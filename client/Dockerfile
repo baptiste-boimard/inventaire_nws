@@ -10,16 +10,10 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx:alpine
-
-COPY ngnix.conf /etc/nginx/conf.d/default.conf
-# Copy the built React app to Nginx's web server directory
-COPY /app/build /usr/share/nginx/html
-
-# Expose port 80 for the Nginx server
-EXPOSE 3100
-
-# Start Nginx when the container runs
+FROM nginx:stable-alpine
+COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
 
