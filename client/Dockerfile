@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-# RUN npm run build
+RUN npm run build
 
 # FROM nginx:alpine
 
@@ -27,4 +27,4 @@ COPY . .
 
 # ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["npm", "run", "start"]
+CMD ["pm2", "start", "app.config.json"]

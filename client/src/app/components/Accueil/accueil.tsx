@@ -11,7 +11,7 @@ function Accueil () {
     color={'black'}
     textAlign={'center'}
   >
-    <h1>Coucou ?Bienvenue dans l'inventaire de la NWS</h1>
+    <h1>Bienvenue dans l'inventaire de la NWS</h1>
     <p>Choisissez la rubrique qui vous intéresse</p>
   </Box>
   );
