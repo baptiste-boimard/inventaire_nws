@@ -8,19 +8,12 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
-
-# FROM nginx:stable-alpine
-# COPY --from=build /app/build /usr/share/nginx/html
-# COPY --from=build /app/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-# EXPOSE 80
-# CMD ["nginx", "-g", "daemon off;"]
+# RUN npm run build
 
 # COPY docker/next/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 # RUN chmod +x /usr/local/bin/docker-entrypoint
 
 # ENTRYPOINT ["docker-entrypoint.sh"]
 
-# CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start"]
 
-CMD ["pm2", "start", "app.config.json"]

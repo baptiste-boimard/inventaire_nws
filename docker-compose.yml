@@ -19,6 +19,4 @@ services:
       - "3100:3100"
     environment:
       - REACT_APP_URL_SERVER=http://51.75.133.155:3040
-    # volumes:
-    #   - ./ngnix.conf:/etc/nginx/conf.d/default.conf
     # image: ghcr.io/baptiste-boimard/inventaire_nws_front
