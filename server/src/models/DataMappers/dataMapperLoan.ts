@@ -29,12 +29,18 @@ const dataMapperLoan = {
             JOIN
             (SELECT inventory.inventory_id, inventory.name, inventory.quantity, inventory.details
             FROM inventory) as i
-            ON l.inventory_id = i.inventory_id
-            JOIN
-            (SELECT study.study_id, study.firstname, study.lastname, study.email
-            FROM study) as s
-            ON l.study_id = s.study_id;`,
+            ON l.inventory_id = i.inventory_id;`,
     };
+    // text: `SELECT * FROM loan as l
+    //         JOIN
+    //         (SELECT inventory.inventory_id, inventory.name, inventory.quantity, inventory.details
+    //         FROM inventory) as i
+    //         ON l.inventory_id = i.inventory_id
+    //         JOIN
+    //         (SELECT study.study_id, study.firstname, study.lastname, study.email
+    //         FROM study) as s
+    //         ON l.study_id = s.study_id;`,
+    // };
     const data = await client.query(query)
     if (!data) {
       throw new CustomError('Impossible de récupérer les données de  l\'emprunt', 403);

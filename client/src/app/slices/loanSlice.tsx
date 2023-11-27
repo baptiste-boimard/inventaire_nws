@@ -48,6 +48,8 @@ export const getLoan = createAsyncThunk(
   async(_, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     return await instance.get('/loan')
       .then((response) => {        
+        console.log(response.data);
+        
         return dispatch(getLoanToState(response.data));
       })
       .catch((error) => {

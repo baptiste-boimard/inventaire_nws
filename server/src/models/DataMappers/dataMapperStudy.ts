@@ -37,16 +37,25 @@ const dataMapperStudy = {
   },
   //Récupére tous les étudiants dans la base study
   async getStudy() {
-    const query = {
-      text: `SELECT *
-            FROM study
-            ORDER BY study_id`,
-    };
-    const data = await client.query(query)
-    if (!data) {
-      throw new CustomError('Impossible de récupérer les données de  l\'étudiant', 403);
-    }   
-    return data.rows;
+
+    const fetchData = await fetch('http://vps-a47222b1.vps.ovh.net:4242/Student')
+    const data = await fetchData.json()
+    console.log(data);
+
+    return data;
+      
+    // Ancienne Request pour obtenir les étudiants en BDD
+
+    // const query = {
+    //   text: `SELECT *
+    //         FROM study
+    //         ORDER BY study_id`,
+    // };
+    // const data = await client.query(query)
+    // if (!data) {
+    //   throw new CustomError('Impossible de récupérer les données de  l\'étudiant', 403);
+    // }   
+    // return data.rows;
   },
   //Récupére un étudiant dans la base study
   async getOneStudy(id: number) {

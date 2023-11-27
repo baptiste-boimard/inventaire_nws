@@ -69,7 +69,7 @@ const studyController = {
     //Récupère tous les étudiants en BDD
     async getStudy(req: Request, res: Response, next: NextFunction): Promise<void> {           
         const study = await dataMapperStudy.getStudy();
-        if(study) {
+        if(study!) {
             res.status(200).send(study);
         } else {
             res.status(403).send('Impossible de récupérer les données des étudiant');

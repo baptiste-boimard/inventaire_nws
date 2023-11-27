@@ -15,6 +15,8 @@ const loanController = {
         const study_id: number = parseInt(req.params.study_id, 10);
         const loan_quantity: number = parseInt(req.body.loan_quantity, 10);      
         
+        console.log(typeof study_id);
+        
         if (typeof loan_quantity !== 'number' || Number.isInteger(loan_quantity) !== true) {
             res.status(400).send('Le format de données envoyé ne correpond pas');
             return next();
@@ -29,6 +31,8 @@ const loanController = {
             loaning_date: loaning_date,
             due_date: due_date,
         };                  
+        console.log('data',data);
+        
         const loan = await dataMapperLoan.postLoan(data);
                 
         if(!loan) {
@@ -43,6 +47,7 @@ const loanController = {
             loaning_date: loaning_date,
             due_date: due_date,
         };
+        console.log('mail',mailData);
         
         const sucessMailSend = await sendMail(mailData);
                 
@@ -80,6 +85,8 @@ const loanController = {
         const loan = await dataMapperLoan.getLoan();        
         
         if(loan) {
+            console.log(loan);
+            
             res.status(200).send(loan);
         } else {
             res.status(403).send('Impossible de récupérer les données des emprunts');

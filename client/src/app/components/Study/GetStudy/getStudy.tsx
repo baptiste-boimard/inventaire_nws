@@ -47,12 +47,14 @@ function GetStudy () {
                 <Th p={2} width={'20%'}>Prénom</Th>
                 <Th p={2} width={'20%'}>Nom</Th>
                 <Th p={2} pl={8} width={'40%'}>Email</Th>
-                <Th p={2} width={'10%'}>Editer</Th>
-                <Th p={2} width={'10%'}>Supprimer</Th>
+                <Th p={2} width={'10%'}></Th>
+                <Th p={2} width={'10%'}></Th>
+                {/* <Th p={2} width={'10%'}>Editer</Th>
+                <Th p={2} width={'10%'}>Supprimer</Th> */}
               </Tr>
             </Thead>
             <Tbody>
-              {dataStudy.map((studyItems) => <GetStudyItems key={studyItems.study_id} {...studyItems} />) as any}
+              {dataStudy.map((studyItems) => <GetStudyItems key={studyItems.id} {...studyItems} />) as any}
             </Tbody>
           </Table>
         </TableContainer>

@@ -28,7 +28,8 @@ import {
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 
 // == IMPORT TYPE AND ACTION ==
-import { DataStudy, deleteStudy, updateStudy } from "../../../slices/studySlice";
+import { DataStudy } from "../../../slices/studySlice";
+// import { deleteStudy, updateStudy } from "../../../slices/studySlice";
 
 // == IMPORT ACTION ==
 import { 
@@ -44,18 +45,18 @@ import { closeErrorDelete } from "../../../slices/studySlice";
 
 
 
-function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
+function GetStudyItems ({id, prenom, nom, mail}: any ) {
   const dispatch = useAppDispatch();
 
   // == CALL STORE ==
   const { dataStudy, isErrorDeleteForeignKey } = useAppSelector(state => state.studyReducer);
   const { editingStudy } = useAppSelector(state => state.utilitiesReducer);
   
-  const firstnameValue: any = editingStudy[`firstname-${study_id}` as any];
-  const lastnameValue: any = editingStudy[`lastname-${study_id}` as any];
-  const emailValue: any = editingStudy[`email-${study_id}` as any];
-  const isOpenEditStudy: any = editingStudy[`isOpenEditStudy-${study_id}` as any];
-  const isOpenDeleteStudy: any = editingStudy[`isOpenDeleteStudy-${study_id}` as any];
+  const firstnameValue: any = editingStudy[`firstname-${id}` as any];
+  const lastnameValue: any = editingStudy[`lastname-${id}` as any];
+  const emailValue: any = editingStudy[`email-${id}` as any];
+  const isOpenEditStudy: any = editingStudy[`isOpenEditStudy-${id}` as any];
+  const isOpenDeleteStudy: any = editingStudy[`isOpenDeleteStudy-${id}` as any];
 
   // == ACTION ==
   /** Fermeture de l'arlete pour erreur foreign key */
@@ -65,19 +66,19 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
   };
   /** Ouverture de la modal Edit */
   const handleOpenModalEdit = () => {
-    dispatch(openModalEditStudy(`isOpenEditStudy-${study_id}`));    
+    dispatch(openModalEditStudy(`isOpenEditStudy-${id}`));    
   };
   /** Fermeture de la modal Edit */
   const handleCloseModalEdit = () => {
-    dispatch(closeModalEditStudy(`isOpenEditStudy-${study_id}`));
+    dispatch(closeModalEditStudy(`isOpenEditStudy-${id}`));
   };
   /** Ouverture de la modal delete */
   const handleOpenModalDelete = () => {    
-    dispatch(openModalDeleteStudy(`isOpenDeleteStudy-${study_id}`));    
+    dispatch(openModalDeleteStudy(`isOpenDeleteStudy-${id}`));    
   };
   /** Fermeture de la modal delete */
   const handleCloseModalDelete = () => {
-    dispatch(closeModalDeleteStudy(`isOpenDeleteStudy-${study_id}`));
+    dispatch(closeModalDeleteStudy(`isOpenDeleteStudy-${id}`));
   };
   /** Gestion des chanmps controlés */
   const handleChange = (e: BaseSyntheticEvent) => {
@@ -89,41 +90,41 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
     dispatch(handleFieldChangeInEditingStudy(changePayload));    
   };
   /** Soumission du formulaire au back pour la modification d'un inventory */
-  const handleSubmit = (e:React.FormEvent) => {
-    e.preventDefault();
-    const study: DataStudy = {
-      study_id: study_id ,
-      firstname: firstnameValue,
-      lastname: lastnameValue,
-      email: emailValue,
-    };
-    dispatch(updateStudy(study));
-    handleCloseModalEdit();
-  };
+  // const handleSubmit = (e:React.FormEvent) => {
+  //   e.preventDefault();
+  //   const study: DataStudy = {
+  //     study_id: study_id ,
+  //     firstname: firstnameValue,
+  //     lastname: lastnameValue,
+  //     email: emailValue,
+  //   };
+  //   dispatch(updateStudy(study));
+  //   handleCloseModalEdit();
+  // };
   /** Demande au back la suppression d'un inventory */
-  const handleDeleteInventory = () => {
-    const payload: any= {
-      closeModalDelete: `isOpenDeleteStudy-${study_id}`,
-      idStudy: study_id!,
-    };
-    dispatch(deleteStudy(payload));
-  }
-  /** Création dans le slice utilities des variable permettant l'eidtion dynamique */
-  useEffect(() => {    
-    const createEditingStudy:any = {
-      [`isOpenEditStudy-${study_id}`]: false,
-      [`isOpenDeleteStudy-${study_id}`]: false,
-      [`firstname-${study_id}`]: firstname,
-      [`lastname-${study_id}`]: lastname,
-      [`email-${study_id}`]: email,
-    };
-    dispatch(addStudyForModalEditing(createEditingStudy));
-  }, [dataStudy, dispatch, email, firstname, lastname, study_id])
+  // const handleDeleteInventory = () => {
+  //   const payload: any= {
+  //     closeModalDelete: `isOpenDeleteStudy-${study_id}`,
+  //     idStudy: study_id!,
+  //   };
+  //   dispatch(deleteStudy(payload));
+  // }
+  /** Création dans le slice utilities des variable permettant l'edition dynamique */
+  // useEffect(() => {    
+  //   const createEditingStudy:any = {
+  //     [`isOpenEditStudy-${study_id}`]: false,
+  //     [`isOpenDeleteStudy-${study_id}`]: false,
+  //     [`firstname-${study_id}`]: firstname,
+  //     [`lastname-${study_id}`]: lastname,
+  //     [`email-${study_id}`]: email,
+  //   };
+  //   dispatch(addStudyForModalEditing(createEditingStudy));
+  // }, [dataStudy, dispatch, email, firstname, lastname, study_id])
 
   return (
     <>
       {/* ===== MODAL EDIT ===== */}
-      <Modal
+      {/* <Modal
         isOpen={isOpenEditStudy}
         onClose={handleCloseModalEdit}
         size={'2xl'}
@@ -201,12 +202,12 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
               </Button>
             </ModalFooter>
           </ModalContent>
-        </Modal>
+        </Modal> */}
         {/* ===== MODAL EDIT ===== */}
 
 
         {/* ===== MODAL DELETE ===== */}
-        <Modal 
+        {/* <Modal 
           isOpen={isOpenDeleteStudy}
           onClose={handleCloseModalDelete}
           size={'2xl'}
@@ -274,31 +275,31 @@ function GetStudyItems ({study_id, firstname, lastname, email}: DataStudy ) {
                 </ModalFooter>
               )}
           </ModalContent>
-        </Modal>
+        </Modal> */}
         {/* ===== MODAL DELETE ===== */}
 
         {/* ===== TABLE ITEM ===== */}
         <Tr color={'black'}>
-          <Td p={2} pl={4} width={'20%'}>{firstname}</Td>
-          <Td p={2} width={'20%'} textAlign={'left'}>{lastname}</Td>
-          <Td p={2} pl={8} width={'40%'} align='left'>{email}</Td>
+          <Td p={2} pl={4} width={'20%'}>{prenom}</Td>
+          <Td p={2} width={'20%'} textAlign={'left'}>{nom}</Td>
+          <Td p={2} pl={8} width={'40%'} align='left'>{mail}</Td>
           <Td p={2} width={'10%'} textAlign={'center'}>
-            <IconButton
+            {/* <IconButton
               onClick={handleOpenModalEdit}
               colorScheme='green'
               aria-label='Editer'
               icon={<EditIcon />}
               size={'xs'}
-          />
+          /> */}
           </Td>
           <Td p={2} width={'10%'} textAlign='center'>
-            <IconButton
+            {/* <IconButton
               onClick={handleOpenModalDelete}
               colorScheme='pink'
               aria-label='Supprimer'
               icon={<DeleteIcon />}
               size={'xs'}
-          />
+          /> */}
           </Td>
         </Tr>
         {/* ===== TABLE ITEM ===== */}

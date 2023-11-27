@@ -65,8 +65,13 @@ function PostLoan () {
   /** Soumet un nouveau pret */
   const handleSubmit = (e : BaseSyntheticEvent) => {
     e.preventDefault();
+    console.log(postLoanQuantity);
+    
     const objectInventory = dataInventory.find(obj => obj.inventory_id! === postLoanIdInventory);
-    const objectStudy = dataStudy.find(obj => obj.study_id! === postLoanidStudy);
+    const objectStudy = dataStudy.find(obj => obj.id! === postLoanidStudy);
+    console.log(objectStudy);
+    
+    // const objectStudy = dataStudy.find(obj => obj.id! === postLoanidStudy);
     
     if(objectInventory!.quantity <= 0) {
       dispatch(stockAlertSwitch());
@@ -76,7 +81,7 @@ function PostLoan () {
           study_id: postLoanidStudy!,
           loan_quantity: parseInt(`${postLoanQuantity}`, 10),
           name: objectInventory!.name,
-          email: objectStudy!.email,
+          email: objectStudy!.mail,
         };
         const updateInventoryData: Partial<DataInventory>= {
           inventory_id: postLoanIdInventory!,
@@ -140,8 +145,8 @@ function PostLoan () {
                       placeholder='Séléctionnez'
                     >
                       {dataStudy.map((studyItem =>
-                      <option key={studyItem.study_id} id={`${studyItem.study_id}`}>
-                        {`${studyItem.firstname}  ${studyItem.lastname}`}
+                      <option key={studyItem.id} id={`${studyItem.id}`}>
+                        {`${studyItem.prenom}  ${studyItem.nom}`}
                       </option>))}
                     </Select>
                   </FormControl>
