@@ -64,8 +64,12 @@ export const studyRelaunch = createAsyncThunk(
   async(relaunch: Relaunch, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
     return await instance.post('/loan/relaunch', relaunch)
       .then((response) => {
+        console.log(response);
+        
       })
       .catch((error) => {
+        console.log(error);
+        
       })
   }
 );

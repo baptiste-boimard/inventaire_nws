@@ -15,7 +15,6 @@ const loanController = {
         const study_id: number = parseInt(req.params.study_id, 10);
         const loan_quantity: number = parseInt(req.body.loan_quantity, 10);      
         
-        console.log(typeof study_id);
         
         if (typeof loan_quantity !== 'number' || Number.isInteger(loan_quantity) !== true) {
             res.status(400).send('Le format de données envoyé ne correpond pas');
@@ -24,22 +23,6 @@ const loanController = {
         const loaning_date = moment().format('DD/MM/YYYY');
         const due_date = moment().add(1, 'M').format('DD/MM/YYYY');
         
-        const data: Loan = {
-            inventory_id: inventory_id,
-            study_id: study_id,
-            loan_quantity: loan_quantity,
-            loaning_date: loaning_date,
-            due_date: due_date,
-        };                  
-        console.log('data',data);
-        
-        const loan = await dataMapperLoan.postLoan(data);
-                
-        if(!loan) {
-            res.status(403).send('Impossible d\'ajouter cet emprunt');
-            return next();
-        }
-        
         const mailData: MailData = {
             name: req.body.name,
             loan_quantity: loan_quantity,
@@ -47,7 +30,6 @@ const loanController = {
             loaning_date: loaning_date,
             due_date: due_date,
         };
-        console.log('mail',mailData);
         
         const sucessMailSend = await sendMail(mailData);
                 
@@ -55,8 +37,24 @@ const loanController = {
             res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`)    
             return next();
         }
-
+        
+        const data: Loan = {
+            inventory_id: inventory_id,
+            study_id: study_id,
+            loan_quantity: loan_quantity,
+            loaning_date: loaning_date,
+            due_date: due_date,
+        };                  
+        
+        const loan = await dataMapperLoan.postLoan(data);
+        
+        if(!loan) {
+            res.status(403).send('Impossible d\'ajouter cet emprunt');
+            return next();
+        }
+        
         res.status(200).send(loan);
+
     },
 
     //** Envoi un mail de relance à l'atudiant */
@@ -77,7 +75,7 @@ const loanController = {
             return next();
         }
 
-        res.status(200).send(sucessMailRelaunch);
+        res.status(200);
     },
     
     //Récupère tous les étudants en BDD
@@ -85,8 +83,20 @@ const loanController = {
         const loan = await dataMapperLoan.getLoan();        
         
         if(loan) {
-            console.log(loan);
-            
+            const fecthData = await fetch('http://vps-a47222b1.vps.ovh.net:4242/Student')
+            const fecthDataJson: any = await fecthData.json() 
+    
+            for(let i=0; i < loan.length; i++) {
+                for(let j=0; j < fecthDataJson.length; j++) {
+                    if(loan[i].study_id === fecthDataJson[j].id) {
+                        loan[i].firstname = fecthDataJson[j].prenom
+                        loan[i].lastname = fecthDataJson[j].nom
+                        loan[i].email = fecthDataJson[j].mail
+                    }
+                }
+            }
+
+
             res.status(200).send(loan);
         } else {
             res.status(403).send('Impossible de récupérer les données des emprunts');
@@ -101,6 +111,7 @@ const loanController = {
             return next();
         }
         const loan = await dataMapperLoan.getOneLoan(id);
+
         if(loan) {
             res.status(200).send(loan);
         } else {
