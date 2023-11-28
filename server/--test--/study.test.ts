@@ -36,9 +36,7 @@ describe(`Test d'une mauvais adresse pour l'API`, ()=> {
     })
     test(`Récupération de la liste des éléves avec l'adresse correcte`, async()=> {
         const res = await fetch('http://vps-a47222b1.vps.ovh.net:4242/Student')
-        const resJson = await res.json() as Array<ObjectAPI>;
-        console.log(resJson[0]);
-        
+        const resJson = await res.json() as Array<ObjectAPI>;        
         expect(res).toBeTruthy();
         expect(res.status).toEqual(200);
         expect(resJson[0].id).toEqual(1);

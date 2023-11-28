@@ -45,11 +45,6 @@ const table = `CREATE TABLE IF NOT EXISTS public.inventory (
                   ON UPDATE NO ACTION
                   ON DELETE NO ACTION
                   NOT VALID,
-                CONSTRAINT study_id_fk FOREIGN KEY (study_id)
-                REFERENCES public.study (study_id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID
               );`
 
 pgclient.query(table, (err, res) => {
