@@ -55,10 +55,6 @@ const dataMapperLoan = {
             (SELECT inventory.inventory_id, inventory.name, inventory.quantity, inventory.details
             FROM inventory) as i
             ON l.inventory_id = i.inventory_id
-            JOIN
-            (SELECT study.study_id, study.firstname, study.lastname, study.email
-            FROM study) as s
-            ON l.study_id = s.study_id
             WHERE loan_id = $1;`,
       values: [id],
     };

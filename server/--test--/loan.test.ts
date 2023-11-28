@@ -3,36 +3,43 @@ import request from 'supertest';
 
 let idMockStudy: number;
 let idMockInventory: number;
-let newIdMockStudy: number;
-let newIdMockInventory: number;
+// let newIdMockStudy: number;
+// let newIdMockInventory: number;
 let idMockLoanPosted: number;
+let idAPIStudy: number;
 
+interface ObjectAPI {
+  id: number,
+  nom: string,
+  prenom:string,
+  mail: string,
+}
 
 const mockLoan = {
   loan_quantity: 1
 };
 
-const badMockLoan = {
-  loan_quantity: 1,
-  email:'notvalid@gmail.fr',
-  name: 'badMock'
-};
+// const badMockLoan = {
+//   loan_quantity: 1,
+//   email:'notvalid@gmail.fr',
+//   name: 'badMock'
+// };
 
-const mockLoanRelaunch = {
-  email: 'bouketin28@gmail.com',
-  loan_quantity: 1,
-  name: 'baguette de pain',
-  loaning_date: '23/01/1980',
-  due_date: '15/12/2023'
-};
+// const mockLoanRelaunch = {
+//   email: 'bouketin28@gmail.com',
+//   loan_quantity: 1,
+//   name: 'baguette de pain',
+//   loaning_date: '23/01/1980',
+//   due_date: '15/12/2023'
+// };
 
-const badMockLoanRelaunch = {
-  email: 'badbouketin28@gmail',
-  loan_quantity: 1,
-  name: 'baguette de pain',
-  loaning_date: '23/01/1980',
-  due_date: '15/12/2023'
-};
+// const badMockLoanRelaunch = {
+//   email: 'badbouketin28@gmail',
+//   loan_quantity: 1,
+//   name: 'baguette de pain',
+//   loaning_date: '23/01/1980',
+//   due_date: '15/12/2023'
+// };
 
 const mockInventory = {
   name: 'coucou',
@@ -40,11 +47,11 @@ const mockInventory = {
   details: 'coucou',
 };
 
-const mockStudy = {
-  firstname: 'firstname',
-  lastname: 'lastname',
-  email: 'bouketin28@gmail.com'
-};
+// const mockStudy = {
+//   firstname: 'firstname',
+//   lastname: 'lastname',
+//   email: 'bouketin28@gmail.com'
+// };
 
 
 //on mock la fonction demander l'envoi de mail
@@ -78,23 +85,28 @@ describe('Tests de la route POST loanController', () => {
     //Récupération de son id   
     idMockInventory = dataInventory.body.rows[0].inventory_id;
     
-    //Création d'un étudiant pour le test
-    const dataStudy = await request(appTest)
-    .post('/study')
-    .send(mockStudy)
-    .set('Content-Type', 'application/json')
-    .set('Accept', 'application/json');   
-    //Récupération de son id
-    idMockStudy = dataStudy.body.rows[0].study_id;
+    // //Création d'un étudiant pour le test
+    // const dataStudy = await request(appTest)
+    // .post('/study')
+    // .send(mockStudy)
+    // .set('Content-Type', 'application/json')
+    // .set('Accept', 'application/json');   
+    // //Récupération de son id
+    // idMockStudy = dataStudy.body.rows[0].study_id;
+
+    //Récupération d'un étudiant à partir de l'API
+    const fetchData = await fetch('http://vps-a47222b1.vps.ovh.net:4242/Student');
+    const fetchDataJson = await fetchData.json() as Array<ObjectAPI>;
+    idAPIStudy = fetchDataJson[0].id
     
     //Création du loan avec les 2 id nécéssaire en mockant la fonction qui demande le service de mail
     sendMail.mockReturnValue({sendMail: sendMailMock});
     const res = await request(appTest)
-    .post(`/loan/${idMockInventory}/${idMockStudy}`)
+    .post(`/loan/${idMockInventory}/${idAPIStudy}`)
     .send({
       loan_quantity: mockLoan.loan_quantity,
-      name: dataInventory.body.rows[0].name,
-      email: dataStudy.body.rows[0].email,
+      // name: dataInventory.body.rows[0].name,
+      // email: dataStudy.body.rows[0].email,
     })
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json');
@@ -124,16 +136,28 @@ describe('Tests de la route GET loanController', () => {
   }),
   test('GET : Récupération en BDD du mock posté avec son id', async () => {
     const res = await request(appTest)
-        .get(`/loan/${idMockLoanPosted}`);    
+        .get(`/loan/${idMockLoanPosted}`);            
     expect(res).toBeTruthy();
     expect(res.status).toBe(200);
-    expect(res.body.firstname).toEqual('firstname');
-    expect(res.body.lastname).toEqual('lastname');
-    expect(res.body.email).toEqual('bouketin28@gmail.com');
+    expect(res.body.firstname).toEqual('Garrosh');
+    expect(res.body.lastname).toEqual('Hellscream');
+    expect(res.body.email).toEqual('ghellscream@normandiewebschool.fr');
     expect(res.body.name).toEqual('coucou');
     expect(res.body.loan_quantity).toBe(1);
     expect(res.body.details).toEqual('coucou');            
   }),
+  // test('GET : Récupération en BDD du mock posté avec son id', async () => {
+  //   const res = await request(appTest)
+  //       .get(`/loan/${idMockLoanPosted}`);    
+  //   expect(res).toBeTruthy();
+  //   expect(res.status).toBe(200);
+  //   expect(res.body.firstname).toEqual('firstname');
+  //   expect(res.body.lastname).toEqual('lastname');
+  //   expect(res.body.email).toEqual('bouketin28@gmail.com');
+  //   expect(res.body.name).toEqual('coucou');
+  //   expect(res.body.loan_quantity).toBe(1);
+  //   expect(res.body.details).toEqual('coucou');            
+  // }),
   test('GET : Echec de la récupération en BDD du mock avec un mauvais id', async () => {
       const res = await request(appTest)
           .get(`/loan/1256987`)  
@@ -218,7 +242,7 @@ describe('Tests de la route DELETE loanController', () => {
       expect(res.status).toBe(403);
       expect(res.text).toEqual('Une erreur est survenue lors de votre demande');
   })
-  test('DELETE : Suppression du mock modifié avec son id', async () => {
+  test('DELETE : Suppression du mock avec son id', async () => {
 
       const res = await request(appTest)
           .delete(`/loan/${idMockLoanPosted}`)  
@@ -229,7 +253,7 @@ describe('Tests de la route DELETE loanController', () => {
       //Supression de tous les ajouts à la BDD pour ce test
       await request(appTest)
         .delete(`/inventory/${idMockInventory}`);
-      await request(appTest)
-        .delete(`/study/${idMockStudy}`);
+  //     // await request(appTest)
+  //     //   .delete(`/study/${idMockStudy}`);
   })
 });

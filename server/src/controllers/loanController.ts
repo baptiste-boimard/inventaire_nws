@@ -115,8 +115,24 @@ const loanController = {
             return next();
         }
         const loan = await dataMapperLoan.getOneLoan(id);
-
+        
         if(loan) {
+            const fecthData = await fetch('http://vps-a47222b1.vps.ovh.net:4242/Student')
+            const fecthDataJson: any = await fecthData.json() 
+    
+            //Itération pour récupéter les données de l'api et les mettrent dans les résultats de la BDD
+                for(let j=0; j < fecthDataJson.length; j++) {
+                    if(loan.study_id === fecthDataJson[j].id) {
+                        //Version générique
+                        // for (const [key, value] of Object.entries(fecthDataJson[j])) {
+                        //     loan[i][key] = value;
+                        // }
+                        //Version rapide pour pas changer le front
+                        loan.firstname = fecthDataJson[j].prenom
+                        loan.lastname = fecthDataJson[j].nom
+                        loan.email = fecthDataJson[j].mail
+                    }
+                }                        
             res.status(200).send(loan);
         } else {
             res.status(403).send('Les informations sur cet emprunt ne sont pas disponible');
