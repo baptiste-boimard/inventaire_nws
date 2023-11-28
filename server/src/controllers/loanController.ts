@@ -15,6 +15,7 @@ const loanController = {
         const study_id: number = parseInt(req.params.study_id, 10);
         const loan_quantity: number = parseInt(req.body.loan_quantity, 10);      
         
+        console.log(req.body, req.params);
         
         if (typeof loan_quantity !== 'number' || Number.isInteger(loan_quantity) !== true) {
             res.status(400).send('Le format de données envoyé ne correpond pas');
