@@ -44,7 +44,7 @@ const table = `CREATE TABLE IF NOT EXISTS public.inventory (
                   REFERENCES public.inventory (inventory_id) MATCH SIMPLE
                   ON UPDATE NO ACTION
                   ON DELETE NO ACTION
-                  NOT VALID,
+                  NOT VALID
               );`
 
 pgclient.query(table, (err, res) => {
