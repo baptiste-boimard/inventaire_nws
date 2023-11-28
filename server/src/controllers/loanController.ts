@@ -75,8 +75,7 @@ const loanController = {
             res.status(421).send(`Le service d'envoi de mail est indisponible ou l'adresse mail n'est pas valide`)    
             return next();
         }
-
-        res.status(200);
+        res.status(200).send(sucessMailRelaunch);
     },
     
     //Récupère tous les étudants en BDD
