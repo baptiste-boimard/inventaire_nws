@@ -99,12 +99,9 @@ const loanController = {
                         loan[i].lastname = fecthDataJson[j].nom
                         loan[i].email = fecthDataJson[j].mail
                     }
-            }
-
-
-        console.log(loan);
-        
-            res.status(200).send(loan);
+            }        
+        }
+        res.status(200).send(loan);
         } else {
             res.status(403).send('Impossible de récupérer les données des emprunts');
             return next();
