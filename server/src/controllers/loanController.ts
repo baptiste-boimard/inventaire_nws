@@ -54,7 +54,7 @@ const loanController = {
             return next();
         }
         
-        res.status(200).send(loan);
+        res.status(201).send(loan);
 
     },
 

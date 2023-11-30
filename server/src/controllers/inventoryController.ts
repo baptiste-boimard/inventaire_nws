@@ -28,7 +28,7 @@ const inventoryController = {
         const inventory = await dataMapperInventory.postInventory(data);
         
         if(inventory) {
-            res.status(200).send(inventory);
+            res.status(201).send(inventory);
         } else {
             res.status(403).send('Impossible d\'ajouter cet artcle dans l\'inventaire');
             return next();

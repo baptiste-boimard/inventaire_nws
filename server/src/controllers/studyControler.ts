@@ -38,7 +38,7 @@ const studyController = {
         
         const study = await dataMapperStudy.postStudy(data);
         if(study) {
-            res.status(200).send(study);
+            res.status(201).send(study);
         } else {
             res.status(403).send('Impossible d\'ajouter cet étudiant');
             return next();
