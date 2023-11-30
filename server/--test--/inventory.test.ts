@@ -48,7 +48,7 @@ describe('Tests de la route POST inventoryController', () => {
         .set('Accept', 'application/json');      
         idMockInventoryPosted = res.body.rows[0].inventory_id;
             expect(res).toBeTruthy();
-            expect(res.status).toBe(200);
+            expect(res.status).toBe(201);
             expect(res.body.rowCount).toBe(1);
     })
 });
